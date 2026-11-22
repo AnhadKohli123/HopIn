@@ -54,6 +54,7 @@ public class RideService {
                           @Min(1) int seats,
                           @Positive double pricePerSeat,
                           boolean negotiable,
+                          Boolean instantBook,
                           Long vehicleId) {
     }
 
@@ -152,6 +153,7 @@ public class RideService {
             r.seatsLeft = n.seats();
             r.pricePerSeat = n.pricePerSeat();
             r.negotiable = n.negotiable();
+            r.instantBook = Boolean.TRUE.equals(n.instantBook());
             r.totalCost = n.pricePerSeat() * n.seats();
             saved.add(rides.save(r));
         }

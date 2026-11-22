@@ -247,6 +247,11 @@
   @keyframes pulse { 0% { box-shadow:0 0 0 0 rgba(22,163,74,.6); } 70% { box-shadow:0 0 0 10px rgba(22,163,74,0); } 100% { box-shadow:0 0 0 0 rgba(22,163,74,0); } }
   .sos-item { border-color:var(--bad); box-shadow:0 0 0 2px var(--red-bg); }
   .sos-stat { background:var(--red-bg); }
+  .modes { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:8px; margin-bottom:14px; }
+  .mode { display:flex; gap:10px; align-items:flex-start; border:1px solid var(--line); border-radius:12px; padding:10px 12px; cursor:pointer; text-transform:none; letter-spacing:0; font-weight:400; font-size:13px; color:var(--ink); margin:0; }
+  .mode:has(input:checked) { border-color:var(--brand); background:var(--hover); }
+  .mode input { width:auto; margin:3px 0 0; }
+  .mode b { font-size:14px; }
   .hidden { display:none !important; }
 </style>
 </head>
@@ -280,6 +285,8 @@ let chatOpen = null;
 let geoFrom = null;
 let geoTo = null;
 let pendingSearch = null;
+let postForm = null;
+try { postForm = JSON.parse(sessionStorage.getItem('hopinPost') || 'null'); } catch (e) { }
 const shares = {};
 const PREFS = [['noSmoking', 'No smoking'], ['noPets', 'No pets'], ['ac', 'AC available'], ['music', 'Music on'], ['luggage', 'Luggage space']];
 
@@ -341,6 +348,7 @@ function logout() {
   clearInterval(badgeTimer); badgeTimer = null;
   render.resumed = false;
   localStorage.removeItem('token'); localStorage.removeItem('me');
+  clearPostForm();
   closeModal();
   updateLiveChip();
   render();
@@ -606,6 +614,7 @@ function placeInput(container, placeholder, onPick) {
 }
 
 function render() {
+  savePostForm();
   document.body.classList.toggle('landing', !me);
   clearInterval(chatTimer); chatTimer = null;
   if (!me) { renderBar(); return renderAuth(); }
@@ -669,11 +678,6 @@ function renderAuth() {
       <h1 class="intro-name">Hop<span>In</span></h1>
       <p class="intro-welcome">Welcome</p>
       <p class="intro-tag">Share the ride. Split the fare.</p>
-      <ul class="intro-list">
-        <li>See every ride on a live map with pickups and drop-offs</li>
-        <li>Pay only for your stretch of the route</li>
-        <li>Make an offer and bargain with the driver</li>
-      </ul>
     </div>
     <div class="card auth-card">
       <h2 id="authTitle">Login</h2>
@@ -887,7 +891,7 @@ function rideCard(r, reqs) {
   return `<div class="item"><div class="head"><div><div class="route">${esc(r.source)} → ${esc(r.destination)}</div>
       <div class="muted">${fmt(r.departTime)} · ${r.seatsLeft}/${r.seatsTotal} seats left</div></div>
       <div style="text-align:right"><div class="price">${inr(r.pricePerSeat)} <small>/ seat, full route</small></div>
-      ${statusChip(r.status)}${r.negotiable ? '<span class="chip teal">negotiable</span>' : '<span class="chip gray">fixed price</span>'}</div></div>
+      ${statusChip(r.status)}${r.negotiable ? '<span class="chip teal">negotiable</span>' : '<span class="chip gray">fixed price</span>'}${r.instantBook ? '<span class="chip amber">⚡ instant booking</span>' : ''}</div></div>
     ${timeline(pts)}${paxHtml}
     <div class="actions"><button class="ghost sm" onclick="showRide(${r.id})">View on map</button>
       ${r.status === 'OPEN' ? `${pending ? `<button class="warn sm" onclick="go('requests')">${pending} request(s) waiting</button>` : ''}
@@ -899,12 +903,12 @@ function rideCard(r, reqs) {
 
 const views = {
   async post() {
-    draft = { from: null, to: null, stops: [] };
+    draft = postForm && postForm.draft ? JSON.parse(JSON.stringify(postForm.draft)) : { from: null, to: null, stops: [] };
     roadKm = null;
     const [vehicles] = await Promise.all([api('GET', '/api/vehicles'), loadMaps()]);
     $('view').innerHTML = `
     <div class="split">
-      <div class="card">
+      <div class="card" id="postCard" oninput="savePostForm()" onchange="savePostForm()">
         <h2>Post a ride</h2>
         <p class="sub">Type a place, press Enter or Search, then pick it from the list. Add stops where riders can hop in or out.</p>
         ${mapsOk ? '' : '<div class="banner">The map could not load. Check your internet connection and refresh.</div>'}
@@ -931,6 +935,11 @@ const views = {
         </div>
         <div class="legs" id="legs"></div>
         <label class="check"><input type="checkbox" id="neg" checked> Riders can make offers and I can bargain</label>
+        <label>How riders book</label>
+        <div class="modes">
+          <label class="mode"><input type="radio" name="bmode" id="bmApprove" checked><span><b>Approve each request</b><br><span class="muted">You accept or reject every booking.</span></span></label>
+          <label class="mode"><input type="radio" name="bmode" id="bmInstant"><span><b>⚡ Instant booking</b><br><span class="muted">Riders who book at your price are confirmed straight away. Lower offers still need your approval.</span></span></label>
+        </div>
         <button style="width:100%" onclick="postRide()">Post ride</button>
       </div>
       <div class="mapbox" id="map"></div>
@@ -956,11 +965,13 @@ const views = {
       }
       updateLegs();
       suggestMeetingPoints();
+      savePostForm();
     };
     placeInput($('fromBox'), 'Starting point', (v) => { draft.from = v; window.redrawPost(); });
     placeInput($('toBox'), 'Final destination', (v) => { draft.to = v; window.redrawPost(); });
     mountStopInput();
     updateStops();
+    restorePostForm(vehicles);
   },
 
   async myrides() {
@@ -1260,7 +1271,8 @@ function changeSeg(id, which) {
   }
   const price = segPrice(r.pricePerSeat, pts, p, d);
   $('lp' + id).innerHTML = inr(price) + ' <small>/ seat</small>';
-  $('of' + id).value = price;
+  if ($('of' + id)) $('of' + id).value = price;
+  $('bkp' + id).textContent = inr(price);
   $('tl' + id).innerHTML = timeline(pts, { hi: { from: p, to: d } });
   focusRide(id);
 }
@@ -1277,17 +1289,16 @@ function focusRide(id) {
   });
 }
 
-function bookRide(id) {
+function bookRide(id, mode) {
   run(async () => {
-    const r = rideCache[id];
     const { p, d } = segOf(id);
-    const offer = +$('of' + id).value;
-    if (r.negotiable && offer % 10 !== 0) throw new Error('Your offer must be a multiple of ₹10');
-    await api('POST', `/api/rides/${id}/book`, {
-      seats: +$('bs' + id).value, pickupIdx: p, dropIdx: d,
-      offeredPrice: r.negotiable ? offer : null
-    });
-    toast(r.negotiable ? 'Offer sent to the driver' : 'Request sent to the driver');
+    let offeredPrice = null;
+    if (mode === 'offer') {
+      offeredPrice = +$('of' + id).value;
+      if (!offeredPrice || offeredPrice % 10 !== 0) throw new Error('Your offer must be a multiple of ₹10');
+    }
+    const b = await api('POST', `/api/rides/${id}/book`, { seats: +$('bs' + id).value, pickupIdx: p, dropIdx: d, offeredPrice });
+    toast(b.status === 'CONFIRMED' ? 'Booked! Your seat is confirmed' : mode === 'offer' ? 'Offer sent to the driver' : 'Request sent to the driver');
     go('bookings');
   });
 }
@@ -1378,6 +1389,37 @@ function updateLegs() {
   el.textContent = 'Fare by stretch (per seat, rounded to ₹10): ' + parts.join(' · ') + '. Total ' + inr(price) + '. Riders pay only for the part they travel.';
 }
 
+function savePostForm() {
+  if (!me || !$('postCard') || !$('ddate')) return;
+  postForm = {
+    draft: JSON.parse(JSON.stringify(draft)),
+    ddate: $('ddate').value, dtime: $('dtime').value, seats: $('seats').value,
+    veh: $('veh').value, price: $('price').value, neg: $('neg').checked, instant: $('bmInstant').checked
+  };
+  try { sessionStorage.setItem('hopinPost', JSON.stringify(postForm)); } catch (e) { }
+}
+
+function clearPostForm() {
+  postForm = null;
+  try { sessionStorage.removeItem('hopinPost'); } catch (e) { }
+}
+
+function restorePostForm(vehicles) {
+  const f = postForm;
+  if (!f) return;
+  if (draft.from) $('fromBox').querySelector('input').value = draft.from.name;
+  if (draft.to) $('toBox').querySelector('input').value = draft.to.name;
+  if (f.ddate && f.ddate >= today()) $('ddate').value = f.ddate;
+  if (f.dtime) $('dtime').value = f.dtime;
+  if (f.seats) $('seats').value = f.seats;
+  if (f.veh && vehicles.some(v => String(v.id) === f.veh)) $('veh').value = f.veh;
+  if (f.price) $('price').value = f.price;
+  $('neg').checked = f.neg !== false;
+  if (f.instant) $('bmInstant').checked = true;
+  if (draft.from || draft.to || draft.stops.length) window.redrawPost();
+  else updateLegs();
+}
+
 function postRide() {
   run(async () => {
     if (!draft.from) throw new Error('Search for the starting point and pick it from the list');
@@ -1394,8 +1436,10 @@ function postRide() {
       stops: draft.stops.map(s => ({ name: s.name, lat: s.lat, lng: s.lng })),
       departTime: $('ddate').value + 'T' + time,
       seats: +$('seats').value, pricePerSeat: price,
-      negotiable: $('neg').checked, vehicleId: $('veh').value ? +$('veh').value : null
+      negotiable: $('neg').checked, instantBook: $('bmInstant').checked, vehicleId: $('veh').value ? +$('veh').value : null
     });
+    clearPostForm();
+    $('postCard').removeAttribute('id');
     toast(Array.isArray(posted) && posted.length > 1 ? `Posted ${posted.length} rides` : 'Ride posted');
     go('myrides');
   });
@@ -1604,6 +1648,7 @@ function cardFor(v) {
       <div class="muted" onclick="event.stopPropagation()">Driver: ${nameLink(r.driver)} · ${starLine(r.driver)}</div></div></div>
       <div style="text-align:right"><div class="price" id="lp${r.id}">${inr(v.listPrice)} <small>/ seat</small></div>
       ${r.negotiable ? '<span class="chip teal">bargain allowed</span>' : '<span class="chip gray">fixed price</span>'}
+      ${r.instantBook ? '<span class="chip amber">⚡ Instant booking</span>' : '<span class="chip gray">Driver approves</span>'}
       <span class="chip">match ${v.score}</span></div></div>
     ${dist ? `<div class="chips">${dist}</div>` : ''}
     ${prefChips(r.driver)}
@@ -1612,12 +1657,13 @@ function cardFor(v) {
       <div><label>Pickup</label><select id="pk${r.id}" onchange="changeSeg(${r.id},'p')">${pOpts}</select></div>
       <div><label>Drop-off</label><select id="dp${r.id}" onchange="changeSeg(${r.id},'d')">${dOpts}</select></div>
       <div><label>Seats</label><input id="bs${r.id}" type="number" min="1" max="${r.seatsLeft}" value="${Math.min(r.seatsLeft, +$('fseats').value || 1)}"></div>
-      <div><label>${r.negotiable ? 'Your offer per seat (₹, multiple of 10)' : 'Price per seat (₹)'}</label>
-        <input id="of${r.id}" type="number" min="10" step="10" value="${v.listPrice}" ${r.negotiable ? '' : 'disabled'} onchange="this.value = roundTen(this.value)"></div>
+      ${r.negotiable ? `<div><label>Or offer your own price (₹/seat)</label>
+        <input id="of${r.id}" type="number" min="10" step="10" value="${v.listPrice}" onchange="this.value = roundTen(this.value)"></div>` : ''}
     </div>
     ${extras(v)}
     <div class="actions" onclick="event.stopPropagation()" style="margin-top:10px">
-      <button onclick="bookRide(${r.id})">${r.negotiable ? 'Send offer' : 'Request seats'}</button>
+      <button class="ok" onclick="bookRide(${r.id},'list')">${r.instantBook ? '⚡ Book now' : 'Request to book'} · <span id="bkp${r.id}">${inr(v.listPrice)}</span></button>
+      ${r.negotiable ? `<button onclick="bookRide(${r.id},'offer')">Send offer</button>` : ''}
       <button class="ghost sm" onclick="openChat(${r.id},${me.id})">💬 Message driver</button>
       <button class="ghost sm" onclick="showRide(${r.id},+$('pk${r.id}').value,+$('dp${r.id}').value)">Full map</button>
     </div></div>`;

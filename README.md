@@ -56,6 +56,7 @@ The map uses OpenStreetMap: Leaflet for the map, Nominatim for place search and 
 - **Stops, pickups and drop-offs:** up to 5 stops; riders get in and out anywhere on the route and, after booking, only see their own stretch.
 - **Post for multiple dates:** add extra dates with the same time and post them all at once (up to 14).
 - **Recommended price range:** shows whether your price is below, within or above ₹2–₹3.5 per km for the route, plus a reminder that the price is final.
+- **Instant booking or approval:** when posting, the driver picks "Approve each request" or "⚡ Instant booking". Riders tap **Book now** at the listed price; with instant booking that seat is confirmed straight away, and lower offers ("Send offer") still need the driver's approval.
 - **Fares in tens and bargaining:** prices, offers and counters are multiples of ₹10; stretches always add up to the full price.
 - **Meeting-point suggestions:** fuel stations, bus stands and highway exits near each point (from OpenStreetMap), with a one-tap "Use".
 - **Rides near me:** 📍 uses your location, or Find picks an exact place; rides within 5/10/20/40 km are matched and the distance is shown. Typing a town name still works.

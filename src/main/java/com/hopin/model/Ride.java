@@ -34,6 +34,7 @@ public class Ride {
     public int seatsLeft;
     public double pricePerSeat;
     public boolean negotiable = false;
+    public Boolean instantBook = false;
     public double totalCost;
 
     @Enumerated(EnumType.STRING)

@@ -34,7 +34,7 @@ public class BookingService {
         if (rider.role != Role.RIDER) {
             throw new UnauthorizedActionException("Only riders can book seats");
         }
-        Ride ride = rides.findById(rideId).orElseThrow(() -> new RideNotFoundException(rideId));
+        Ride ride = rides.findByIdForUpdate(rideId).orElseThrow(() -> new RideNotFoundException(rideId));
         if (ride.status != RideStatus.OPEN || ride.departTime.isBefore(LocalDateTime.now())) {
             throw new RideException("This ride is not open for booking", 409);
         }
@@ -72,6 +72,15 @@ public class BookingService {
         b.dropName = pts.get(d).name();
         b.listPrice = list;
         b.offeredPrice = offer;
+        if (Boolean.TRUE.equals(ride.instantBook) && offer >= list) {
+            ride.seatsLeft -= seats;
+            b.agreedPrice = offer;
+            b.status = BookingStatus.CONFIRMED;
+            bookings.save(b);
+            notifications.notify(ride.driver, rider.name + " instantly booked " + seats + " seat(s) for " + stretch(b)
+                    + " at ₹" + Math.round(offer) + "/seat", "myrides");
+            return b;
+        }
         bookings.save(b);
         notifications.notify(ride.driver, rider.name + " requested " + seats + " seat(s) for " + stretch(b)
                 + " at ₹" + Math.round(offer) + "/seat", "requests");
