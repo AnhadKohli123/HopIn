@@ -51,6 +51,10 @@ public class User {
     @JsonIgnore
     public String idStatus = "NONE";
 
+    @JsonIgnore
+    @Column(length = 64)
+    public String idHash;
+
     public Boolean hasPhoto = false;
     public Integer photoVersion = 0;
 

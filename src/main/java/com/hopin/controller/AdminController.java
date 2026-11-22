@@ -48,22 +48,6 @@ public class AdminController {
         return setBlocked(admin, id, false);
     }
 
-    @GetMapping("/id-requests")
-    public List<Map<String, Object>> idRequests(@RequestAttribute("user") User admin) {
-        requireAdmin(admin);
-        return users.findByIdStatusOrderByIdAsc("PENDING").stream().map(Views::self).toList();
-    }
-
-    @PostMapping("/users/{id}/id-approve")
-    public Map<String, Object> approveId(@RequestAttribute("user") User admin, @PathVariable Long id) {
-        return decideId(admin, id, true);
-    }
-
-    @PostMapping("/users/{id}/id-reject")
-    public Map<String, Object> rejectId(@RequestAttribute("user") User admin, @PathVariable Long id) {
-        return decideId(admin, id, false);
-    }
-
     @GetMapping("/reports")
     public List<Report> reports(@RequestAttribute("user") User admin) {
         requireAdmin(admin);
@@ -92,22 +76,9 @@ public class AdminController {
         m.put("rides", rides.count());
         m.put("bookings", bookings.count());
         m.put("confirmedBookings", bookings.findAll().stream().filter(b -> b.status == BookingStatus.CONFIRMED).count());
-        m.put("pendingIdChecks", users.countByIdStatus("PENDING"));
         m.put("openReports", reports.countByStatus("OPEN"));
         m.put("openSos", reports.countBySosTrueAndStatus("OPEN"));
         return m;
-    }
-
-    private Map<String, Object> decideId(User admin, Long id, boolean approve) {
-        requireAdmin(admin);
-        User u = users.findById(id).orElseThrow(() -> new UnauthorizedActionException("User not found"));
-        if (!"PENDING".equals(u.idStatus)) {
-            throw new SafetyException("This user has no pending ID check", 409);
-        }
-        u.idStatus = approve ? "APPROVED" : "REJECTED";
-        users.save(u);
-        notifications.notify(u, approve ? "Your government ID was verified ✔" : "Your ID check was rejected. Check the details and submit again.", "profile");
-        return Views.self(u);
     }
 
     private Map<String, Object> setBlocked(User admin, Long id, boolean value) {

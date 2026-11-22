@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,15 +22,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class VerificationService {
     private static final Logger log = LoggerFactory.getLogger(VerificationService.class);
     private static final Set<String> ID_TYPES = Set.of("AADHAAR", "DRIVING_LICENCE", "PAN", "PASSPORT", "VOTER_ID");
+    private static final Map<String, String> ID_HELP = Map.of(
+            "AADHAAR", "That isn't a valid Aadhaar number. Check all 12 digits",
+            "PAN", "That isn't a valid PAN. It has 5 letters, 4 digits and 1 letter",
+            "DRIVING_LICENCE", "That isn't a valid driving licence number. It has a 2-letter state code followed by 13 digits",
+            "PASSPORT", "That isn't a valid passport number. It has 1 letter followed by 7 digits",
+            "VOTER_ID", "That isn't a valid voter ID. It has 3 letters followed by 7 digits");
     private final UserRepository users;
     private final VerificationCodeRepository codes;
     private final MailService mail;
+    private final String pepper;
     private final SecureRandom random = new SecureRandom();
 
-    public VerificationService(UserRepository users, VerificationCodeRepository codes, MailService mail) {
+    public VerificationService(UserRepository users, VerificationCodeRepository codes, MailService mail,
+                               @Value("${hopin.jwt.secret}") String pepper) {
         this.users = users;
         this.codes = codes;
         this.mail = mail;
+        this.pepper = pepper;
     }
 
     public record SendResult(boolean simulated, String demoCode, String message) {
@@ -97,7 +107,7 @@ public class VerificationService {
     }
 
     @Transactional
-    public Map<String, Object> submitId(User me, String type, String last4) {
+    public Map<String, Object> submitId(User me, String type, String number) {
         User u = fresh(me);
         if ("APPROVED".equals(u.idStatus)) {
             throw new VerificationException("Your ID is already verified");
@@ -106,14 +116,72 @@ public class VerificationService {
         if (!ID_TYPES.contains(t)) {
             throw new VerificationException("Choose a valid ID type");
         }
-        String l = last4 == null ? "" : last4.trim().toUpperCase();
-        if (!l.matches("[A-Z0-9]{4}")) {
-            throw new VerificationException("Enter exactly the last 4 characters of your ID");
+        String n = number == null ? "" : number.replaceAll("[\\s-]", "").toUpperCase();
+        if (!validId(t, n)) {
+            throw new VerificationException(ID_HELP.get(t));
+        }
+        String hash = sha256(t + ":" + n + ":" + pepper);
+        if (users.existsByIdHashAndIdNot(hash, u.id)) {
+            throw new VerificationException("This ID is already verified on another HopIn account");
         }
         u.idType = t;
-        u.idLast4 = l;
-        u.idStatus = "PENDING";
+        u.idLast4 = n.substring(n.length() - 4);
+        u.idHash = hash;
+        u.idStatus = "APPROVED";
         return Views.self(users.save(u));
+    }
+
+    static boolean validId(String type, String n) {
+        switch (type) {
+            case "AADHAAR":
+                return n.matches("[2-9]\\d{11}") && verhoeff(n);
+            case "PAN":
+                return n.matches("[A-Z]{3}[ABCFGHLJPT][A-Z]\\d{4}[A-Z]");
+            case "DRIVING_LICENCE":
+                if (!n.matches("[A-Z]{2}\\d{13}")) {
+                    return false;
+                }
+                int year = Integer.parseInt(n.substring(4, 8));
+                return year >= 1950 && year <= java.time.Year.now().getValue();
+            case "PASSPORT":
+                return n.matches("[A-PR-WY][1-9]\\d{6}");
+            case "VOTER_ID":
+                return n.matches("[A-Z]{3}\\d{7}");
+            default:
+                return false;
+        }
+    }
+
+    private static final int[][] D = {
+            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, {1, 2, 3, 4, 0, 6, 7, 8, 9, 5}, {2, 3, 4, 0, 1, 7, 8, 9, 5, 6},
+            {3, 4, 0, 1, 2, 8, 9, 5, 6, 7}, {4, 0, 1, 2, 3, 9, 5, 6, 7, 8}, {5, 9, 8, 7, 6, 0, 4, 3, 2, 1},
+            {6, 5, 9, 8, 7, 1, 0, 4, 3, 2}, {7, 6, 5, 9, 8, 2, 1, 0, 4, 3}, {8, 7, 6, 5, 9, 3, 2, 1, 0, 4},
+            {9, 8, 7, 6, 5, 4, 3, 2, 1, 0}};
+    private static final int[][] P = {
+            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, {1, 5, 7, 6, 2, 8, 3, 0, 9, 4}, {5, 8, 0, 3, 7, 9, 6, 1, 4, 2},
+            {8, 9, 1, 6, 0, 4, 3, 5, 2, 7}, {9, 4, 5, 3, 1, 2, 6, 8, 7, 0}, {4, 2, 8, 6, 5, 7, 3, 9, 0, 1},
+            {2, 7, 9, 3, 8, 0, 6, 4, 1, 5}, {7, 0, 4, 6, 9, 1, 3, 2, 5, 8}};
+
+    static boolean verhoeff(String num) {
+        int c = 0;
+        for (int i = 0; i < num.length(); i++) {
+            int digit = num.charAt(num.length() - 1 - i) - '0';
+            c = D[c][P[i % 8][digit]];
+        }
+        return c == 0;
+    }
+
+    private static String sha256(String s) {
+        try {
+            byte[] h = java.security.MessageDigest.getInstance("SHA-256").digest(s.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : h) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private VerificationCode newCode(User u, String channel, String target) {

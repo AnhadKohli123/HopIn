@@ -63,7 +63,7 @@ The map uses OpenStreetMap: Leaflet for the map, Nominatim for place search and 
 - **Ride alerts:** when a search is empty, save an alert; you get a notification (and an email, if Gmail is set up and your email is verified) when a matching ride is posted.
 
 **Trust and safety**
-- **Verified badge (✔):** email code, phone code and government ID (type + last 4 characters, approved by an admin). All three give the badge.
+- **Verified badge (✔):** email code, phone code and government ID. The ID is checked instantly with no admin step: Aadhaar numbers must pass the Verhoeff checksum, and PAN, driving licence, passport and voter ID numbers must match their official formats. Only the ID type and last 4 characters are stored, plus a one-way fingerprint so one ID can't verify two accounts. This checks that the number is well-formed, not who owns it.
 - **Profile photos** (cropped and resized in the browser), **rating summary** on profiles, reviews of drivers and co-passengers before booking.
 - **Report and block:** report a user to the admin team; blocking hides each other's rides and stops bookings and messages.
 - **Live trip sharing:** start sharing from Trip tools; family get a link (`/track.html#…`, no login) showing your live position on the map. Keep the page open while travelling.
@@ -72,7 +72,7 @@ The map uses OpenStreetMap: Leaflet for the map, Nominatim for place search and 
 **Everything else**
 - **In-app chat** between rider and driver, before and after booking, with unread badges.
 - **Notifications bell** for requests, accepts, counters, cancellations, ride alerts and ID decisions.
-- **Admin:** overview stats, users (suspend/restore), ID checks (approve/reject), reports and SOS alerts (with location), all rides.
+- **Admin:** overview stats, users (suspend/restore), reports and SOS alerts (with location), all rides.
 - **Star ratings, cancellation badge, experience level, preferences, dark mode, landing animation, no overbooking** (row locks with `PESSIMISTIC_WRITE`).
 
 Live sharing and "near me" need location permission, which browsers only allow on `localhost` or HTTPS. A tracking link made on localhost only opens on the same computer; once HopIn is hosted online, anyone with the link can open it.
@@ -120,7 +120,7 @@ Send `Authorization: Bearer <token>` on everything except `/api/auth/**` and `/a
 | Alerts | `GET/POST /api/alerts`, `DELETE /api/alerts/{id}`, `GET /api/notifications`, `POST /api/notifications/read` |
 | Safety | `POST /api/users/{id}/report`, `POST/DELETE /api/users/{id}/block`, `GET /api/users/blocked`, `POST /api/sos`, `POST /api/live/start`, `POST /api/live/{token}/location`, `/stop`, `GET /api/live/active` |
 | Public | `GET /api/public/photos/{id}`, `GET /api/public/live/{token}` |
-| Admin | `GET /api/admin/stats`, `/users`, `/id-requests`, `/reports`, `/rides`, `POST /api/admin/users/{id}/block`, `/unblock`, `/id-approve`, `/id-reject`, `POST /api/admin/reports/{id}/resolve` |
+| Admin | `GET /api/admin/stats`, `/users`, `/reports`, `/rides`, `POST /api/admin/users/{id}/block`, `/unblock`, `POST /api/admin/reports/{id}/resolve` |
 
 ## Project layout
 

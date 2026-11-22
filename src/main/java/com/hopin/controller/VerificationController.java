@@ -20,7 +20,7 @@ public class VerificationController {
     public record PhoneReq(String phone) {
     }
 
-    public record IdReq(String idType, String last4) {
+    public record IdReq(String idType, String number) {
     }
 
     @PostMapping("/email/send")
@@ -45,6 +45,6 @@ public class VerificationController {
 
     @PostMapping("/id")
     public Map<String, Object> submitId(@RequestAttribute("user") User user, @RequestBody IdReq r) {
-        return verification.submitId(user, r.idType(), r.last4());
+        return verification.submitId(user, r.idType(), r.number());
     }
 }

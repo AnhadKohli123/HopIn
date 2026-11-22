@@ -9,11 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
-    List<User> findByIdStatusOrderByIdAsc(String idStatus);
-
     List<User> findByRole(Role role);
 
-    long countByIdStatus(String idStatus);
-
     boolean existsByPhoneAndPhoneVerifiedTrueAndIdNot(String phone, Long id);
+
+    boolean existsByIdHashAndIdNot(String idHash, Long id);
 }

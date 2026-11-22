@@ -635,7 +635,7 @@ function badgeTab() {
 function tabsFor(role) {
   if (role === 'DRIVER') return [['post', 'Post a ride'], ['myrides', 'My rides'], ['requests', 'Requests'], ['messages', 'Messages'], ['vehicles', 'Vehicles'], ['profile', 'Profile']];
   if (role === 'RIDER') return [['search', 'Find a ride'], ['bookings', 'My bookings'], ['messages', 'Messages'], ['profile', 'Profile']];
-  return [['stats', 'Overview'], ['users', 'Users'], ['idchecks', 'ID checks'], ['reports', 'Reports'], ['allrides', 'Rides']];
+  return [['stats', 'Overview'], ['users', 'Users'], ['reports', 'Reports'], ['allrides', 'Rides']];
 }
 
 function renderBar() {
@@ -1060,12 +1060,12 @@ const views = {
           ${u.phoneVerified ? '' : `<div class="vform"><div class="prow"><input id="phoneNo" inputmode="tel" maxlength="14" placeholder="10-digit mobile number" value="${esc(u.phone || '')}"><button class="sm" onclick="sendCode('phone')">Send code</button></div>
             <div id="phoneCodeBox" class="hidden" style="margin-top:8px"><div id="phoneDemo"></div><div class="prow"><input id="phoneCode" inputmode="numeric" maxlength="6" placeholder="6-digit code" onkeydown="if(event.key==='Enter')confirmCode('phone')"><button class="ok sm" onclick="confirmCode('phone')">Verify</button></div></div></div>`}
           <div class="vrow"><div><b>Government ID</b><div class="muted">${u.idType ? esc(idNames[u.idType] || u.idType) + ' ending ' + esc(u.idLast4) : 'Not submitted'}</div></div>
-            ${u.idStatus === 'REJECTED' ? '<span class="chip red">Rejected</span>' : status(u.idVerified, u.idStatus === 'PENDING')}</div>
-          ${u.idVerified || u.idStatus === 'PENDING' ? '' : `<div class="vform"><div class="grid2">
-              <div><label>ID type</label><select id="idType">${Object.entries(idNames).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></div>
-              <div><label>Last 4 characters</label><input id="idLast4" maxlength="4" placeholder="e.g. 4821" style="text-transform:uppercase"></div></div>
-            <button class="sm" onclick="submitIdCheck()">Submit for review</button>
-            <p class="muted" style="margin:8px 0 0">We only store the ID type and its last 4 characters. An admin reviews it.</p></div>`}
+            ${status(u.idVerified)}</div>
+          ${u.idVerified ? '' : `<div class="vform"><div class="grid2">
+              <div><label>ID type</label><select id="idType" onchange="$('idNumber').placeholder = ID_EXAMPLES[this.value]">${Object.entries(idNames).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></div>
+              <div><label>ID number</label><input id="idNumber" maxlength="20" autocomplete="off" placeholder="${ID_EXAMPLES.AADHAAR}" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')submitIdCheck()"></div></div>
+            <button class="sm" onclick="submitIdCheck()">Verify ID</button>
+            <p class="muted" style="margin:8px 0 0">We check the number instantly. Only the ID type and its last 4 characters are saved, never the full number.</p></div>`}
         </div>
         <div class="card"><h2>Blocked users</h2>${blocked.length ? blocked.map(b => `<div class="paxrow"><div class="who">${avatar(b)}<b>${esc(b.name)}</b></div><button class="ghost sm" onclick="unblockUser(${b.id})">Unblock</button></div>`).join('') : '<p class="muted">You haven\'t blocked anyone.</p>'}</div>
       </div></div>`;
@@ -1142,7 +1142,7 @@ const views = {
 
   async stats() {
     const s = await api('GET', '/api/admin/stats');
-    const labels = { users: 'Users', rides: 'Rides', bookings: 'Bookings', confirmedBookings: 'Confirmed bookings', pendingIdChecks: 'ID checks waiting', openReports: 'Open reports', openSos: 'Open SOS alerts' };
+    const labels = { users: 'Users', rides: 'Rides', bookings: 'Bookings', confirmedBookings: 'Confirmed bookings', openReports: 'Open reports', openSos: 'Open SOS alerts' };
     $('view').innerHTML = `<h2>Overview</h2><p class="sub">Platform activity at a glance.</p><div class="grid2">
       ${Object.entries(s).map(([k, v]) => `<div class="stat ${k === 'openSos' && v ? 'sos-stat' : ''}"><span>${esc(labels[k] || k)}</span><b>${v}</b></div>`).join('')}</div>`;
   },
@@ -1153,17 +1153,6 @@ const views = {
       <div class="item"><div class="head"><div class="who">${avatar(u)}<div><b>${esc(u.name)}</b> ${u.verified ? '<span class="chip green">✔ Verified</span>' : ''}<div class="muted">${esc(u.email)}</div></div></div>
       <div class="actions"><span class="chip">${u.role}</span>${u.blocked ? '<span class="chip red">SUSPENDED</span>' : ''}
       ${u.role !== 'ADMIN' ? (u.blocked ? `<button class="ok sm" onclick="blockUser(${u.id},'unblock')">Restore</button>` : `<button class="bad sm" onclick="blockUser(${u.id},'block')">Suspend</button>`) : ''}</div></div></div>`).join('');
-  },
-
-  async idchecks() {
-    const list = await api('GET', '/api/admin/id-requests');
-    const idNames = { AADHAAR: 'Aadhaar', DRIVING_LICENCE: 'Driving licence', PAN: 'PAN card', PASSPORT: 'Passport', VOTER_ID: 'Voter ID' };
-    $('view').innerHTML = `<h2>ID checks</h2><p class="sub">Users waiting for government ID approval.</p>` + (list.length ? list.map(u => `
-      <div class="item"><div class="head"><div class="who">${avatar(u)}<div><b>${esc(u.name)}</b> <span class="chip">${u.role}</span><div class="muted">${esc(u.email)}${u.phone ? ' · +91 ' + esc(u.phone) : ''}</div></div></div>
-      <div class="actions"><span class="chip amber">${esc(idNames[u.idType] || u.idType)} ending ${esc(u.idLast4)}</span></div></div>
-      <div class="chips"><span class="chip ${u.emailVerified ? 'green' : 'gray'}">${u.emailVerified ? '✔' : '✗'} Email</span><span class="chip ${u.phoneVerified ? 'green' : 'gray'}">${u.phoneVerified ? '✔' : '✗'} Phone</span></div>
-      <div class="actions"><button class="ok sm" onclick="decideId(${u.id},'id-approve')">Approve</button><button class="bad sm" onclick="decideId(${u.id},'id-reject')">Reject</button></div></div>`).join('')
-      : '<div class="card muted">No ID checks waiting.</div>');
   },
 
   async reports() {
@@ -1923,11 +1912,13 @@ function confirmCode(kind) {
   });
 }
 
+const ID_EXAMPLES = { AADHAAR: 'The 12 digits on your Aadhaar card', DRIVING_LICENCE: 'State code + 13 digits (15 characters)', PAN: '5 letters, 4 digits, 1 letter', PASSPORT: '1 letter + 7 digits', VOTER_ID: '3 letters + 7 digits' };
+
 function submitIdCheck() {
   run(async () => {
-    me = await api('POST', '/api/verify/id', { idType: $('idType').value, last4: $('idLast4').value });
+    me = await api('POST', '/api/verify/id', { idType: $('idType').value, number: $('idNumber').value });
     localStorage.setItem('me', JSON.stringify(me));
-    toast('Submitted. An admin will review it soon');
+    toast('Government ID verified ✔');
     render();
   });
 }
@@ -1968,10 +1959,6 @@ function removePhoto() {
     toast('Photo removed');
     render();
   });
-}
-
-function decideId(id, action) {
-  run(async () => { await api('POST', `/api/admin/users/${id}/${action}`); toast(action === 'id-approve' ? 'ID approved' : 'ID rejected'); render(); });
 }
 
 function resolveReport(id) {
