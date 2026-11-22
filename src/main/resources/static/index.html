@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HopIn · Share the ride, split the fare</title>
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<script>
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('hopinTheme'); } catch (e) { }
+    if (!t) t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --bg:#f3f6fb; --card:#ffffff; --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --brand:#2563eb; --brand-dark:#1d4ed8; --teal:#14b8a6; --amber:#fbbf24;
+    --ok:#16a34a; --bad:#dc2626; --warn:#d97706;
+    --shadow:0 8px 28px rgba(15,23,42,.07);
+    --header-bg:rgba(255,255,255,.9); --hover:#eef2ff; --input-bg:#ffffff; --soft:#f1f5f9; --soft2:#f8fafc;
+    --ghost:#eef2f7; --ghost-hover:#e2e8f0; --map-bg:#e8eef5; --mapinfo:rgba(255,255,255,.96); --err-bg:#fef2f2;
+    --chip-bg:#e0e7ff; --chip-fg:#3730a3; --green-bg:#dcfce7; --green-fg:#166534; --red-bg:#fee2e2; --red-fg:#991b1b;
+    --amber-bg:#fef3c7; --amber-fg:#92400e; --teal-bg:#ccfbf1; --teal-fg:#115e59; --gray-bg:#e2e8f0; --gray-fg:#334155;
+    --bargain-bg:linear-gradient(135deg,#fffbeb,#fef3c7); --note-bg:#f0fdfa; --note-line:#99f6e4;
+    --stat-bg:linear-gradient(135deg,#eff6ff,#ecfeff); --banner-bg:#fff7ed; --banner-line:#fed7aa; --banner-fg:#9a3412;
+    --star-off:#cbd5e1; --toast-bg:#0f172a; --toast-fg:#ffffff;
+    --land-bg:linear-gradient(160deg,#2dd4bf 0%,#14b8a6 35%,#0d9488 70%,#0f766e 100%);
+    color-scheme:light;
+  }
+  :root[data-theme="dark"] {
+    --bg:#0b1220; --card:#111a2b; --ink:#e5e7eb; --muted:#94a3b8; --line:#23304a;
+    --brand:#3b82f6; --brand-dark:#2563eb;
+    --shadow:0 8px 28px rgba(0,0,0,.35);
+    --header-bg:rgba(11,18,32,.88); --hover:#1c2740; --input-bg:#0b1324; --soft:#18233a; --soft2:#0f1828;
+    --ghost:#1c2740; --ghost-hover:#26344f; --map-bg:#0b1220; --mapinfo:rgba(17,26,43,.95); --err-bg:#3a1218;
+    --chip-bg:#1e1b4b; --chip-fg:#c7d2fe; --green-bg:#0c2e1c; --green-fg:#86efac; --red-bg:#3b1116; --red-fg:#fca5a5;
+    --amber-bg:#3a2706; --amber-fg:#fcd34d; --teal-bg:#08302d; --teal-fg:#5eead4; --gray-bg:#1e293b; --gray-fg:#cbd5e1;
+    --bargain-bg:linear-gradient(135deg,#241a06,#33250a); --note-bg:#08302d; --note-line:#115e59;
+    --stat-bg:linear-gradient(135deg,#10203a,#0b2a2e); --banner-bg:#2b1709; --banner-line:#7c2d12; --banner-fg:#fdba74;
+    --star-off:#475569; --toast-bg:#e5e7eb; --toast-fg:#0f172a;
+    --land-bg:linear-gradient(160deg,#115e59 0%,#0f766e 35%,#134e4a 70%,#042f2e 100%);
+    color-scheme:dark;
+  }
+  * { box-sizing:border-box; }
+  html, body { margin:0; }
+  body { font-family:Inter, system-ui, "Segoe UI", Roboto, sans-serif; background:
+    radial-gradient(900px 400px at 100% -10%, rgba(20,184,166,.12), transparent 60%),
+    radial-gradient(800px 380px at -10% 0%, rgba(37,99,235,.10), transparent 60%), var(--bg);
+    color:var(--ink); min-height:100vh; }
+  a { color:var(--brand); font-weight:600; text-decoration:none; }
+  a:hover { text-decoration:underline; }
+
+  header { position:sticky; top:0; z-index:1100; background:var(--header-bg); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+  .bar { max-width:1200px; margin:0 auto; padding:10px 18px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:800; font-size:22px; letter-spacing:-.4px; }
+  .brand img { width:40px; height:40px; border-radius:11px; box-shadow:0 4px 12px rgba(20,184,166,.35); }
+  .brand span b { color:var(--teal); }
+  nav { display:flex; gap:6px; flex-wrap:wrap; flex:1; }
+  .pill { position:relative; background:transparent; color:var(--muted); border:0; padding:8px 14px; border-radius:99px; cursor:pointer; font:inherit; font-weight:600; }
+  .pill:hover { background:var(--hover); color:var(--brand); }
+  .pill.on { background:var(--brand); color:#fff; }
+  .badge { position:absolute; top:-4px; right:-6px; min-width:20px; height:20px; padding:0 6px; border-radius:99px; background:var(--bad); color:#fff; font-size:11px; font-weight:800; display:grid; place-items:center; border:2px solid var(--card); animation:pop .3s ease; }
+  @keyframes pop { from { transform:scale(.4); } to { transform:scale(1); } }
+  .me { display:flex; align-items:center; gap:10px; font-size:14px; }
+  .avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--teal),var(--brand)); color:#fff; display:grid; place-items:center; font-weight:700; flex:none; }
+  .avatar.lg { width:64px; height:64px; font-size:26px; }
+
+  main { max-width:1200px; margin:0 auto; padding:22px 18px 60px; }
+  h2 { margin:0 0 4px; font-size:20px; letter-spacing:-.2px; }
+  h3 { margin:0 0 10px; font-size:16px; }
+  h3.sec { margin:22px 0 10px; }
+  .sub { color:var(--muted); margin:0 0 16px; font-size:14px; }
+
+  .card { background:var(--card); color:var(--ink); border:1px solid var(--line); border-radius:16px; padding:18px; margin-bottom:16px; box-shadow:var(--shadow); }
+  .card.narrow { max-width:640px; }
+  .split { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:18px; align-items:start; }
+  .mapbox { position:sticky; top:78px; height:calc(100vh - 104px); min-height:380px; border-radius:16px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow); background:var(--map-bg); }
+  .mapnote { height:100%; display:grid; place-items:center; text-align:center; padding:24px; color:var(--muted); font-size:14px; }
+  .mapinfo { position:absolute; left:12px; bottom:28px; z-index:1000; background:var(--mapinfo); color:var(--ink); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; box-shadow:var(--shadow); }
+  @media (max-width:900px) { .split { grid-template-columns:1fr; } .mapbox { position:relative; top:0; height:340px; min-height:300px; order:-1; } }
+
+  label { display:block; font-size:12px; font-weight:700; color:var(--muted); margin:0 0 4px; text-transform:uppercase; letter-spacing:.4px; }
+  input, select, textarea { width:100%; font:inherit; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:var(--input-bg); color:var(--ink); margin-bottom:12px; }
+  textarea { resize:vertical; }
+  input:focus, select:focus, textarea:focus { outline:2px solid rgba(37,99,235,.35); border-color:var(--brand); }
+  input.err { border-color:var(--bad); background:var(--err-bg); }
+  input[type=checkbox] { width:auto; margin:0 8px 0 0; }
+  .check { display:flex; align-items:center; margin-bottom:10px; font-weight:600; font-size:14px; text-transform:none; letter-spacing:0; color:var(--ink); }
+  .prefs { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:0 12px; margin-bottom:6px; }
+  .grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:0 12px; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0; }
+
+  .psearch { margin-bottom:12px; }
+  .prow { display:flex; gap:6px; } .prow input { margin-bottom:0; flex:1; }
+  .plist { border:1px solid var(--line); border-radius:10px; margin-top:6px; background:var(--card); max-height:220px; overflow:auto; box-shadow:var(--shadow); }
+  .popt { padding:9px 12px; font-size:13px; cursor:pointer; border-bottom:1px solid var(--line); }
+  .popt:last-child { border-bottom:0; } .popt:hover { background:var(--hover); } .popt.none { color:var(--muted); cursor:default; }
+
+  .mpin { width:30px; height:30px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); display:grid; place-items:center; border:2px solid #fff; box-shadow:0 3px 8px rgba(0,0,0,.35); }
+  .mpin span { transform:rotate(45deg); color:#fff; font-weight:800; font-size:13px; }
+  .mnum { width:24px; height:24px; border-radius:50%; background:#1d4ed8; color:#fff; font-weight:800; font-size:12px; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,.35); }
+  .mdot { width:14px; height:14px; border-radius:50%; background:#fff; border:4px solid #64748b; box-shadow:0 1px 4px rgba(0,0,0,.4); }
+
+  button { font:inherit; font-weight:700; border:0; border-radius:10px; padding:9px 14px; cursor:pointer; background:var(--brand); color:#fff; transition:transform .05s, background .15s; }
+  button:hover { background:var(--brand-dark); }
+  button:active { transform:translateY(1px); }
+  button:disabled { opacity:.6; cursor:wait; }
+  button.ok { background:var(--ok); } button.bad { background:var(--bad); } button.warn { background:var(--warn); }
+  button.ghost { background:var(--ghost); color:var(--ink); } button.ghost:hover { background:var(--ghost-hover); }
+  button.sm { padding:6px 10px; font-size:13px; border-radius:8px; }
+  .actions { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+
+  .item { border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:12px; background:var(--card); transition:box-shadow .15s, border-color .15s; }
+  .item.sel { border-color:var(--brand); box-shadow:0 0 0 3px rgba(37,99,235,.15); }
+  .item .head { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:flex-start; }
+  .route { font-weight:800; font-size:16px; }
+  .muted { color:var(--muted); font-size:13px; }
+  .chip { display:inline-block; font-size:12px; font-weight:700; padding:3px 10px; border-radius:99px; background:var(--chip-bg); color:var(--chip-fg); margin:0 4px 4px 0; }
+  .chip.green { background:var(--green-bg); color:var(--green-fg); } .chip.red { background:var(--red-bg); color:var(--red-fg); }
+  .chip.amber { background:var(--amber-bg); color:var(--amber-fg); } .chip.teal { background:var(--teal-bg); color:var(--teal-fg); } .chip.gray { background:var(--gray-bg); color:var(--gray-fg); }
+  .chips { margin:8px 0; }
+  .stars { color:#f59e0b; letter-spacing:1px; }
+  .price { font-size:22px; font-weight:800; }
+  .price small { font-size:12px; color:var(--muted); font-weight:600; }
+  .ft { display:inline-block; margin-right:14px; font-size:13px; }
+  .ft b { color:var(--muted); font-weight:700; margin-right:4px; }
+  .bargain { background:var(--bargain-bg); border:1px dashed #f59e0b; border-radius:12px; padding:10px 12px; margin:10px 0; font-size:13px; }
+  .timeline { margin:10px 0; padding-left:4px; }
+  .tl { display:flex; gap:10px; align-items:center; font-size:13px; padding:3px 0; }
+  .tl .dot { width:12px; height:12px; border-radius:50%; background:#94a3b8; flex:none; border:2px solid var(--card); box-shadow:0 0 0 2px var(--line); }
+  .tl.start .dot { background:var(--ok); box-shadow:0 0 0 2px #bbf7d0; } .tl.end .dot { background:var(--bad); box-shadow:0 0 0 2px #fecaca; }
+  .tl.in .dot { background:var(--brand); box-shadow:0 0 0 2px #bfdbfe; }
+  .tl.dim { opacity:.45; }
+  .stopchips { display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+  .stopchip { display:flex; align-items:center; gap:8px; background:var(--soft); border-radius:10px; padding:6px 10px; font-size:13px; }
+  .stopchip .n { background:var(--brand); color:#fff; width:22px; height:22px; border-radius:50%; display:grid; place-items:center; font-weight:700; font-size:12px; flex:none; }
+  .stopchip .t { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .legs { font-size:13px; color:var(--muted); margin:-4px 0 12px; }
+  .extras details { border-top:1px solid var(--line); padding:8px 0 2px; }
+  .extras summary { cursor:pointer; font-weight:700; font-size:13px; color:var(--brand); }
+  .rev { padding:8px 0; border-bottom:1px dashed var(--line); font-size:13px; }
+  .rev:last-child { border-bottom:0; }
+  .pax { margin:10px 0; padding:10px 12px; background:var(--soft2); border-radius:12px; }
+  .paxrow { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:6px 0; flex-wrap:wrap; }
+  .note { background:var(--note-bg); border:1px solid var(--note-line); border-radius:12px; padding:10px 12px; font-size:14px; margin:10px 0; }
+  .empty { text-align:center; padding:28px 18px; }
+  .empty b { font-size:17px; }
+
+  .stat { text-align:center; padding:14px; border-radius:14px; background:var(--stat-bg); border:1px solid var(--line); }
+  .stat span { color:var(--muted); font-size:12px; font-weight:700; }
+  .stat b { display:block; font-size:26px; }
+
+  .starpick { display:flex; gap:6px; margin:6px 0 16px; }
+  .starpick .sp { background:transparent; color:var(--star-off); font-size:38px; padding:0 2px; line-height:1; }
+  .starpick .sp.on { color:#f59e0b; }
+  .starpick .sp:hover { background:transparent; }
+
+  body.landing { background:var(--land-bg); }
+  body.landing header { display:none; }
+  .land { min-height:calc(100vh - 90px); display:grid; grid-template-columns:1.1fr .9fr; gap:44px; align-items:center; max-width:1050px; margin:0 auto; color:#fff; }
+  .intro-logo { width:130px; height:130px; border-radius:32px; box-shadow:0 18px 40px rgba(0,0,0,.25), 0 0 0 6px rgba(255,255,255,.18); animation:dropIn 1.2s cubic-bezier(.2,.8,.2,1) both; }
+  .intro-name { font-size:64px; line-height:1; margin:22px 0 0; letter-spacing:-2px; animation:dropIn 1.8s cubic-bezier(.2,.8,.2,1) .6s both; }
+  .intro-name span { color:#fde68a; }
+  .intro-welcome { font-size:30px; font-weight:800; margin:14px 0 4px; animation:fadeIn 1.2s ease 2.2s both; }
+  .intro-tag { font-size:17px; opacity:.92; margin:0 0 10px; animation:fadeIn 1s ease 2.6s both; }
+  .intro-list { padding:0; list-style:none; display:grid; gap:8px; animation:fadeIn 1s ease 2.9s both; }
+  .intro-list li::before { content:"✔"; margin-right:8px; font-weight:800; color:#fde68a; }
+  .auth-card { animation:fadeUp .9s ease 1.4s both; }
+  @keyframes dropIn { from { opacity:0; transform:translateY(-90px); } to { opacity:1; transform:none; } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+  @media (prefers-reduced-motion: reduce) { .intro-logo, .intro-name, .intro-welcome, .intro-tag, .intro-list, .auth-card { animation:none; } }
+  @media (max-width:820px) { .land { grid-template-columns:1fr; text-align:center; gap:20px; } .intro-name { font-size:46px; } .intro-list { justify-items:center; } }
+
+  #toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--toast-bg); color:var(--toast-fg); padding:11px 18px; border-radius:12px; display:none; max-width:90%; z-index:3000; font-weight:600; box-shadow:var(--shadow); }
+  #toast.err { background:var(--bad); }
+  .modal { position:fixed; inset:0; background:rgba(15,23,42,.55); z-index:2000; display:grid; place-items:center; padding:16px; }
+  .modal .box { background:var(--card); color:var(--ink); border-radius:18px; width:min(780px,100%); padding:18px; max-height:92vh; overflow:auto; position:relative; }
+  .modal .box.small { width:min(460px,100%); }
+  .modal .close { position:absolute; top:12px; right:12px; }
+  .modal .mapbox { position:relative; top:0; height:420px; }
+  .prof-head { display:flex; gap:14px; align-items:center; margin-right:60px; }
+  .banner { background:var(--banner-bg); border:1px solid var(--banner-line); color:var(--banner-fg); padding:10px 14px; border-radius:12px; font-size:13px; margin-bottom:14px; }
+  .theme-btn { background:var(--ghost); color:var(--ink); padding:7px 10px; border-radius:99px; font-size:13px; }
+  .theme-btn:hover { background:var(--ghost-hover); }
+  .theme-fab { position:fixed; top:16px; right:16px; z-index:1200; background:rgba(255,255,255,.18); color:#fff; border:1px solid rgba(255,255,255,.35); border-radius:99px; padding:8px 14px; font-size:13px; backdrop-filter:blur(6px); }
+  .theme-fab:hover { background:rgba(255,255,255,.28); }
+  [data-theme="dark"] .leaflet-control-layers, [data-theme="dark"] .leaflet-bar a, [data-theme="dark"] .leaflet-control-attribution, [data-theme="dark"] .leaflet-tooltip { background:#111a2b; color:#e5e7eb; border-color:#23304a; }
+  [data-theme="dark"] .leaflet-control-attribution a { color:#93c5fd; }
+  [data-theme="dark"] .leaflet-control-scale-line { background:rgba(17,26,43,.8); color:#e5e7eb; border-color:#94a3b8; }
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+<header><div class="bar" id="bar"></div></header>
+<main id="app"></main>
+<div id="toast"></div>
+<div id="modalRoot"></div>
+
+<script>
+let token = localStorage.getItem('token');
+let me = JSON.parse(localStorage.getItem('me') || 'null');
+let tab = null;
+let registering = false;
+let mapsOk = false;
+let curMap = null;
+let lastResults = [];
+let draft = { from: null, to: null, stops: [] };
+let roadKm = null;
+let myGiven = [];
+let badgeCount = 0;
+let badgeTimer = null;
+const rideCache = {};
+const nameCache = {};
+const liveMaps = [];
+const PREFS = [['noSmoking', 'No smoking'], ['noPets', 'No pets'], ['ac', 'AC available'], ['music', 'Music on'], ['luggage', 'Luggage space']];
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = (d) => new Date(d).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+const inr = (v) => '₹' + (Math.round(Number(v) * 100) / 100).toLocaleString('en-IN');
+const starIcons = (n) => `<span class="stars">${'★'.repeat(n)}${'☆'.repeat(5 - n)}</span>`;
+const starLine = (u) => u.ratingCount ? `<span class="stars">★</span> ${u.rating} (${u.ratingCount})` : 'New';
+const today = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
+const roundTen = (v) => Math.max(10, Math.round((+v || 0) / 10) * 10);
+
+function nameLink(u) {
+  nameCache[u.id] = u.name;
+  return `<a href="#" onclick="openProfile(${u.id});return false">${esc(u.name)}</a>`;
+}
+
+function toast(msg, err) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = err ? 'err' : '';
+  t.style.display = 'block';
+  clearTimeout(toast.t);
+  toast.t = setTimeout(() => t.style.display = 'none', 3200);
+}
+
+async function api(method, url, body) {
+  const res = await fetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    if (res.status === 401 && token) logout();
+    throw new Error(data.message || 'Something went wrong');
+  }
+  return data;
+}
+
+async function run(fn) {
+  try { await fn(); } catch (e) { toast(e.message, true); }
+}
+
+function logout() {
+  token = null; me = null; tab = null; badgeCount = 0;
+  clearInterval(badgeTimer); badgeTimer = null;
+  localStorage.removeItem('token'); localStorage.removeItem('me');
+  closeModal();
+  render();
+}
+
+function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
+
+function streetsUrl() {
+  return 'https://{s}.basemaps.cartocdn.com/rastertiles/' + (isDark() ? 'dark_all' : 'voyager') + '/{z}/{x}/{y}{r}.png';
+}
+
+function themeLabel() { return isDark() ? '☀️ Light' : '🌙 Dark'; }
+
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  for (let i = liveMaps.length - 1; i >= 0; i--) {
+    const m = liveMaps[i];
+    if (!m.getContainer().isConnected) { liveMaps.splice(i, 1); continue; }
+    m._streets.setUrl(streetsUrl());
+  }
+  document.querySelectorAll('.theme-btn, .theme-fab').forEach(b => { b.textContent = themeLabel(); });
+}
+
+function toggleTheme() {
+  const t = isDark() ? 'light' : 'dark';
+  try { localStorage.setItem('hopinTheme', t); } catch (e) { }
+  applyTheme(t);
+}
+
+if (window.matchMedia) {
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    let saved = null;
+    try { saved = localStorage.getItem('hopinTheme'); } catch (x) { }
+    if (!saved) applyTheme(e.matches ? 'dark' : 'light');
+  });
+}
+
+function baseLayers() {
+  const streets = L.tileLayer(streetsUrl(), {
+    subdomains: 'abcd', maxZoom: 20, attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+  });
+  const satellite = L.layerGroup([
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19, attribution: 'Imagery &copy; Esri'
+    }),
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd', maxZoom: 20
+    })
+  ]);
+  const classic = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19, attribution: '&copy; OpenStreetMap contributors'
+  });
+  return { 'Streets': streets, 'Satellite': satellite, 'Classic': classic };
+}
+
+function loadMaps() {
+  mapsOk = typeof L !== 'undefined';
+  return Promise.resolve(mapsOk);
+}
+
+function newMap(elId) {
+  const el = $(elId);
+  if (!el) return null;
+  if (typeof L === 'undefined') {
+    el.innerHTML = '<div class="mapnote"><div><b>Map could not load</b><br>Check your internet connection and refresh the page.</div></div>';
+    return null;
+  }
+  const m = L.map(el, { zoomControl: true }).setView([22.5, 79], 5);
+  const layers = baseLayers();
+  let pick = 'Streets';
+  try { pick = localStorage.getItem('hopinMap') || 'Streets'; } catch (e) { }
+  (layers[pick] || layers.Streets).addTo(m);
+  L.control.layers(layers, null, { position: 'topright' }).addTo(m);
+  L.control.scale({ imperial: false }).addTo(m);
+  m.on('baselayerchange', (e) => { try { localStorage.setItem('hopinMap', e.name); } catch (x) { } });
+  m._streets = layers.Streets;
+  m._over = [];
+  m._seq = 0;
+  liveMaps.push(m);
+  setTimeout(() => m.invalidateSize(), 150);
+  return m;
+}
+
+function add(m, layer) {
+  layer.addTo(m);
+  m._over.push(layer);
+  return layer;
+}
+
+function clearMap(m) {
+  m._over.forEach(o => m.removeLayer(o));
+  m._over = [];
+}
+
+function setInfo(elId, text) {
+  const host = $(elId);
+  if (!host) return;
+  let d = host.querySelector('.mapinfo');
+  if (!text) { if (d) d.remove(); return; }
+  if (!d) { d = document.createElement('div'); d.className = 'mapinfo'; host.appendChild(d); }
+  d.textContent = text;
+}
+
+function pinIcon(kind, label) {
+  if (kind === 'mid') return L.divIcon({ className: '', html: '<div class="mdot"></div>', iconSize: [14, 14], iconAnchor: [7, 7] });
+  if (kind === 'stop') return L.divIcon({ className: '', html: `<div class="mnum">${label}</div>`, iconSize: [24, 24], iconAnchor: [12, 12] });
+  const color = kind === 'start' ? '#16a34a' : '#dc2626';
+  return L.divIcon({ className: '', html: `<div class="mpin" style="background:${color}"><span>${label}</span></div>`, iconSize: [30, 30], iconAnchor: [15, 36], tooltipAnchor: [0, -30] });
+}
+
+async function osrm(points) {
+  const coords = points.map(p => p.lng + ',' + p.lat).join(';');
+  const r = await fetch('https://router.project-osrm.org/route/v1/driving/' + coords + '?overview=full&geometries=geojson');
+  const d = await r.json();
+  if (d.code !== 'Ok' || !d.routes || !d.routes.length) return null;
+  const rt = d.routes[0];
+  return { line: rt.geometry.coordinates.map(c => [c[1], c[0]]), km: rt.distance / 1000, min: rt.duration / 60 };
+}
+
+function roadLine(m, line, faint) {
+  add(m, L.polyline(line, { color: faint ? '#94a3b8' : '#1d4ed8', weight: faint ? 7 : 9, opacity: faint ? 0.45 : 0.9, lineCap: 'round', lineJoin: 'round', interactive: false }));
+  add(m, L.polyline(line, { color: faint ? '#e2e8f0' : '#4f8ef7', weight: faint ? 4 : 5, opacity: 1, lineCap: 'round', lineJoin: 'round', interactive: false }));
+}
+
+function drawRoute(m, pts, opt = {}) {
+  if (!m) return;
+  clearMap(m);
+  const seq = ++m._seq;
+  let list = pts.map((p, i) => ({ ...p, i }));
+  if (opt.segment) list = list.filter(p => p.i >= opt.segment.from && p.i <= opt.segment.to);
+  const ok = list.filter(p => p.lat != null && p.lng != null);
+  if (!ok.length) return;
+  const first = list[0].i, last = list[list.length - 1].i;
+  const hi = opt.hi;
+  ok.forEach(p => {
+    let kind, label = '';
+    if (hi) {
+      kind = p.i === hi.from ? 'start' : p.i === hi.to ? 'end' : 'mid';
+      label = p.i === hi.from ? 'A' : p.i === hi.to ? 'B' : '';
+    } else if (p.i === first) { kind = 'start'; label = 'A'; }
+    else if (p.i === last) { kind = 'end'; label = 'B'; }
+    else if (opt.segment) { kind = 'mid'; }
+    else { kind = 'stop'; label = String(p.i); }
+    add(m, L.marker([p.lat, p.lng], { icon: pinIcon(kind, label), zIndexOffset: kind === 'mid' ? 0 : 500 }).bindTooltip(esc(p.name)));
+  });
+  if (ok.length === 1) { m.setView([ok[0].lat, ok[0].lng], 13, { animate: false }); return; }
+  const straight = ok.map(p => [p.lat, p.lng]);
+  m.invalidateSize();
+  m.fitBounds(straight, { padding: [60, 60], animate: false });
+  const dashed = add(m, L.polyline(straight, { color: '#64748b', weight: 3, dashArray: '6 8', opacity: 0.7 }));
+  const segPts = hi ? ok.filter(p => p.i >= hi.from && p.i <= hi.to) : null;
+  Promise.all([osrm(ok), segPts && segPts.length > 1 ? osrm(segPts) : null])
+    .then(([full, seg]) => {
+      if (seq !== m._seq) return;
+      if (!full) { if (opt.onInfo) opt.onInfo(null, null); return; }
+      m.removeLayer(dashed);
+      m._over = m._over.filter(x => x !== dashed);
+      if (seg) {
+        roadLine(m, full.line, true);
+        roadLine(m, seg.line, false);
+      } else {
+        roadLine(m, full.line, false);
+      }
+      m.invalidateSize();
+      m.fitBounds(L.latLngBounds(full.line), { padding: [50, 50], animate: false });
+      const use = seg || full;
+      if (opt.onInfo) opt.onInfo(use.km, use.min);
+    })
+    .catch(() => { if (seq === m._seq && opt.onInfo) opt.onInfo(null, null); });
+}
+
+function haversine(a, b) {
+  const R = 6371, rad = (x) => x * Math.PI / 180;
+  const dLat = rad(b.lat - a.lat), dLng = rad(b.lng - a.lng);
+  const x = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(x));
+}
+
+function legWeights(pts) {
+  const legs = pts.length - 1;
+  const eq = Array(legs).fill(1 / legs);
+  if (!pts.every(p => p.lat != null && p.lng != null)) return eq;
+  const d = [];
+  let total = 0;
+  for (let i = 0; i < legs; i++) { d.push(haversine(pts[i], pts[i + 1])); total += d[i]; }
+  return total > 0 ? d.map(x => x / total) : eq;
+}
+
+function legUnits(pts, units) {
+  const legs = pts.length - 1, w = legWeights(pts);
+  const base = units >= legs ? 1 : 0, rest = units - base * legs;
+  const out = [], rem = [];
+  let used = 0;
+  for (let i = 0; i < legs; i++) {
+    const ex = rest * w[i], fl = Math.floor(ex);
+    out.push(base + fl); rem.push(ex - fl); used += fl;
+  }
+  const order = rem.map((r, i) => i).sort((a, b) => rem[b] - rem[a] || a - b);
+  const left = Math.max(0, rest - used);
+  for (let k = 0; k < left && k < legs; k++) out[order[k]]++;
+  return out;
+}
+
+function segPrice(base, pts, from, to) {
+  const u = legUnits(pts, Math.round(base / 10));
+  let s = 0;
+  for (let i = from; i < to; i++) s += u[i];
+  return Math.max(10, s * 10);
+}
+
+function ridePoints(r) {
+  const stops = (r.stops || []).slice().sort((a, b) => a.seq - b.seq);
+  return [
+    { name: r.source, lat: r.srcLat, lng: r.srcLng },
+    ...stops.map(s => ({ name: s.name, lat: s.lat, lng: s.lng })),
+    { name: r.destination, lat: r.dstLat, lng: r.dstLng }
+  ];
+}
+
+function shortName(d) {
+  const a = d.address || {};
+  const city = a.city || a.town || a.village || a.suburb || a.county || '';
+  const first = d.name || (d.display_name || '').split(', ')[0];
+  const parts = [first, city && city !== first ? city : '', a.state].filter(Boolean);
+  return parts.length > 1 ? parts.join(', ') : (d.display_name || '').split(', ').slice(0, 3).join(', ');
+}
+
+function placeInput(container, placeholder, onPick) {
+  container.innerHTML = `<div class="psearch"><div class="prow"><input placeholder="${esc(placeholder)}"><button class="ghost sm" type="button">Search</button></div><div class="plist hidden"></div></div>`;
+  const inp = container.querySelector('input');
+  const btn = container.querySelector('button');
+  const list = container.querySelector('.plist');
+  const state = { value: null };
+  async function search() {
+    const q = inp.value.trim();
+    if (!q) return;
+    btn.disabled = true;
+    btn.textContent = '...';
+    try {
+      const res = await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=6&q=' + encodeURIComponent(q));
+      const data = await res.json();
+      list.innerHTML = data.length
+        ? data.map((d, i) => `<div class="popt" data-i="${i}">${esc(d.display_name)}</div>`).join('')
+        : '<div class="popt none">No places found. Try adding the city name.</div>';
+      list.classList.remove('hidden');
+      list.querySelectorAll('.popt[data-i]').forEach(el => el.addEventListener('click', () => {
+        const d = data[+el.dataset.i];
+        state.value = { name: shortName(d), lat: +d.lat, lng: +d.lon };
+        inp.value = state.value.name;
+        list.classList.add('hidden');
+        if (onPick) onPick(state.value);
+      }));
+    } catch (e) {
+      toast('Place search failed. Check your internet connection.', true);
+    }
+    btn.disabled = false;
+    btn.textContent = 'Search';
+  }
+  btn.addEventListener('click', search);
+  inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); search(); } });
+  inp.addEventListener('input', () => { if (state.value) { state.value = null; if (onPick) onPick(null); } });
+  return state;
+}
+
+function render() {
+  document.body.classList.toggle('landing', !me);
+  if (!me) { renderBar(); return renderAuth(); }
+  if (!tab) tab = me.role === 'DRIVER' ? 'post' : me.role === 'RIDER' ? 'search' : 'stats';
+  if (!badgeTimer && me.role !== 'ADMIN') badgeTimer = setInterval(refreshBadge, 25000);
+  renderBar();
+  closeModal();
+  $('app').innerHTML = '<div id="view"></div>';
+  Promise.resolve(views[tab]()).catch(e => toast(e.message, true));
+  refreshBadge();
+}
+
+function badgeTab() {
+  return !me ? null : me.role === 'DRIVER' ? 'requests' : me.role === 'RIDER' ? 'bookings' : null;
+}
+
+function renderBar() {
+  const tabs = !me ? [] : me.role === 'DRIVER'
+    ? [['post', 'Post a ride'], ['myrides', 'My rides'], ['requests', 'Requests'], ['vehicles', 'Vehicles'], ['profile', 'Profile']]
+    : me.role === 'RIDER'
+      ? [['search', 'Find a ride'], ['bookings', 'My bookings'], ['profile', 'Profile']]
+      : [['stats', 'Overview'], ['users', 'Users'], ['allrides', 'Rides']];
+  const bt = badgeTab();
+  $('bar').innerHTML = `
+    <div class="brand"><img src="/logo.svg" alt="HopIn logo"><span>Hop<b>In</b></span></div>
+    <nav>${tabs.map(t => `<button class="pill ${tab === t[0] ? 'on' : ''}" onclick="go('${t[0]}')">${t[1]}${t[0] === bt ? `<span id="badge" class="badge ${badgeCount ? '' : 'hidden'}">${badgeCount > 9 ? '9+' : badgeCount}</span>` : ''}</button>`).join('')}</nav>
+    ${me ? `<div class="me"><div class="avatar">${esc(me.name.charAt(0).toUpperCase())}</div>
+      <div><b>${esc(me.name)}</b><div class="muted">${me.role}${me.role !== 'ADMIN' ? ' · ' + starLine(me) : ''}</div></div>
+      <button class="theme-btn" onclick="toggleTheme()" aria-label="Switch colour theme">${themeLabel()}</button>
+      <button class="ghost sm" onclick="logout()">Logout</button></div>` : ''}`;
+}
+
+async function refreshBadge() {
+  if (!me || me.role === 'ADMIN' || !token) return;
+  try {
+    const r = await api('GET', '/api/bookings/badge');
+    badgeCount = r.count || 0;
+    const b = $('badge');
+    if (b) { b.textContent = badgeCount > 9 ? '9+' : badgeCount; b.classList.toggle('hidden', !badgeCount); }
+  } catch (e) { }
+}
+
+function go(t) { tab = t; render(); }
+
+function renderAuth() {
+  $('app').innerHTML = `
+  <button class="theme-fab" onclick="toggleTheme()" aria-label="Switch colour theme">${themeLabel()}</button>
+  <div class="land">
+    <div class="intro">
+      <img class="intro-logo" src="/logo.svg" alt="HopIn logo">
+      <h1 class="intro-name">Hop<span>In</span></h1>
+      <p class="intro-welcome">Welcome</p>
+      <p class="intro-tag">Share the ride. Split the fare.</p>
+      <ul class="intro-list">
+        <li>See every ride on a live map with pickups and drop-offs</li>
+        <li>Pay only for your stretch of the route</li>
+        <li>Make an offer and bargain with the driver</li>
+      </ul>
+    </div>
+    <div class="card auth-card">
+      <h2 id="authTitle">Login</h2>
+      <p class="sub" id="authSub">Login to find or offer a ride.</p>
+      <div id="regFields" class="hidden">
+        <label>Full name</label><input id="name" placeholder="Your name" onkeydown="authKey(event)">
+        <label>I want to</label><select id="role" onkeydown="authKey(event)"><option value="RIDER">Ride with others</option><option value="DRIVER">Drive and share my car</option></select>
+      </div>
+      <label>Email</label><input id="email" type="email" placeholder="you@example.com" onkeydown="authKey(event)">
+      <label>Password</label><input id="password" type="password" placeholder="At least 6 characters" onkeydown="authKey(event)">
+      <button id="authBtn" style="width:100%" onclick="submitAuth()">Login</button>
+      <p class="muted" style="text-align:center"><a href="#" onclick="toggleAuth();return false" id="toggleLink">New here? Create an account</a></p>
+    </div>
+  </div>`;
+  registering = false;
+}
+
+function authKey(e) {
+  if (e.key === 'Enter') { e.preventDefault(); submitAuth(); }
+}
+
+function toggleAuth() {
+  registering = !registering;
+  $('regFields').classList.toggle('hidden', !registering);
+  $('authTitle').textContent = registering ? 'Create your account' : 'Login';
+  $('authSub').textContent = registering ? 'It takes a few seconds.' : 'Login to find or offer a ride.';
+  $('authBtn').textContent = registering ? 'Register' : 'Login';
+  $('toggleLink').textContent = registering ? 'Have an account? Login' : 'New here? Create an account';
+}
+
+function submitAuth() {
+  run(async () => {
+    const body = { email: $('email').value, password: $('password').value };
+    if (registering) { body.name = $('name').value; body.role = $('role').value; }
+    const data = await api('POST', registering ? '/api/auth/register' : '/api/auth/login', body);
+    token = data.token; me = data.user;
+    localStorage.setItem('token', token); localStorage.setItem('me', JSON.stringify(me));
+    registering = false; tab = null;
+    render();
+  });
+}
+
+function timeline(pts, opt = {}) {
+  let list = pts.map((p, i) => ({ ...p, i }));
+  if (opt.segment) list = list.filter(p => p.i >= opt.segment.from && p.i <= opt.segment.to);
+  const first = list[0].i, last = list[list.length - 1].i;
+  return '<div class="timeline">' + list.map(p => {
+    let cls = p.i === first ? 'start' : p.i === last ? 'end' : 'in';
+    let tag = '';
+    if (opt.hi) {
+      if (p.i !== opt.hi.from && p.i !== opt.hi.to) cls += ' dim';
+      if (p.i === opt.hi.from) tag = '<span class="chip green">your pickup</span>';
+      if (p.i === opt.hi.to) tag = '<span class="chip red">your drop-off</span>';
+    }
+    if (opt.segment) {
+      if (p.i === first) tag = '<span class="chip green">From</span>';
+      else if (p.i === last) tag = '<span class="chip red">To</span>';
+    }
+    return `<div class="tl ${cls}"><span class="dot"></span><span>${esc(p.name)}</span>${tag}</div>`;
+  }).join('') + '</div>';
+}
+
+function fromTo(a, b) {
+  return `<div style="margin-top:8px"><span class="ft"><b>From:</b>${esc(a)}</span><span class="ft"><b>To:</b>${esc(b)}</span></div>`;
+}
+
+function statusChip(s) {
+  const map = { PENDING: 'amber', COUNTERED: 'teal', CONFIRMED: 'green', REJECTED: 'red', CANCELLED: 'gray', OPEN: 'green', COMPLETED: 'gray' };
+  return `<span class="chip ${map[s] || ''}">${s}</span>`;
+}
+
+function prefChips(u) {
+  const on = PREFS.filter(([k]) => u[k]);
+  return on.length ? `<div class="chips">${on.map(([, l]) => `<span class="chip teal">${l}</span>`).join('')}</div>` : '';
+}
+
+function reviewRow(r) {
+  return `<div class="rev"><div>${starIcons(r.score)} <b>${esc(r.from)}</b></div>${r.comment ? `<div class="muted">“${esc(r.comment)}”</div>` : ''}</div>`;
+}
+
+function givenScore(rideId, toId) {
+  const g = myGiven.find(x => x.rideId === rideId && x.toUserId === toId);
+  return g ? g.score : 0;
+}
+
+function openModal(html, small) {
+  $('modalRoot').innerHTML = `<div class="modal" onclick="if(event.target===this)closeModal()"><div class="box ${small ? 'small' : ''}">
+    <button class="ghost sm close" onclick="closeModal()">Close</button>${html}</div></div>`;
+}
+
+function closeModal() { $('modalRoot').innerHTML = ''; }
+
+function openRouteModal(ride, opt) {
+  const pts = ridePoints(ride);
+  const title = opt.segment ? `${esc(pts[opt.segment.from].name)} → ${esc(pts[opt.segment.to].name)}` : `${esc(ride.source)} → ${esc(ride.destination)}`;
+  openModal(`<div style="margin:0 70px 10px 0"><div class="route">${title}</div><div class="muted">${fmt(ride.departTime)}</div></div>
+    <div class="mapbox" id="modalMap"></div>${timeline(pts, opt)}`);
+  loadMaps().then(() => {
+    const m = newMap('modalMap');
+    if (m) drawRoute(m, pts, { ...opt, onInfo: (km, min) => setInfo('modalMap', km != null ? km.toFixed(1) + ' km · ' + Math.round(min) + ' min' : null) });
+  });
+}
+
+function showRide(id, p, d, mode) {
+  const r = rideCache[id];
+  if (!r) return;
+  if (mode === 'seg') openRouteModal(r, { segment: { from: p, to: d } });
+  else openRouteModal(r, p != null && d != null ? { hi: { from: p, to: d } } : {});
+}
+
+function cache(rides) { rides.forEach(r => rideCache[r.id] = r); }
+
+function openRateModal(title, onSubmit) {
+  openModal(`<h2>${esc(title)}</h2><p class="sub">Tap the stars, then submit. You can rate only once.</p>
+    <div class="starpick" id="starpick">${[1, 2, 3, 4, 5].map(n => `<button type="button" class="sp" data-n="${n}" aria-label="${n} star">★</button>`).join('')}</div>
+    <label>Comment (optional)</label><textarea id="rcomment" maxlength="300" rows="3" placeholder="How was the trip?"></textarea>
+    <button id="rsubmit" style="width:100%">Submit rating</button>`, true);
+  let score = 0;
+  const btns = [...document.querySelectorAll('#starpick .sp')];
+  const paint = (n) => btns.forEach(b => b.classList.toggle('on', +b.dataset.n <= n));
+  btns.forEach(b => {
+    b.onmouseenter = () => paint(+b.dataset.n);
+    b.onclick = () => { score = +b.dataset.n; paint(score); };
+  });
+  $('starpick').onmouseleave = () => paint(score);
+  $('rsubmit').onclick = () => {
+    if (!score) return toast('Pick 1 to 5 stars', true);
+    $('rsubmit').disabled = true;
+    run(async () => {
+      try { await onSubmit(score, $('rcomment').value.trim()); }
+      finally { if ($('rsubmit')) $('rsubmit').disabled = false; }
+    });
+  };
+}
+
+function openProfile(id) {
+  run(async () => {
+    const p = await api('GET', `/api/users/${id}/profile`);
+    const driver = p.role === 'DRIVER';
+    const relClass = { 'Never cancels rides': 'green', 'Rarely cancels rides': 'amber', 'Frequently cancels rides': 'red' }[p.reliability] || 'gray';
+    openModal(`<div class="prof-head"><div class="avatar lg">${esc(p.name.charAt(0).toUpperCase())}</div>
+        <div><h2>${esc(p.name)}</h2><div class="muted">${driver ? 'Driver' : 'Rider'} · ${starLine(p)}</div></div></div>
+      ${driver ? `<div class="grid3">
+          <div class="stat"><span>Rides published</span><b>${p.ridesPublished}</b></div>
+          <div class="stat"><span>Completed</span><b>${p.ridesCompleted}</b></div>
+          <div class="stat"><span>Cancelled</span><b>${p.ridesCancelled}</b></div></div>
+        <div class="chips"><span class="chip ${relClass}">${esc(p.reliability)}</span><span class="chip">Experience: ${esc(p.experience)}</span></div>`
+        : `<div class="chips" style="margin-top:14px"><span class="chip">Trips taken: ${p.tripsTaken}</span><span class="chip">Experience: ${esc(p.experience)}</span></div>`}
+      ${prefChips(p)}
+      ${p.note ? `<div class="note"><b>${driver ? 'Special instructions' : 'About'}</b><br>${esc(p.note)}</div>` : ''}
+      <h3 style="margin-top:16px">Recent reviews</h3>
+      ${p.reviews.length ? p.reviews.map(reviewRow).join('') : '<p class="muted">No reviews yet.</p>'}`, true);
+  });
+}
+
+function rideCard(r, reqs) {
+  const pts = ridePoints(r);
+  const pending = reqs.filter(b => b.ride.id === r.id && b.status === 'PENDING').length;
+  const pax = reqs.filter(b => b.ride.id === r.id && b.status === 'CONFIRMED');
+  let paxHtml = '';
+  if (r.status === 'COMPLETED') {
+    paxHtml = `<div class="pax"><b>Passengers</b>${pax.length ? pax.map(b => {
+      const g = givenScore(r.id, b.rider.id);
+      return `<div class="paxrow"><div>${nameLink(b.rider)} <span class="muted">· ${b.seats} seat(s) · ${b.paid ? 'paid ' + inr(b.amountPaid) : 'not paid yet'}</span></div>
+        ${g ? `<span>${starIcons(g)} <span class="muted">rated</span></span>` : `<button class="sm" onclick="ratePassenger(${r.id},${b.rider.id})">Rate passenger</button>`}</div>`;
+    }).join('') : '<p class="muted" style="margin:6px 0 0">No passengers on this ride.</p>'}</div>`;
+  }
+  return `<div class="item"><div class="head"><div><div class="route">${esc(r.source)} → ${esc(r.destination)}</div>
+      <div class="muted">${fmt(r.departTime)} · ${r.seatsLeft}/${r.seatsTotal} seats left</div></div>
+      <div style="text-align:right"><div class="price">${inr(r.pricePerSeat)} <small>/ seat, full route</small></div>
+      ${statusChip(r.status)}${r.negotiable ? '<span class="chip teal">negotiable</span>' : '<span class="chip gray">fixed price</span>'}</div></div>
+    ${timeline(pts)}${paxHtml}
+    <div class="actions"><button class="ghost sm" onclick="showRide(${r.id})">View on map</button>
+      ${r.status === 'OPEN' ? `${pending ? `<button class="warn sm" onclick="go('requests')">${pending} request(s) waiting</button>` : ''}
+        <button class="ok sm" onclick="rideAction(${r.id},'complete')">Mark completed</button>
+        <button class="bad sm" onclick="rideAction(${r.id},'cancel')">Cancel ride</button>` : ''}</div></div>`;
+}
+
+const views = {
+  async post() {
+    draft = { from: null, to: null, stops: [] };
+    roadKm = null;
+    const [vehicles] = await Promise.all([api('GET', '/api/vehicles'), loadMaps()]);
+    $('view').innerHTML = `
+    <div class="split">
+      <div class="card">
+        <h2>Post a ride</h2>
+        <p class="sub">Type a place, press Enter or Search, then pick it from the list. Add stops where riders can hop in or out.</p>
+        ${mapsOk ? '' : '<div class="banner">The map could not load. Check your internet connection and refresh.</div>'}
+        <label>From</label><div id="fromBox"></div>
+        <label>In-between stops (optional, in travel order)</label>
+        <div class="stopchips" id="stopList"></div>
+        <div id="stopBox"></div>
+        <label>To</label><div id="toBox"></div>
+        <div class="grid2">
+          <div><label>Departure date</label><input id="ddate" type="date" min="${today()}"></div>
+          <div><label>Departure time</label><input id="dtime" type="time"></div>
+          <div><label>Seats offered</label><input id="seats" type="number" min="1" value="3"></div>
+          <div><label>Vehicle</label><select id="veh"><option value="">Not specified</option>${vehicles.map(v => `<option value="${v.id}">${esc(v.model)} (${esc(v.plate)})</option>`).join('')}</select></div>
+        </div>
+        <label>Price per seat, full route (₹, multiple of 10)</label>
+        <input id="price" type="number" min="10" step="10" placeholder="e.g. 250" oninput="updateLegs()" onchange="this.value = this.value ? roundTen(this.value) : ''; updateLegs()">
+        <div id="rateBtns" class="actions hidden" style="margin:-2px 0 12px">
+          <span class="muted">Quick price:</span>
+          <button class="ghost sm" onclick="quickPrice(2)">₹2/km</button><button class="ghost sm" onclick="quickPrice(3)">₹3/km</button><button class="ghost sm" onclick="quickPrice(4)">₹4/km</button>
+        </div>
+        <div class="legs" id="legs"></div>
+        <label class="check"><input type="checkbox" id="neg" checked> Riders can make offers and I can bargain</label>
+        <button style="width:100%" onclick="postRide()">Post ride</button>
+      </div>
+      <div class="mapbox" id="map"></div>
+    </div>`;
+    curMap = newMap('map');
+    window.redrawPost = () => {
+      roadKm = null;
+      $('rateBtns').classList.add('hidden');
+      setInfo('map', null);
+      updateStops();
+      const pts = draftPoints();
+      if (curMap) {
+        if (pts.length) drawRoute(curMap, pts, {
+          onInfo: (km, min) => {
+            if (km == null) return;
+            roadKm = km;
+            $('rateBtns').classList.remove('hidden');
+            setInfo('map', km.toFixed(1) + ' km · ' + Math.round(min) + ' min by road');
+          }
+        });
+        else clearMap(curMap);
+      }
+      updateLegs();
+    };
+    placeInput($('fromBox'), 'Starting point', (v) => { draft.from = v; window.redrawPost(); });
+    placeInput($('toBox'), 'Final destination', (v) => { draft.to = v; window.redrawPost(); });
+    mountStopInput();
+    updateStops();
+  },
+
+  async myrides() {
+    const [list, reqs, given] = await Promise.all([api('GET', '/api/rides/mine'), api('GET', '/api/bookings/requests'), api('GET', '/api/ratings/given')]);
+    myGiven = given;
+    cache(list);
+    const active = list.filter(r => r.status === 'OPEN');
+    const past = list.filter(r => r.status !== 'OPEN');
+    const section = (title, arr, empty) => `<h3 class="sec">${title} <span class="muted">(${arr.length})</span></h3>`
+      + (arr.length ? arr.map(r => rideCard(r, reqs)).join('') : `<div class="card muted">${empty}</div>`);
+    $('view').innerHTML = `<h2>My rides</h2><p class="sub">Your active rides, and rides that are completed or cancelled.</p>`
+      + section('Active', active, 'No active rides. Post one from the "Post a ride" tab.')
+      + section('Completed & cancelled', past, 'Nothing here yet.');
+  },
+
+  async requests() {
+    const all = await api('GET', '/api/bookings/requests');
+    const list = all.filter(b => b.ride.status === 'OPEN');
+    cache(list.map(b => b.ride));
+    $('view').innerHTML = `<h2>Booking requests</h2><p class="sub">Requests for your open rides. Accept an offer, counter with your own price, or reject.</p>` + (list.length ? list.map(b => {
+      const r = b.ride;
+      return `<div class="item"><div class="head"><div><div class="route">${nameLink(b.rider)} <span class="muted">· ${starLine(b.rider)}</span></div>
+        <div class="muted">${b.seats} seat(s) · ride ${esc(r.source)} → ${esc(r.destination)} · ${fmt(r.departTime)}</div></div>${statusChip(b.status)}</div>
+        ${fromTo(b.pickupName, b.dropName)}
+        <div class="bargain">List price for this stretch: <b>${inr(b.listPrice)}</b>/seat · Rider offers: <b>${inr(b.offeredPrice)}</b>/seat
+          ${b.counterPrice != null ? ` · Your counter: <b>${inr(b.counterPrice)}</b>` : ''}
+          ${b.agreedPrice != null ? ` · <span class="chip green">Agreed ${inr(b.agreedPrice)}/seat</span>` : ''}</div>
+        <div class="actions"><button class="ghost sm" onclick="showRide(${r.id},${b.pickupIdx},${b.dropIdx})">View on map</button>
+        ${b.status === 'PENDING' ? `<button class="ok sm" onclick="bookingAction(${b.id},'accept')">Accept ${inr(b.offeredPrice)}</button>
+          ${r.negotiable ? `<button class="warn sm" onclick="counterOffer(${b.id},${b.listPrice})">Counter offer</button>` : ''}
+          <button class="bad sm" onclick="bookingAction(${b.id},'reject')">Reject</button>` : ''}</div></div>`;
+    }).join('') : '<div class="card muted">No requests for your open rides.</div>');
+  },
+
+  async vehicles() {
+    const list = await api('GET', '/api/vehicles');
+    $('view').innerHTML = `<div class="split"><div class="card"><h2>Add a vehicle</h2>
+      <label>Model</label><input id="vm" placeholder="e.g. Maruti Swift">
+      <label>Plate number</label><input id="vp" placeholder="PB08 AB 1234">
+      <label>Seats for riders</label><input id="vs" type="number" min="1" value="3">
+      <button onclick="addVehicle()">Add vehicle</button></div>
+      <div class="card"><h2>My vehicles</h2>${list.length ? list.map(v => `<div class="item"><b>${esc(v.model)}</b><div class="muted">${esc(v.plate)} · ${v.seats} seats</div></div>`).join('') : '<p class="muted">No vehicles yet.</p>'}</div></div>`;
+  },
+
+  async profile() {
+    const u = await api('GET', '/api/users/me');
+    me = u;
+    localStorage.setItem('me', JSON.stringify(me));
+    renderBar();
+    const driver = u.role === 'DRIVER';
+    $('view').innerHTML = `<div class="card narrow"><h2>My profile</h2>
+      <p class="sub">${driver ? 'Riders see this when they click your name. Your preferences apply to all your rides.' : 'Drivers and other riders see this when they click your name.'}</p>
+      <label>Name</label><input id="pname" value="${esc(u.name)}">
+      ${driver ? `<label>Ride preferences</label><div class="prefs">${PREFS.map(([k, l]) => `<label class="check"><input type="checkbox" id="pf_${k}" ${u[k] ? 'checked' : ''}> ${l}</label>`).join('')}</div>` : ''}
+      <label>${driver ? 'Special instructions for riders' : 'About me'}</label>
+      <textarea id="pnote" maxlength="300" rows="3" placeholder="${driver ? 'e.g. Please be on time, I wait 5 minutes max' : 'e.g. Student, quiet traveller'}">${esc(u.note || '')}</textarea>
+      <div class="actions"><button onclick="saveProfile()">Save profile</button><button class="ghost" onclick="openProfile(${u.id})">Preview public profile</button></div></div>`;
+  },
+
+  async search() {
+    await loadMaps();
+    $('view').innerHTML = `
+    <div class="split">
+      <div>
+        <div class="card">
+          <h2>Find a ride</h2>
+          <p class="sub">All four fields are needed. Matches rides that pass through your places, including stops.</p>
+          <div class="grid2">
+            <div><label>From</label><input id="fs" placeholder="Pickup area or city" oninput="this.classList.remove('err')" onkeydown="if(event.key==='Enter')searchRides()"></div>
+            <div><label>To</label><input id="fd" placeholder="Drop-off area or city" oninput="this.classList.remove('err')" onkeydown="if(event.key==='Enter')searchRides()"></div>
+            <div><label>Date</label><input id="fdate" type="date" min="${today()}" oninput="this.classList.remove('err')"></div>
+            <div><label>Seats</label><input id="fseats" type="number" min="1" value="1" oninput="this.classList.remove('err')"></div>
+          </div>
+          <button onclick="searchRides()" style="width:100%">Search rides</button>
+        </div>
+        <div id="results"><div class="card muted">Enter From, To, date and seats, then search.</div></div>
+      </div>
+      <div class="mapbox" id="map"></div>
+    </div>`;
+    curMap = newMap('map');
+  },
+
+  async bookings() {
+    const [list, given] = await Promise.all([api('GET', '/api/bookings/mine'), api('GET', '/api/ratings/given')]);
+    myGiven = given;
+    cache(list.map(b => b.ride));
+    $('view').innerHTML = `<h2>My bookings</h2><p class="sub">Your requests, offers and trips. Only your own stretch of each ride is shown.</p>` + (list.length ? list.map(b => {
+      const r = b.ride;
+      const done = b.status === 'CONFIRMED' && r.status === 'COMPLETED';
+      const g = givenScore(r.id, r.driver.id);
+      return `<div class="item"><div class="head"><div><div class="route">${esc(b.pickupName)} → ${esc(b.dropName)}</div>
+        <div class="muted">${fmt(r.departTime)} · ${b.seats} seat(s) · driver ${nameLink(r.driver)} (${starLine(r.driver)})</div></div>
+        <div>${statusChip(b.status)}${r.status === 'CANCELLED' && b.status === 'CANCELLED' ? '<span class="chip red">ride cancelled</span>' : ''}</div></div>
+        ${fromTo(b.pickupName, b.dropName)}
+        <div class="bargain">List price: <b>${inr(b.listPrice)}</b>/seat · Your offer: <b>${inr(b.offeredPrice)}</b>
+          ${b.counterPrice != null ? ` · Driver counter: <b>${inr(b.counterPrice)}</b>` : ''}
+          ${b.agreedPrice != null ? ` · <span class="chip green">Agreed ${inr(b.agreedPrice)}/seat = ${inr(b.agreedPrice * b.seats)}</span>` : ''}
+          ${b.paid ? ` · <span class="chip green">Paid ${inr(b.amountPaid)}</span>` : ''}</div>
+        <div class="actions"><button class="ghost sm" onclick="showRide(${r.id},${b.pickupIdx},${b.dropIdx},'seg')">View my route</button>
+          ${b.status === 'COUNTERED' ? `<button class="ok sm" onclick="bookingAction(${b.id},'accept-counter')">Accept ${inr(b.counterPrice)}</button><button class="bad sm" onclick="cancelBooking(${b.id})">Decline</button>` : ''}
+          ${(b.status === 'PENDING' || b.status === 'CONFIRMED') && r.status !== 'COMPLETED' ? `<button class="bad sm" onclick="cancelBooking(${b.id})">Cancel</button>` : ''}
+          ${done && !b.paid ? `<button class="ok sm" onclick="payBooking(${b.id})">Pay ${inr(b.agreedPrice * b.seats)}</button>` : ''}
+          ${done ? (g ? `<span>${starIcons(g)} <span class="muted">you rated the driver</span></span>` : `<button class="sm" onclick="rateDriver(${r.id},${r.driver.id})">Rate driver</button>`) : ''}</div></div>`;
+    }).join('') : '<div class="card muted">No bookings yet. Find a ride to get started.</div>');
+  },
+
+  async stats() {
+    const s = await api('GET', '/api/admin/stats');
+    $('view').innerHTML = `<h2>Overview</h2><p class="sub">Platform activity at a glance.</p><div class="grid2">
+      ${Object.entries(s).map(([k, v]) => `<div class="stat"><span>${esc(k)}</span><b>${v}</b></div>`).join('')}</div>`;
+  },
+
+  async users() {
+    const list = await api('GET', '/api/admin/users');
+    $('view').innerHTML = `<h2>Users</h2><p class="sub">Block or unblock accounts.</p>` + list.map(u => `
+      <div class="item"><div class="head"><div><b>${esc(u.name)}</b><div class="muted">${esc(u.email)}</div></div>
+      <div class="actions"><span class="chip">${u.role}</span>${u.blocked ? '<span class="chip red">BLOCKED</span>' : ''}
+      ${u.role !== 'ADMIN' ? (u.blocked ? `<button class="ok sm" onclick="blockUser(${u.id},'unblock')">Unblock</button>` : `<button class="bad sm" onclick="blockUser(${u.id},'block')">Block</button>`) : ''}</div></div></div>`).join('');
+  },
+
+  async allrides() {
+    const list = await api('GET', '/api/admin/rides');
+    cache(list);
+    $('view').innerHTML = `<h2>All rides</h2><p class="sub">Every ride on the platform.</p>` + (list.length ? list.map(r => `
+      <div class="item"><div class="head"><div><div class="route">${esc(r.source)} → ${esc(r.destination)}</div>
+      <div class="muted">${fmt(r.departTime)} · driver ${esc(r.driver.name)} · ${inr(r.pricePerSeat)}/seat</div></div>
+      <div class="actions">${statusChip(r.status)}<button class="ghost sm" onclick="showRide(${r.id})">Map</button></div></div></div>`).join('') : '<div class="card muted">No rides.</div>');
+  }
+};
+
+function draftPoints() {
+  const pts = [];
+  if (draft.from) pts.push(draft.from);
+  draft.stops.forEach(s => pts.push(s));
+  if (draft.to) pts.push(draft.to);
+  return pts;
+}
+
+function mountStopInput() {
+  placeInput($('stopBox'), 'Add a stop (riders can join or leave here)', (v) => {
+    if (!v) return;
+    if (draft.stops.length >= 5) { toast('Maximum 5 in-between stops', true); return; }
+    draft.stops.push(v);
+    mountStopInput();
+    window.redrawPost();
+  });
+}
+
+function updateStops() {
+  const el = $('stopList');
+  if (!el) return;
+  el.innerHTML = draft.stops.map((s, i) => `<div class="stopchip"><span class="n">${i + 1}</span><span class="t">${esc(s.name)}</span>
+    <button class="ghost sm" onclick="moveStop(${i},-1)">▲</button><button class="ghost sm" onclick="moveStop(${i},1)">▼</button>
+    <button class="bad sm" onclick="removeStop(${i})">✕</button></div>`).join('');
+}
+
+function moveStop(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= draft.stops.length) return;
+  [draft.stops[i], draft.stops[j]] = [draft.stops[j], draft.stops[i]];
+  window.redrawPost();
+}
+
+function removeStop(i) {
+  draft.stops.splice(i, 1);
+  window.redrawPost();
+}
+
+function quickPrice(perKm) {
+  if (roadKm == null) return;
+  $('price').value = roundTen(roadKm * perKm);
+  updateLegs();
+}
+
+function updateLegs() {
+  const el = $('legs');
+  if (!el) return;
+  const pts = draftPoints();
+  const raw = +($('price') && $('price').value);
+  if (pts.length < 2 || !raw) { el.textContent = ''; return; }
+  const price = roundTen(raw);
+  const parts = [];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = i === 0 ? 'A' : String(i), b = i === pts.length - 2 ? 'B' : String(i + 1);
+    parts.push(`${a} → ${b}: ${inr(segPrice(price, pts, i, i + 1))}`);
+  }
+  el.textContent = 'Fare by stretch (per seat, rounded to ₹10): ' + parts.join(' · ') + '. Total ' + inr(price) + '. Riders pay only for the part they travel.';
+}
+
+function postRide() {
+  run(async () => {
+    if (!draft.from) throw new Error('Search for the starting point and pick it from the list');
+    if (!draft.to) throw new Error('Search for the destination and pick it from the list');
+    if (!$('ddate').value) throw new Error('Choose a departure date');
+    if (!$('dtime').value) throw new Error('Choose a departure time');
+    const price = +$('price').value;
+    if (!price) throw new Error('Enter a price per seat');
+    if (price % 10 !== 0) throw new Error('Price per seat must be a multiple of ₹10');
+    await api('POST', '/api/rides', {
+      source: draft.from.name, srcLat: draft.from.lat, srcLng: draft.from.lng,
+      destination: draft.to.name, dstLat: draft.to.lat, dstLng: draft.to.lng,
+      stops: draft.stops.map(s => ({ name: s.name, lat: s.lat, lng: s.lng })),
+      departTime: $('ddate').value + 'T' + $('dtime').value, seats: +$('seats').value, pricePerSeat: price,
+      negotiable: $('neg').checked, vehicleId: $('veh').value ? +$('veh').value : null
+    });
+    toast('Ride posted');
+    go('myrides');
+  });
+}
+
+function addVehicle() {
+  run(async () => {
+    await api('POST', '/api/vehicles', { model: $('vm').value, plate: $('vp').value, seats: +$('vs').value });
+    toast('Vehicle added'); render();
+  });
+}
+
+function rideAction(id, action) {
+  run(async () => { await api('POST', `/api/rides/${id}/${action}`); toast(action === 'complete' ? 'Ride marked completed' : 'Ride cancelled'); render(); });
+}
+
+function saveProfile() {
+  run(async () => {
+    const body = { name: $('pname').value, note: $('pnote').value };
+    PREFS.forEach(([k]) => { body[k] = !!($('pf_' + k) && $('pf_' + k).checked); });
+    me = await api('PUT', '/api/users/me', body);
+    localStorage.setItem('me', JSON.stringify(me));
+    renderBar();
+    toast('Profile saved');
+  });
+}
+
+function searchRides() {
+  const ids = ['fs', 'fd', 'fdate', 'fseats'];
+  const missing = ids.filter(k => !$(k).value.trim() || (k === 'fseats' && +$(k).value < 1));
+  ids.forEach(k => $(k).classList.toggle('err', missing.includes(k)));
+  if (missing.length) {
+    $('results').innerHTML = '<div class="card banner" style="margin:0 0 16px">Please fill in From, To, Date and Seats (highlighted in red).</div>';
+    if (curMap) { clearMap(curMap); curMap._seq++; setInfo('map', null); }
+    return;
+  }
+  run(async () => {
+    const q = new URLSearchParams({ source: $('fs').value.trim(), destination: $('fd').value.trim(), date: $('fdate').value, seats: $('fseats').value });
+    lastResults = await api('GET', '/api/rides/search?' + q);
+    cache(lastResults.map(v => v.ride));
+    $('results').innerHTML = lastResults.length ? lastResults.map(cardFor).join('')
+      : '<div class="card empty"><b>No rides for this route</b><p class="muted">Try another date, or a nearby town on the same route.</p></div>';
+    if (lastResults.length) focusRide(lastResults[0].ride.id);
+    else if (curMap) { clearMap(curMap); curMap._seq++; setInfo('map', null); }
+  });
+}
+
+function extras(v) {
+  const dr = v.driverReviews || [], cp = v.coPassengers || [];
+  return `<div class="extras" onclick="event.stopPropagation()">
+    <details><summary>Driver reviews (${dr.length})</summary>${dr.length ? dr.map(reviewRow).join('') : '<p class="muted">No reviews yet.</p>'}</details>
+    <details><summary>Co-passengers on this trip (${cp.length})</summary>${cp.length ? cp.map(c => `<div class="rev">
+      <div>${nameLink(c)} <span class="muted">· ${starLine(c)} · ${c.seats} seat(s)</span></div>
+      <div class="muted"><b>From:</b> ${esc(c.pickup)} &nbsp; <b>To:</b> ${esc(c.drop)}</div>
+      ${c.lastReview ? `<div class="muted">Latest review: ${starIcons(c.lastReview.score)} ${c.lastReview.comment ? '“' + esc(c.lastReview.comment) + '”' : ''} — ${esc(c.lastReview.from)}</div>` : '<div class="muted">No reviews yet.</div>'}
+    </div>`).join('') : '<p class="muted">No one has booked yet.</p>'}</details></div>`;
+}
+
+function cardFor(v) {
+  const r = v.ride, pts = ridePoints(r), last = pts.length - 1;
+  const pOpts = pts.slice(0, last).map((p, i) => `<option value="${i}" ${i === v.pickupIdx ? 'selected' : ''}>${esc(p.name)}</option>`).join('');
+  const dOpts = pts.map((p, i) => i > v.pickupIdx ? `<option value="${i}" ${i === v.dropIdx ? 'selected' : ''}>${esc(p.name)}</option>` : '').join('');
+  return `<div class="item" id="card${r.id}" onclick="focusRide(${r.id})">
+    <div class="head"><div><div class="route">${esc(r.source)} → ${esc(r.destination)}</div>
+      <div class="muted">${fmt(r.departTime)} · ${r.seatsLeft} seat(s) left</div>
+      <div class="muted" onclick="event.stopPropagation()">Driver: ${nameLink(r.driver)} · ${starLine(r.driver)}</div></div>
+      <div style="text-align:right"><div class="price" id="lp${r.id}">${inr(v.listPrice)} <small>/ seat</small></div>
+      ${r.negotiable ? '<span class="chip teal">bargain allowed</span>' : '<span class="chip gray">fixed price</span>'}
+      <span class="chip">match ${v.score}</span></div></div>
+    ${prefChips(r.driver)}
+    <div id="tl${r.id}">${timeline(pts, { hi: { from: v.pickupIdx, to: v.dropIdx } })}</div>
+    <div class="grid2" onclick="event.stopPropagation()">
+      <div><label>Pickup</label><select id="pk${r.id}" onchange="changeSeg(${r.id},'p')">${pOpts}</select></div>
+      <div><label>Drop-off</label><select id="dp${r.id}" onchange="changeSeg(${r.id},'d')">${dOpts}</select></div>
+      <div><label>Seats</label><input id="bs${r.id}" type="number" min="1" max="${r.seatsLeft}" value="${Math.min(r.seatsLeft, +$('fseats').value || 1)}"></div>
+      <div><label>${r.negotiable ? 'Your offer per seat (₹, multiple of 10)' : 'Price per seat (₹)'}</label>
+        <input id="of${r.id}" type="number" min="10" step="10" value="${v.listPrice}" ${r.negotiable ? '' : 'disabled'} onchange="this.value = roundTen(this.value)"></div>
+    </div>
+    ${extras(v)}
+    <div class="actions" onclick="event.stopPropagation()" style="margin-top:10px">
+      <button onclick="bookRide(${r.id})">${r.negotiable ? 'Send offer' : 'Request seats'}</button>
+      <button class="ghost sm" onclick="showRide(${r.id},+$('pk${r.id}').value,+$('dp${r.id}').value)">Full map</button>
+    </div></div>`;
+}
+
+function segOf(id) {
+  return { p: +$('pk' + id).value, d: +$('dp' + id).value };
+}
+
+function changeSeg(id, which) {
+  const r = rideCache[id], pts = ridePoints(r), last = pts.length - 1;
+  let { p, d } = segOf(id);
+  if (which === 'p') {
+    const sel = $('dp' + id);
+    const keep = d > p ? d : last;
+    sel.innerHTML = pts.map((x, i) => i > p ? `<option value="${i}">${esc(x.name)}</option>` : '').join('');
+    sel.value = String(keep);
+    d = +sel.value;
+  }
+  const price = segPrice(r.pricePerSeat, pts, p, d);
+  $('lp' + id).innerHTML = inr(price) + ' <small>/ seat</small>';
+  $('of' + id).value = price;
+  $('tl' + id).innerHTML = timeline(pts, { hi: { from: p, to: d } });
+  focusRide(id);
+}
+
+function focusRide(id) {
+  document.querySelectorAll('#results .item').forEach(el => el.classList.toggle('sel', el.id === 'card' + id));
+  const r = rideCache[id];
+  if (!r || !curMap) return;
+  const seg = $('pk' + id) ? segOf(id) : null;
+  setInfo('map', null);
+  drawRoute(curMap, ridePoints(r), {
+    hi: seg ? { from: seg.p, to: seg.d } : null,
+    onInfo: (km, min) => setInfo('map', km != null ? 'Your stretch: ' + km.toFixed(1) + ' km · ' + Math.round(min) + ' min' : null)
+  });
+}
+
+function bookRide(id) {
+  run(async () => {
+    const r = rideCache[id];
+    const { p, d } = segOf(id);
+    const offer = +$('of' + id).value;
+    if (r.negotiable && offer % 10 !== 0) throw new Error('Your offer must be a multiple of ₹10');
+    await api('POST', `/api/rides/${id}/book`, {
+      seats: +$('bs' + id).value, pickupIdx: p, dropIdx: d,
+      offeredPrice: r.negotiable ? offer : null
+    });
+    toast(r.negotiable ? 'Offer sent to the driver' : 'Request sent to the driver');
+    go('bookings');
+  });
+}
+
+function bookingAction(id, action) {
+  const msg = { accept: 'Booking accepted', reject: 'Booking rejected', 'accept-counter': 'Counter offer accepted' }[action] || 'Done';
+  run(async () => { await api('POST', `/api/bookings/${id}/${action}`); toast(msg); render(); });
+}
+
+function counterOffer(id, list) {
+  openModal(`<h2>Counter offer</h2><p class="sub">List price for this stretch is ${inr(list)} per seat. Your counter must be a multiple of ₹10.</p>
+    <label>Your price per seat (₹)</label><input id="cprice" type="number" min="10" step="10" value="${list}" onkeydown="if(event.key==='Enter')$('csend').click()">
+    <button id="csend" style="width:100%">Send counter offer</button>`, true);
+  $('csend').onclick = () => run(async () => {
+    const v = +$('cprice').value;
+    if (!v || v % 10 !== 0) throw new Error('Counter offer must be a multiple of ₹10');
+    await api('POST', `/api/bookings/${id}/counter`, { price: v });
+    toast('Counter offer sent');
+    render();
+  });
+}
+
+function cancelBooking(id) {
+  run(async () => { await api('POST', `/api/bookings/${id}/cancel`); toast('Booking cancelled'); render(); });
+}
+
+function payBooking(id) {
+  run(async () => { const b = await api('POST', `/api/bookings/${id}/pay`); toast('Paid ' + inr(b.amountPaid)); render(); });
+}
+
+function blockUser(id, action) {
+  run(async () => { await api('POST', `/api/admin/users/${id}/${action}`); render(); });
+}
+
+function rateDriver(rideId, driverId) {
+  openRateModal('Rate your driver, ' + (nameCache[driverId] || ''), async (score, comment) => {
+    await api('POST', '/api/ratings', { rideId, toUserId: driverId, score, comment });
+    toast('Thanks for rating');
+    render();
+  });
+}
+
+function ratePassenger(rideId, riderId) {
+  openRateModal('Rate passenger ' + (nameCache[riderId] || ''), async (score, comment) => {
+    await api('POST', '/api/ratings', { rideId, toUserId: riderId, score, comment });
+    toast('Passenger rated');
+    render();
+  });
+}
+
+render();
+if (token && me) {
+  api('GET', '/api/users/me').then(u => { me = u; localStorage.setItem('me', JSON.stringify(me)); renderBar(); refreshBadge(); }).catch(() => { });
+}
+</script>
+</body>
+</html>

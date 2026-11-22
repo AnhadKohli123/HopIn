@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="HopIn logo: a stickman standing beside a car">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#14b8a6"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+    <clipPath id="clip"><rect width="512" height="512" rx="112"/></clipPath>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <g clip-path="url(#clip)">
+    <circle cx="420" cy="110" r="46" fill="#ffffff" opacity="0.18"/>
+    <rect x="0" y="414" width="512" height="98" fill="#0f172a" opacity="0.28"/>
+    <line x1="20" y1="466" x2="492" y2="466" stroke="#ffffff" stroke-opacity="0.55" stroke-width="6" stroke-dasharray="34 26" stroke-linecap="round"/>
+  </g>
+
+  <path d="M205 340 Q205 306 238 302 L262 300 L290 250 Q296 240 308 240 L388 240 Q402 240 410 252 L436 300 L452 304 Q474 310 474 336 L474 366 Q474 378 462 378 L216 378 Q205 378 205 366 Z" fill="#fbbf24"/>
+  <path d="M278 298 L300 256 Q302 252 308 252 L338 252 L338 298 Z" fill="#ffffff" opacity="0.92"/>
+  <path d="M350 252 L384 252 Q392 252 396 258 L418 298 L350 298 Z" fill="#ffffff" opacity="0.92"/>
+  <rect x="232" y="322" width="34" height="8" rx="4" fill="#b45309" opacity="0.55"/>
+  <circle cx="462" cy="332" r="9" fill="#ffffff"/>
+  <circle cx="276" cy="380" r="32" fill="#0f172a"/>
+  <circle cx="276" cy="380" r="13" fill="#e5e7eb"/>
+  <circle cx="410" cy="380" r="32" fill="#0f172a"/>
+  <circle cx="410" cy="380" r="13" fill="#e5e7eb"/>
+
+  <g stroke="#ffffff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <circle cx="124" cy="196" r="28" fill="#ffffff" stroke="none"/>
+    <line x1="124" y1="228" x2="124" y2="316"/>
+    <line x1="124" y1="316" x2="98" y2="410"/>
+    <line x1="124" y1="316" x2="152" y2="410"/>
+    <line x1="124" y1="250" x2="88" y2="296"/>
+    <polyline points="124,250 160,222 176,176"/>
+  </g>
+  <circle cx="177" cy="170" r="10" fill="#ffffff"/>
+</svg>
