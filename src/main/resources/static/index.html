@@ -279,7 +279,6 @@ let chatTimer = null;
 let chatOpen = null;
 let geoFrom = null;
 let geoTo = null;
-let extraDates = [];
 let pendingSearch = null;
 const shares = {};
 const PREFS = [['noSmoking', 'No smoking'], ['noPets', 'No pets'], ['ac', 'AC available'], ['music', 'Music on'], ['luggage', 'Luggage space']];
@@ -902,7 +901,6 @@ const views = {
   async post() {
     draft = { from: null, to: null, stops: [] };
     roadKm = null;
-    extraDates = [];
     const [vehicles] = await Promise.all([api('GET', '/api/vehicles'), loadMaps()]);
     $('view').innerHTML = `
     <div class="split">
@@ -920,9 +918,6 @@ const views = {
           <div><label>Departure date</label><input id="ddate" type="date" min="${today()}"></div>
           <div><label>Departure time</label><input id="dtime" type="time"></div>
         </div>
-        <label>Also post on these dates (optional, same time)</label>
-        <div class="prow" style="margin-bottom:8px"><input id="xdate" type="date" min="${today()}"><button class="ghost sm" type="button" onclick="addDate()">Add date</button></div>
-        <div id="extraDates" class="chips"></div>
         <div class="grid2">
           <div><label>Seats offered</label><input id="seats" type="number" min="1" value="3"></div>
           <div><label>Vehicle</label><select id="veh"><option value="">Not specified</option>${vehicles.map(v => `<option value="${v.id}">${esc(v.model)} (${esc(v.plate)})</option>`).join('')}</select></div>
@@ -935,7 +930,6 @@ const views = {
           <button class="ghost sm" onclick="quickPrice(2)">₹2/km</button><button class="ghost sm" onclick="quickPrice(3)">₹3/km</button><button class="ghost sm" onclick="quickPrice(4)">₹4/km</button>
         </div>
         <div class="legs" id="legs"></div>
-        <p class="muted" style="margin:-4px 0 12px">💡 Your price is final once riders book, so set it carefully.</p>
         <label class="check"><input type="checkbox" id="neg" checked> Riders can make offers and I can bargain</label>
         <button style="width:100%" onclick="postRide()">Post ride</button>
       </div>
@@ -1384,28 +1378,6 @@ function updateLegs() {
   el.textContent = 'Fare by stretch (per seat, rounded to ₹10): ' + parts.join(' · ') + '. Total ' + inr(price) + '. Riders pay only for the part they travel.';
 }
 
-function addDate() {
-  const v = $('xdate').value;
-  if (!v) return toast('Pick a date first', true);
-  if (v < today()) return toast('That date is in the past', true);
-  if (v === $('ddate').value || extraDates.includes(v)) return toast('That date is already added', true);
-  if (extraDates.length >= 13) return toast('You can post for at most 14 dates at once', true);
-  extraDates.push(v);
-  extraDates.sort();
-  $('xdate').value = '';
-  renderDates();
-}
-
-function removeDate(v) {
-  extraDates = extraDates.filter(d => d !== v);
-  renderDates();
-}
-
-function renderDates() {
-  $('extraDates').innerHTML = extraDates.map(d => `<span class="chip teal">${new Date(d + 'T00:00').toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })}
-    <a href="#" onclick="removeDate('${d}');return false" aria-label="Remove date" style="margin-left:4px">✕</a></span>`).join('');
-}
-
 function postRide() {
   run(async () => {
     if (!draft.from) throw new Error('Search for the starting point and pick it from the list');
@@ -1421,7 +1393,6 @@ function postRide() {
       destination: draft.to.name, dstLat: draft.to.lat, dstLng: draft.to.lng,
       stops: draft.stops.map(s => ({ name: s.name, lat: s.lat, lng: s.lng })),
       departTime: $('ddate').value + 'T' + time,
-      extraTimes: extraDates.filter(d => d !== $('ddate').value).map(d => d + 'T' + time),
       seats: +$('seats').value, pricePerSeat: price,
       negotiable: $('neg').checked, vehicleId: $('veh').value ? +$('veh').value : null
     });
