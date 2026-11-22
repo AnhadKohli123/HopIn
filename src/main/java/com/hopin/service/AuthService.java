@@ -52,6 +52,6 @@ public class AuthService {
     }
 
     private Map<String, Object> tokenFor(User u) {
-        return Map.of("token", jwt.generate(u.id, u.role.name()), "user", u);
+        return Map.of("token", jwt.generate(u.id, u.role.name()), "user", Views.self(u));
     }
 }

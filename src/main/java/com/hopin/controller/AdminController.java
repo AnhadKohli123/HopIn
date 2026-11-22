@@ -1,10 +1,15 @@
 package com.hopin.controller;
 
+import com.hopin.exception.SafetyException;
 import com.hopin.exception.UnauthorizedActionException;
 import com.hopin.model.*;
 import com.hopin.repository.BookingRepository;
+import com.hopin.repository.ReportRepository;
 import com.hopin.repository.RideRepository;
 import com.hopin.repository.UserRepository;
+import com.hopin.service.NotificationService;
+import com.hopin.service.Views;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.web.bind.annotation.*;
@@ -15,27 +20,62 @@ public class AdminController {
     private final UserRepository users;
     private final RideRepository rides;
     private final BookingRepository bookings;
+    private final ReportRepository reports;
+    private final NotificationService notifications;
 
-    public AdminController(UserRepository users, RideRepository rides, BookingRepository bookings) {
+    public AdminController(UserRepository users, RideRepository rides, BookingRepository bookings,
+                           ReportRepository reports, NotificationService notifications) {
         this.users = users;
         this.rides = rides;
         this.bookings = bookings;
+        this.reports = reports;
+        this.notifications = notifications;
     }
 
     @GetMapping("/users")
-    public List<User> users(@RequestAttribute("user") User admin) {
+    public List<Map<String, Object>> users(@RequestAttribute("user") User admin) {
         requireAdmin(admin);
-        return users.findAll();
+        return users.findAll().stream().map(Views::self).toList();
     }
 
     @PostMapping("/users/{id}/block")
-    public User block(@RequestAttribute("user") User admin, @PathVariable Long id) {
+    public Map<String, Object> block(@RequestAttribute("user") User admin, @PathVariable Long id) {
         return setBlocked(admin, id, true);
     }
 
     @PostMapping("/users/{id}/unblock")
-    public User unblock(@RequestAttribute("user") User admin, @PathVariable Long id) {
+    public Map<String, Object> unblock(@RequestAttribute("user") User admin, @PathVariable Long id) {
         return setBlocked(admin, id, false);
+    }
+
+    @GetMapping("/id-requests")
+    public List<Map<String, Object>> idRequests(@RequestAttribute("user") User admin) {
+        requireAdmin(admin);
+        return users.findByIdStatusOrderByIdAsc("PENDING").stream().map(Views::self).toList();
+    }
+
+    @PostMapping("/users/{id}/id-approve")
+    public Map<String, Object> approveId(@RequestAttribute("user") User admin, @PathVariable Long id) {
+        return decideId(admin, id, true);
+    }
+
+    @PostMapping("/users/{id}/id-reject")
+    public Map<String, Object> rejectId(@RequestAttribute("user") User admin, @PathVariable Long id) {
+        return decideId(admin, id, false);
+    }
+
+    @GetMapping("/reports")
+    public List<Report> reports(@RequestAttribute("user") User admin) {
+        requireAdmin(admin);
+        return reports.findAllByOrderByIdDesc();
+    }
+
+    @PostMapping("/reports/{id}/resolve")
+    public Report resolve(@RequestAttribute("user") User admin, @PathVariable Long id) {
+        requireAdmin(admin);
+        Report r = reports.findById(id).orElseThrow(() -> new SafetyException("Report not found", 404));
+        r.status = "RESOLVED";
+        return reports.save(r);
     }
 
     @GetMapping("/rides")
@@ -47,22 +87,37 @@ public class AdminController {
     @GetMapping("/stats")
     public Map<String, Object> stats(@RequestAttribute("user") User admin) {
         requireAdmin(admin);
-        return Map.of(
-                "users", users.count(),
-                "rides", rides.count(),
-                "bookings", bookings.count(),
-                "confirmedBookings", bookings.findAll().stream()
-                        .filter(b -> b.status == BookingStatus.CONFIRMED).count());
+        Map<String, Object> m = new LinkedHashMap<>();
+        m.put("users", users.count());
+        m.put("rides", rides.count());
+        m.put("bookings", bookings.count());
+        m.put("confirmedBookings", bookings.findAll().stream().filter(b -> b.status == BookingStatus.CONFIRMED).count());
+        m.put("pendingIdChecks", users.countByIdStatus("PENDING"));
+        m.put("openReports", reports.countByStatus("OPEN"));
+        m.put("openSos", reports.countBySosTrueAndStatus("OPEN"));
+        return m;
     }
 
-    private User setBlocked(User admin, Long id, boolean value) {
+    private Map<String, Object> decideId(User admin, Long id, boolean approve) {
+        requireAdmin(admin);
+        User u = users.findById(id).orElseThrow(() -> new UnauthorizedActionException("User not found"));
+        if (!"PENDING".equals(u.idStatus)) {
+            throw new SafetyException("This user has no pending ID check", 409);
+        }
+        u.idStatus = approve ? "APPROVED" : "REJECTED";
+        users.save(u);
+        notifications.notify(u, approve ? "Your government ID was verified ✔" : "Your ID check was rejected. Check the details and submit again.", "profile");
+        return Views.self(u);
+    }
+
+    private Map<String, Object> setBlocked(User admin, Long id, boolean value) {
         requireAdmin(admin);
         User u = users.findById(id).orElseThrow(() -> new UnauthorizedActionException("User not found"));
         if (u.role == Role.ADMIN) {
             throw new UnauthorizedActionException("Cannot block an admin");
         }
         u.blocked = value;
-        return users.save(u);
+        return Views.self(users.save(u));
     }
 
     private void requireAdmin(User u) {

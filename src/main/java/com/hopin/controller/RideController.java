@@ -35,17 +35,24 @@ public class RideController {
     }
 
     @PostMapping("/rides")
-    public Ride post(@RequestAttribute("user") User user, @Valid @RequestBody RideService.NewRide r) {
+    public List<Ride> post(@RequestAttribute("user") User user, @Valid @RequestBody RideService.NewRide r) {
         return rides.postRide(user, r);
     }
 
     @GetMapping("/rides/search")
-    public List<RideService.RideView> search(@RequestParam(required = false) String source,
+    public List<RideService.RideView> search(@RequestAttribute("user") User user,
+                                             @RequestParam(required = false) String source,
                                              @RequestParam(required = false) String destination,
                                              @RequestParam(required = false)
                                              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                                             @RequestParam(defaultValue = "1") int seats) {
-        return rides.search(source, destination, date, seats);
+                                             @RequestParam(defaultValue = "1") int seats,
+                                             @RequestParam(required = false) Double fromLat,
+                                             @RequestParam(required = false) Double fromLng,
+                                             @RequestParam(required = false) Double toLat,
+                                             @RequestParam(required = false) Double toLng,
+                                             @RequestParam(required = false) Double radiusKm) {
+        return rides.search(user, source, destination, date, seats,
+                new RideService.GeoQuery(fromLat, fromLng, toLat, toLng, radiusKm));
     }
 
     @GetMapping("/rides/mine")

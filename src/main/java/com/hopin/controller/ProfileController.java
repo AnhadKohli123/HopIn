@@ -2,6 +2,7 @@ package com.hopin.controller;
 
 import com.hopin.model.User;
 import com.hopin.service.ProfileService;
+import java.util.Map;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,14 +14,27 @@ public class ProfileController {
         this.profiles = profiles;
     }
 
+    public record PhotoReq(String dataUrl) {
+    }
+
     @GetMapping("/me")
-    public User me(@RequestAttribute("user") User user) {
+    public Map<String, Object> me(@RequestAttribute("user") User user) {
         return profiles.me(user);
     }
 
     @PutMapping("/me")
-    public User update(@RequestAttribute("user") User user, @RequestBody ProfileService.ProfileUpdate p) {
+    public Map<String, Object> update(@RequestAttribute("user") User user, @RequestBody ProfileService.ProfileUpdate p) {
         return profiles.update(user, p);
+    }
+
+    @PutMapping("/me/photo")
+    public Map<String, Object> setPhoto(@RequestAttribute("user") User user, @RequestBody PhotoReq r) {
+        return profiles.setPhoto(user, r.dataUrl());
+    }
+
+    @DeleteMapping("/me/photo")
+    public Map<String, Object> removePhoto(@RequestAttribute("user") User user) {
+        return profiles.removePhoto(user);
     }
 
     @GetMapping("/{id}/profile")

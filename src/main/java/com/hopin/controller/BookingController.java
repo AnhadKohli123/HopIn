@@ -4,6 +4,8 @@ import com.hopin.model.Booking;
 import com.hopin.model.Rating;
 import com.hopin.model.User;
 import com.hopin.service.BookingService;
+import com.hopin.service.ChatService;
+import com.hopin.service.NotificationService;
 import com.hopin.service.RatingService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -19,10 +21,15 @@ import org.springframework.web.bind.annotation.*;
 public class BookingController {
     private final BookingService bookings;
     private final RatingService ratings;
+    private final ChatService chats;
+    private final NotificationService notifications;
 
-    public BookingController(BookingService bookings, RatingService ratings) {
+    public BookingController(BookingService bookings, RatingService ratings, ChatService chats,
+                             NotificationService notifications) {
         this.bookings = bookings;
         this.ratings = ratings;
+        this.chats = chats;
+        this.notifications = notifications;
     }
 
     public record BookReq(@Min(1) int seats, Integer pickupIdx, Integer dropIdx, Double offeredPrice) {
@@ -47,7 +54,8 @@ public class BookingController {
 
     @GetMapping("/bookings/badge")
     public Map<String, Long> badge(@RequestAttribute("user") User user) {
-        return Map.of("count", bookings.badge(user));
+        return Map.of("count", bookings.badge(user), "messages", chats.unread(user),
+                "notifications", notifications.unread(user));
     }
 
     @GetMapping("/bookings/requests")

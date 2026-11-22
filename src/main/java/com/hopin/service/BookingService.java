@@ -13,10 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookingService {
     private final BookingRepository bookings;
     private final RideRepository rides;
+    private final SafetyService safety;
+    private final NotificationService notifications;
 
-    public BookingService(BookingRepository bookings, RideRepository rides) {
+    public BookingService(BookingRepository bookings, RideRepository rides, SafetyService safety,
+                          NotificationService notifications) {
         this.bookings = bookings;
         this.rides = rides;
+        this.safety = safety;
+        this.notifications = notifications;
+    }
+
+    private String stretch(Booking b) {
+        return b.pickupName + " → " + b.dropName + " on " + b.ride.departTime.toLocalDate();
     }
 
     @Transactional
@@ -28,6 +37,9 @@ public class BookingService {
         Ride ride = rides.findById(rideId).orElseThrow(() -> new RideNotFoundException(rideId));
         if (ride.status != RideStatus.OPEN || ride.departTime.isBefore(LocalDateTime.now())) {
             throw new RideException("This ride is not open for booking", 409);
+        }
+        if (safety.blockedEitherWay(rider.id, ride.driver.id)) {
+            throw new BlockedException();
         }
         if (bookings.existsByRideIdAndRiderIdAndStatusIn(rideId, rider.id,
                 List.of(BookingStatus.PENDING, BookingStatus.COUNTERED, BookingStatus.CONFIRMED))) {
@@ -60,7 +72,10 @@ public class BookingService {
         b.dropName = pts.get(d).name();
         b.listPrice = list;
         b.offeredPrice = offer;
-        return bookings.save(b);
+        bookings.save(b);
+        notifications.notify(ride.driver, rider.name + " requested " + seats + " seat(s) for " + stretch(b)
+                + " at ₹" + Math.round(offer) + "/seat", "requests");
+        return b;
     }
 
     @Transactional
@@ -83,8 +98,10 @@ public class BookingService {
             ride.seatsLeft -= b.seats;
             b.agreedPrice = b.offeredPrice;
             b.status = BookingStatus.CONFIRMED;
+            notifications.notify(b.rider, driver.name + " accepted your booking for " + stretch(b), "bookings");
         } else {
             b.status = BookingStatus.REJECTED;
+            notifications.notify(b.rider, driver.name + " declined your request for " + stretch(b), "bookings");
         }
         return b;
     }
@@ -107,6 +124,7 @@ public class BookingService {
         }
         b.counterPrice = price;
         b.status = BookingStatus.COUNTERED;
+        notifications.notify(b.rider, driver.name + " countered with ₹" + Math.round(price) + "/seat for " + stretch(b), "bookings");
         return b;
     }
 
@@ -129,6 +147,7 @@ public class BookingService {
         ride.seatsLeft -= b.seats;
         b.agreedPrice = b.counterPrice;
         b.status = BookingStatus.CONFIRMED;
+        notifications.notify(ride.driver, rider.name + " accepted your counter offer for " + stretch(b), "requests");
         return b;
     }
 
@@ -148,6 +167,7 @@ public class BookingService {
         }
         if (b.status == BookingStatus.CONFIRMED) {
             ride.seatsLeft += b.seats;
+            notifications.notify(ride.driver, user.name + " cancelled their seat(s) for " + stretch(b), "myrides");
         }
         b.status = BookingStatus.CANCELLED;
         return b;

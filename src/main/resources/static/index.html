@@ -192,6 +192,61 @@
   [data-theme="dark"] .leaflet-control-layers, [data-theme="dark"] .leaflet-bar a, [data-theme="dark"] .leaflet-control-attribution, [data-theme="dark"] .leaflet-tooltip { background:#111a2b; color:#e5e7eb; border-color:#23304a; }
   [data-theme="dark"] .leaflet-control-attribution a { color:#93c5fd; }
   [data-theme="dark"] .leaflet-control-scale-line { background:rgba(17,26,43,.8); color:#e5e7eb; border-color:#94a3b8; }
+  img.avatar { object-fit:cover; background:var(--soft); display:block; }
+  .avatar.xl { width:88px; height:88px; font-size:34px; }
+  .vt { display:inline-grid; place-items:center; width:16px; height:16px; border-radius:50%; background:var(--ok); color:#fff; font-size:10px; font-weight:800; vertical-align:middle; }
+  .bell { position:relative; background:var(--ghost); color:var(--ink); padding:7px 10px; border-radius:99px; font-size:15px; line-height:1; }
+  .bell:hover { background:var(--ghost-hover); }
+  .badge.static { position:static; border:0; flex:none; }
+  .who { display:flex; gap:10px; align-items:flex-start; }
+  .summary { background:var(--soft); border-radius:12px; padding:10px 12px; font-size:13px; margin:10px 0; line-height:1.5; }
+  .price-hint { font-size:13px; font-weight:600; border-radius:10px; padding:8px 12px; margin:-4px 0 12px; }
+  .price-hint.green { background:var(--green-bg); color:var(--green-fg); }
+  .price-hint.amber { background:var(--amber-bg); color:var(--amber-fg); }
+  .price-hint.red { background:var(--red-bg); color:var(--red-fg); }
+  .meet { background:var(--soft2); border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin:0 0 12px; font-size:13px; }
+  .meet p { margin:2px 0 8px; }
+  .meet-row { display:flex; gap:10px; align-items:flex-start; padding:6px 0; border-top:1px dashed var(--line); }
+  .sm-pin { width:22px; height:22px; font-size:11px; flex:none; }
+  .spot { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:3px 0; }
+  .geo-note { font-size:12px; color:var(--teal-fg); margin-top:4px; min-height:0; }
+  .photo-row { display:flex; gap:16px; align-items:center; margin-bottom:14px; }
+  .vrow { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 0; border-top:1px solid var(--line); }
+  .vform { padding:0 0 12px; }
+  .chat-wrap { display:grid; grid-template-columns:340px minmax(0,1fr); gap:18px; align-items:start; }
+  .chat-list { max-height:calc(100vh - 120px); overflow:auto; }
+  .conv { display:flex; gap:10px; align-items:center; padding:10px; border-radius:12px; cursor:pointer; }
+  .conv:hover { background:var(--hover); }
+  .conv.sel { background:var(--hover); box-shadow:inset 0 0 0 1px var(--brand); }
+  .conv-main { flex:1; min-width:0; }
+  .conv-top { display:flex; justify-content:space-between; gap:8px; }
+  .conv-route, .conv-last { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:13px; }
+  .chat-pane { display:flex; flex-direction:column; height:calc(100vh - 120px); min-height:420px; padding:0; overflow:hidden; }
+  .chat-head { display:flex; gap:10px; align-items:center; padding:14px 16px; border-bottom:1px solid var(--line); }
+  .msgs { flex:1; overflow:auto; padding:16px; display:flex; flex-direction:column; gap:8px; }
+  .bubble { max-width:75%; padding:8px 12px; border-radius:14px; font-size:14px; white-space:pre-wrap; overflow-wrap:anywhere; }
+  .bubble span { display:block; font-size:11px; opacity:.75; margin-top:2px; text-align:right; }
+  .bubble.mine { align-self:flex-end; background:var(--brand); color:#fff; border-bottom-right-radius:4px; }
+  .bubble.theirs { align-self:flex-start; background:var(--soft); color:var(--ink); border-bottom-left-radius:4px; }
+  .composer { display:flex; gap:8px; padding:12px; border-top:1px solid var(--line); align-items:flex-end; }
+  .composer textarea { margin:0; resize:none; }
+  .chat-pane .banner { margin:10px; }
+  .chat-pane .mapnote { flex:1; height:auto; }
+  @media (max-width:900px) { .chat-wrap { grid-template-columns:1fr; } .chat-list { max-height:none; } .chat-pane { height:70vh; } }
+  .notif { padding:10px 12px; border-radius:10px; border:1px solid var(--line); margin-bottom:8px; cursor:pointer; font-size:14px; display:flex; flex-direction:column; gap:2px; }
+  .notif.unread { border-color:var(--brand); background:var(--hover); }
+  .notif:hover { background:var(--hover); }
+  .sos-box { border:1px solid var(--red-bg); background:linear-gradient(135deg, var(--red-bg), transparent 80%); border-radius:14px; padding:12px 14px; }
+  a.btn { display:inline-block; font-weight:700; border-radius:10px; padding:9px 14px; background:var(--brand); color:#fff; text-decoration:none; }
+  a.btn:hover { text-decoration:none; filter:brightness(1.07); }
+  a.btn.bad { background:var(--bad); }
+  a.btn.ghost { background:var(--ghost); color:var(--ink); }
+  a.btn.sm { padding:6px 10px; font-size:13px; border-radius:8px; }
+  .live-chip { position:fixed; left:16px; bottom:16px; z-index:1500; background:var(--card); color:var(--ink); border:1px solid var(--line); box-shadow:var(--shadow); border-radius:99px; padding:8px 14px; font-size:13px; font-weight:700; cursor:pointer; display:flex; gap:8px; align-items:center; }
+  .dotlive { width:10px; height:10px; border-radius:50%; background:var(--ok); animation:pulse 1.6s infinite; }
+  @keyframes pulse { 0% { box-shadow:0 0 0 0 rgba(22,163,74,.6); } 70% { box-shadow:0 0 0 10px rgba(22,163,74,0); } 100% { box-shadow:0 0 0 0 rgba(22,163,74,0); } }
+  .sos-item { border-color:var(--bad); box-shadow:0 0 0 2px var(--red-bg); }
+  .sos-stat { background:var(--red-bg); }
   .hidden { display:none !important; }
 </style>
 </head>
@@ -200,6 +255,7 @@
 <main id="app"></main>
 <div id="toast"></div>
 <div id="modalRoot"></div>
+<div id="liveChip" class="live-chip hidden"></div>
 
 <script>
 let token = localStorage.getItem('token');
@@ -217,6 +273,15 @@ let badgeTimer = null;
 const rideCache = {};
 const nameCache = {};
 const liveMaps = [];
+let msgCount = 0;
+let notifCount = 0;
+let chatTimer = null;
+let chatOpen = null;
+let geoFrom = null;
+let geoTo = null;
+let extraDates = [];
+let pendingSearch = null;
+const shares = {};
 const PREFS = [['noSmoking', 'No smoking'], ['noPets', 'No pets'], ['ac', 'AC available'], ['music', 'Music on'], ['luggage', 'Luggage space']];
 
 const $ = (id) => document.getElementById(id);
@@ -230,7 +295,16 @@ const roundTen = (v) => Math.max(10, Math.round((+v || 0) / 10) * 10);
 
 function nameLink(u) {
   nameCache[u.id] = u.name;
-  return `<a href="#" onclick="openProfile(${u.id});return false">${esc(u.name)}</a>`;
+  return `<a href="#" onclick="openProfile(${u.id});return false">${esc(u.name)}</a>${u.verified ? ' <span class="vt" title="Verified email, phone and ID">✔</span>' : ''}`;
+}
+
+function avatar(u, cls = '') {
+  if (u && u.hasPhoto) return `<img class="avatar ${cls}" src="/api/public/photos/${u.id}?v=${u.photoVersion || 0}" alt="">`;
+  return `<div class="avatar ${cls}">${esc(((u && u.name) || '?').charAt(0).toUpperCase())}</div>`;
+}
+
+function badgeSpan(id, n) {
+  return `<span id="${id}" class="badge ${n ? '' : 'hidden'}">${n > 9 ? '9+' : n}</span>`;
 }
 
 function toast(msg, err) {
@@ -261,10 +335,15 @@ async function run(fn) {
 }
 
 function logout() {
-  token = null; me = null; tab = null; badgeCount = 0;
+  Object.keys(shares).forEach(id => stopWatch(id));
+  Object.keys(shares).forEach(id => delete shares[id]);
+  clearInterval(chatTimer); chatTimer = null; chatOpen = null;
+  token = null; me = null; tab = null; badgeCount = 0; msgCount = 0; notifCount = 0;
   clearInterval(badgeTimer); badgeTimer = null;
+  render.resumed = false;
   localStorage.removeItem('token'); localStorage.removeItem('me');
   closeModal();
+  updateLiveChip();
   render();
 }
 
@@ -529,9 +608,11 @@ function placeInput(container, placeholder, onPick) {
 
 function render() {
   document.body.classList.toggle('landing', !me);
+  clearInterval(chatTimer); chatTimer = null;
   if (!me) { renderBar(); return renderAuth(); }
-  if (!tab) tab = me.role === 'DRIVER' ? 'post' : me.role === 'RIDER' ? 'search' : 'stats';
-  if (!badgeTimer && me.role !== 'ADMIN') badgeTimer = setInterval(refreshBadge, 25000);
+  if (!tab || !tabsFor(me.role).some(t => t[0] === tab)) tab = me.role === 'DRIVER' ? 'post' : me.role === 'RIDER' ? 'search' : 'stats';
+  if (!badgeTimer) badgeTimer = setInterval(refreshBadge, 15000);
+  if (!render.resumed && me.role !== 'ADMIN') { render.resumed = true; resumeShares(); }
   renderBar();
   closeModal();
   $('app').innerHTML = '<div id="view"></div>';
@@ -543,29 +624,38 @@ function badgeTab() {
   return !me ? null : me.role === 'DRIVER' ? 'requests' : me.role === 'RIDER' ? 'bookings' : null;
 }
 
+function tabsFor(role) {
+  if (role === 'DRIVER') return [['post', 'Post a ride'], ['myrides', 'My rides'], ['requests', 'Requests'], ['messages', 'Messages'], ['vehicles', 'Vehicles'], ['profile', 'Profile']];
+  if (role === 'RIDER') return [['search', 'Find a ride'], ['bookings', 'My bookings'], ['messages', 'Messages'], ['profile', 'Profile']];
+  return [['stats', 'Overview'], ['users', 'Users'], ['idchecks', 'ID checks'], ['reports', 'Reports'], ['allrides', 'Rides']];
+}
+
 function renderBar() {
-  const tabs = !me ? [] : me.role === 'DRIVER'
-    ? [['post', 'Post a ride'], ['myrides', 'My rides'], ['requests', 'Requests'], ['vehicles', 'Vehicles'], ['profile', 'Profile']]
-    : me.role === 'RIDER'
-      ? [['search', 'Find a ride'], ['bookings', 'My bookings'], ['profile', 'Profile']]
-      : [['stats', 'Overview'], ['users', 'Users'], ['allrides', 'Rides']];
+  const tabs = me ? tabsFor(me.role) : [];
   const bt = badgeTab();
+  const badgeFor = (k) => k === bt ? badgeSpan('badge', badgeCount) : k === 'messages' ? badgeSpan('mbadge', msgCount) : '';
   $('bar').innerHTML = `
     <div class="brand"><img src="/logo.svg" alt="HopIn logo"><span>Hop<b>In</b></span></div>
-    <nav>${tabs.map(t => `<button class="pill ${tab === t[0] ? 'on' : ''}" onclick="go('${t[0]}')">${t[1]}${t[0] === bt ? `<span id="badge" class="badge ${badgeCount ? '' : 'hidden'}">${badgeCount > 9 ? '9+' : badgeCount}</span>` : ''}</button>`).join('')}</nav>
-    ${me ? `<div class="me"><div class="avatar">${esc(me.name.charAt(0).toUpperCase())}</div>
-      <div><b>${esc(me.name)}</b><div class="muted">${me.role}${me.role !== 'ADMIN' ? ' · ' + starLine(me) : ''}</div></div>
+    <nav>${tabs.map(t => `<button class="pill ${tab === t[0] ? 'on' : ''}" onclick="go('${t[0]}')">${t[1]}${badgeFor(t[0])}</button>`).join('')}</nav>
+    ${me ? `<div class="me">
+      <button class="bell" onclick="openNotifications()" aria-label="Notifications" title="Notifications">🔔${badgeSpan('nbadge', notifCount)}</button>
+      ${avatar(me)}
+      <div><b>${esc(me.name)}</b>${me.verified ? ' <span class="vt" title="Verified">✔</span>' : ''}<div class="muted">${me.role}${me.role !== 'ADMIN' ? ' · ' + starLine(me) : ''}</div></div>
       <button class="theme-btn" onclick="toggleTheme()" aria-label="Switch colour theme">${themeLabel()}</button>
       <button class="ghost sm" onclick="logout()">Logout</button></div>` : ''}`;
 }
 
 async function refreshBadge() {
-  if (!me || me.role === 'ADMIN' || !token) return;
+  if (!me || !token) return;
   try {
     const r = await api('GET', '/api/bookings/badge');
     badgeCount = r.count || 0;
-    const b = $('badge');
-    if (b) { b.textContent = badgeCount > 9 ? '9+' : badgeCount; b.classList.toggle('hidden', !badgeCount); }
+    msgCount = r.messages || 0;
+    notifCount = r.notifications || 0;
+    [['badge', badgeCount], ['mbadge', msgCount], ['nbadge', notifCount]].forEach(([id, n]) => {
+      const b = $(id);
+      if (b) { b.textContent = n > 9 ? '9+' : n; b.classList.toggle('hidden', !n); }
+    });
   } catch (e) { }
 }
 
@@ -725,19 +815,58 @@ function openProfile(id) {
     const p = await api('GET', `/api/users/${id}/profile`);
     const driver = p.role === 'DRIVER';
     const relClass = { 'Never cancels rides': 'green', 'Rarely cancels rides': 'amber', 'Frequently cancels rides': 'red' }[p.reliability] || 'gray';
-    openModal(`<div class="prof-head"><div class="avatar lg">${esc(p.name.charAt(0).toUpperCase())}</div>
-        <div><h2>${esc(p.name)}</h2><div class="muted">${driver ? 'Driver' : 'Rider'} · ${starLine(p)}</div></div></div>
+    const self = me && me.id === p.id;
+    const checks = [['Email', p.emailVerified], ['Phone', p.phoneVerified], ['Government ID', p.idVerified]];
+    nameCache[p.id] = p.name;
+    openModal(`<div class="prof-head">${avatar(p, 'lg')}
+        <div><h2>${esc(p.name)} ${p.verified ? '<span class="chip green">✔ Verified</span>' : ''}</h2>
+        <div class="muted">${driver ? 'Driver' : p.role === 'ADMIN' ? 'Admin' : 'Rider'} · ${starLine(p)}</div></div></div>
+      <div class="chips" style="margin-top:12px">${checks.map(([l, ok]) => `<span class="chip ${ok ? 'green' : 'gray'}">${ok ? '✔' : '✗'} ${l}</span>`).join('')}</div>
       ${driver ? `<div class="grid3">
           <div class="stat"><span>Rides published</span><b>${p.ridesPublished}</b></div>
           <div class="stat"><span>Completed</span><b>${p.ridesCompleted}</b></div>
           <div class="stat"><span>Cancelled</span><b>${p.ridesCancelled}</b></div></div>
         <div class="chips"><span class="chip ${relClass}">${esc(p.reliability)}</span><span class="chip">Experience: ${esc(p.experience)}</span></div>`
-        : `<div class="chips" style="margin-top:14px"><span class="chip">Trips taken: ${p.tripsTaken}</span><span class="chip">Experience: ${esc(p.experience)}</span></div>`}
+        : `<div class="chips"><span class="chip">Trips taken: ${p.tripsTaken}</span><span class="chip">Experience: ${esc(p.experience)}</span></div>`}
+      ${p.summary ? `<div class="summary"><b>Rating summary</b><br>${esc(p.summary)}</div>` : ''}
       ${prefChips(p)}
       ${p.note ? `<div class="note"><b>${driver ? 'Special instructions' : 'About'}</b><br>${esc(p.note)}</div>` : ''}
       <h3 style="margin-top:16px">Recent reviews</h3>
-      ${p.reviews.length ? p.reviews.map(reviewRow).join('') : '<p class="muted">No reviews yet.</p>'}`, true);
+      ${p.reviews.length ? p.reviews.map(reviewRow).join('') : '<p class="muted">No reviews yet.</p>'}
+      ${!self && me && me.role !== 'ADMIN' && p.role !== 'ADMIN' ? `<div class="actions" style="margin-top:16px;border-top:1px solid var(--line);padding-top:12px">
+        <button class="ghost sm" onclick="reportUser(${p.id})">⚑ Report</button>
+        <button class="bad sm" onclick="blockUserSelf(${p.id})">Block</button></div>` : ''}`, true);
   });
+}
+
+const REPORT_REASONS = ['Unsafe driving', 'Harassment or abuse', 'Did not show up', 'Asked for more money', 'Fake profile', 'Other'];
+
+function reportUser(id) {
+  const name = nameCache[id] || 'this user';
+  openModal(`<h2>Report ${esc(name)}</h2><p class="sub">Reports go to the HopIn admin team. ${esc(name)} won't see who reported them.</p>
+    <label>Reason</label><select id="rreason">${REPORT_REASONS.map(r => `<option>${r}</option>`).join('')}</select>
+    <label>What happened? (optional)</label><textarea id="rdetails" rows="3" maxlength="500" placeholder="Add any details that help us understand"></textarea>
+    <button class="bad" id="rsend" style="width:100%">Send report</button>`, true);
+  $('rsend').onclick = () => run(async () => {
+    await api('POST', `/api/users/${id}/report`, { reason: $('rreason').value, details: $('rdetails').value });
+    closeModal();
+    toast('Report sent. Thank you for keeping HopIn safe');
+  });
+}
+
+function blockUserSelf(id) {
+  const name = nameCache[id] || 'this user';
+  openModal(`<h2>Block ${esc(name)}?</h2><p class="sub">You won't see each other's rides, can't book each other and can't send messages. You can unblock them later from your Profile.</p>
+    <div class="actions"><button class="bad" id="bconfirm">Block</button><button class="ghost" onclick="closeModal()">Cancel</button></div>`, true);
+  $('bconfirm').onclick = () => run(async () => {
+    await api('POST', `/api/users/${id}/block`);
+    toast(name + ' is blocked');
+    render();
+  });
+}
+
+function unblockUser(id) {
+  run(async () => { await api('DELETE', `/api/users/${id}/block`); toast('Unblocked'); render(); });
 }
 
 function rideCard(r, reqs) {
@@ -751,6 +880,10 @@ function rideCard(r, reqs) {
       return `<div class="paxrow"><div>${nameLink(b.rider)} <span class="muted">· ${b.seats} seat(s) · ${b.paid ? 'paid ' + inr(b.amountPaid) : 'not paid yet'}</span></div>
         ${g ? `<span>${starIcons(g)} <span class="muted">rated</span></span>` : `<button class="sm" onclick="ratePassenger(${r.id},${b.rider.id})">Rate passenger</button>`}</div>`;
     }).join('') : '<p class="muted" style="margin:6px 0 0">No passengers on this ride.</p>'}</div>`;
+  } else if (r.status === 'OPEN' && pax.length) {
+    paxHtml = `<div class="pax"><b>Confirmed passengers</b>${pax.map(b => `<div class="paxrow"><div>${nameLink(b.rider)}
+        <span class="muted">· ${b.seats} seat(s) · ${esc(b.pickupName)} → ${esc(b.dropName)}</span></div>
+        <button class="ghost sm" onclick="openChat(${r.id},${b.rider.id})">💬 Message</button></div>`).join('')}</div>`;
   }
   return `<div class="item"><div class="head"><div><div class="route">${esc(r.source)} → ${esc(r.destination)}</div>
       <div class="muted">${fmt(r.departTime)} · ${r.seatsLeft}/${r.seatsTotal} seats left</div></div>
@@ -759,6 +892,8 @@ function rideCard(r, reqs) {
     ${timeline(pts)}${paxHtml}
     <div class="actions"><button class="ghost sm" onclick="showRide(${r.id})">View on map</button>
       ${r.status === 'OPEN' ? `${pending ? `<button class="warn sm" onclick="go('requests')">${pending} request(s) waiting</button>` : ''}
+        <button class="ghost sm" onclick="tripTools(${r.id})">🛡️ Trip tools</button>
+        ${shares[r.id] ? '<span class="chip green">● Sharing live</span>' : ''}
         <button class="ok sm" onclick="rideAction(${r.id},'complete')">Mark completed</button>
         <button class="bad sm" onclick="rideAction(${r.id},'cancel')">Cancel ride</button>` : ''}</div></div>`;
 }
@@ -767,6 +902,7 @@ const views = {
   async post() {
     draft = { from: null, to: null, stops: [] };
     roadKm = null;
+    extraDates = [];
     const [vehicles] = await Promise.all([api('GET', '/api/vehicles'), loadMaps()]);
     $('view').innerHTML = `
     <div class="split">
@@ -779,19 +915,27 @@ const views = {
         <div class="stopchips" id="stopList"></div>
         <div id="stopBox"></div>
         <label>To</label><div id="toBox"></div>
+        <div id="meetBox"></div>
         <div class="grid2">
           <div><label>Departure date</label><input id="ddate" type="date" min="${today()}"></div>
           <div><label>Departure time</label><input id="dtime" type="time"></div>
+        </div>
+        <label>Also post on these dates (optional, same time)</label>
+        <div class="prow" style="margin-bottom:8px"><input id="xdate" type="date" min="${today()}"><button class="ghost sm" type="button" onclick="addDate()">Add date</button></div>
+        <div id="extraDates" class="chips"></div>
+        <div class="grid2">
           <div><label>Seats offered</label><input id="seats" type="number" min="1" value="3"></div>
           <div><label>Vehicle</label><select id="veh"><option value="">Not specified</option>${vehicles.map(v => `<option value="${v.id}">${esc(v.model)} (${esc(v.plate)})</option>`).join('')}</select></div>
         </div>
         <label>Price per seat, full route (₹, multiple of 10)</label>
         <input id="price" type="number" min="10" step="10" placeholder="e.g. 250" oninput="updateLegs()" onchange="this.value = this.value ? roundTen(this.value) : ''; updateLegs()">
+        <div id="priceHint" class="price-hint hidden"></div>
         <div id="rateBtns" class="actions hidden" style="margin:-2px 0 12px">
           <span class="muted">Quick price:</span>
           <button class="ghost sm" onclick="quickPrice(2)">₹2/km</button><button class="ghost sm" onclick="quickPrice(3)">₹3/km</button><button class="ghost sm" onclick="quickPrice(4)">₹4/km</button>
         </div>
         <div class="legs" id="legs"></div>
+        <p class="muted" style="margin:-4px 0 12px">💡 Your price is final once riders book, so set it carefully.</p>
         <label class="check"><input type="checkbox" id="neg" checked> Riders can make offers and I can bargain</label>
         <button style="width:100%" onclick="postRide()">Post ride</button>
       </div>
@@ -811,11 +955,13 @@ const views = {
             roadKm = km;
             $('rateBtns').classList.remove('hidden');
             setInfo('map', km.toFixed(1) + ' km · ' + Math.round(min) + ' min by road');
+            updateLegs();
           }
         });
         else clearMap(curMap);
       }
       updateLegs();
+      suggestMeetingPoints();
     };
     placeInput($('fromBox'), 'Starting point', (v) => { draft.from = v; window.redrawPost(); });
     placeInput($('toBox'), 'Final destination', (v) => { draft.to = v; window.redrawPost(); });
@@ -842,17 +988,29 @@ const views = {
     cache(list.map(b => b.ride));
     $('view').innerHTML = `<h2>Booking requests</h2><p class="sub">Requests for your open rides. Accept an offer, counter with your own price, or reject.</p>` + (list.length ? list.map(b => {
       const r = b.ride;
-      return `<div class="item"><div class="head"><div><div class="route">${nameLink(b.rider)} <span class="muted">· ${starLine(b.rider)}</span></div>
-        <div class="muted">${b.seats} seat(s) · ride ${esc(r.source)} → ${esc(r.destination)} · ${fmt(r.departTime)}</div></div>${statusChip(b.status)}</div>
+      return `<div class="item"><div class="head"><div class="who">${avatar(b.rider)}<div><div class="route">${nameLink(b.rider)} <span class="muted">· ${starLine(b.rider)}</span></div>
+        <div class="muted">${b.seats} seat(s) · ride ${esc(r.source)} → ${esc(r.destination)} · ${fmt(r.departTime)}</div></div></div>${statusChip(b.status)}</div>
         ${fromTo(b.pickupName, b.dropName)}
         <div class="bargain">List price for this stretch: <b>${inr(b.listPrice)}</b>/seat · Rider offers: <b>${inr(b.offeredPrice)}</b>/seat
           ${b.counterPrice != null ? ` · Your counter: <b>${inr(b.counterPrice)}</b>` : ''}
           ${b.agreedPrice != null ? ` · <span class="chip green">Agreed ${inr(b.agreedPrice)}/seat</span>` : ''}</div>
         <div class="actions"><button class="ghost sm" onclick="showRide(${r.id},${b.pickupIdx},${b.dropIdx})">View on map</button>
+        <button class="ghost sm" onclick="openChat(${r.id},${b.rider.id})">💬 Message</button>
         ${b.status === 'PENDING' ? `<button class="ok sm" onclick="bookingAction(${b.id},'accept')">Accept ${inr(b.offeredPrice)}</button>
           ${r.negotiable ? `<button class="warn sm" onclick="counterOffer(${b.id},${b.listPrice})">Counter offer</button>` : ''}
           <button class="bad sm" onclick="bookingAction(${b.id},'reject')">Reject</button>` : ''}</div></div>`;
     }).join('') : '<div class="card muted">No requests for your open rides.</div>');
+  },
+
+  async messages() {
+    const list = await api('GET', '/api/chats');
+    list.forEach(c => { nameCache[c.other.id] = c.other.name; });
+    $('view').innerHTML = `<div class="chat-wrap">
+      <div class="card chat-list"><h2>Messages</h2><p class="sub">Chats with ${me.role === 'DRIVER' ? 'riders about your rides' : 'drivers before and after booking'}.</p>
+        <div id="convs">${list.length ? list.map(convRow).join('') : '<p class="muted">No conversations yet. ' + (me.role === 'DRIVER' ? 'Message a rider from Requests or My rides.' : 'Message a driver from a search result or your bookings.') + '</p>'}</div></div>
+      <div class="card chat-pane" id="chatPane"><div class="mapnote">Select a conversation</div></div></div>`;
+    if (chatOpen) loadThread(chatOpen.rideId, chatOpen.riderId);
+    else if (list.length && window.innerWidth > 900) loadThread(list[0].rideId, list[0].riderId);
   },
 
   async vehicles() {
@@ -866,41 +1024,87 @@ const views = {
   },
 
   async profile() {
-    const u = await api('GET', '/api/users/me');
+    const [u, blocked] = await Promise.all([api('GET', '/api/users/me'), api('GET', '/api/users/blocked')]);
     me = u;
     localStorage.setItem('me', JSON.stringify(me));
     renderBar();
     const driver = u.role === 'DRIVER';
-    $('view').innerHTML = `<div class="card narrow"><h2>My profile</h2>
-      <p class="sub">${driver ? 'Riders see this when they click your name. Your preferences apply to all your rides.' : 'Drivers and other riders see this when they click your name.'}</p>
-      <label>Name</label><input id="pname" value="${esc(u.name)}">
-      ${driver ? `<label>Ride preferences</label><div class="prefs">${PREFS.map(([k, l]) => `<label class="check"><input type="checkbox" id="pf_${k}" ${u[k] ? 'checked' : ''}> ${l}</label>`).join('')}</div>` : ''}
-      <label>${driver ? 'Special instructions for riders' : 'About me'}</label>
-      <textarea id="pnote" maxlength="300" rows="3" placeholder="${driver ? 'e.g. Please be on time, I wait 5 minutes max' : 'e.g. Student, quiet traveller'}">${esc(u.note || '')}</textarea>
-      <div class="actions"><button onclick="saveProfile()">Save profile</button><button class="ghost" onclick="openProfile(${u.id})">Preview public profile</button></div></div>`;
+    const idNames = { AADHAAR: 'Aadhaar', DRIVING_LICENCE: 'Driving licence', PAN: 'PAN card', PASSPORT: 'Passport', VOTER_ID: 'Voter ID' };
+    const status = (ok, pending) => ok ? '<span class="chip green">✔ Verified</span>' : pending ? '<span class="chip amber">Waiting for review</span>' : '<span class="chip gray">Not verified</span>';
+    $('view').innerHTML = `<div class="split">
+      <div class="card"><h2>My profile</h2>
+        <p class="sub">${driver ? 'Riders see this when they click your name. Your preferences apply to all your rides.' : 'Drivers and other riders see this when they click your name.'}</p>
+        <div class="photo-row">${avatar(u, 'xl')}
+          <div><input type="file" id="photoFile" accept="image/*" class="hidden" onchange="uploadPhoto(this)">
+          <div class="actions"><button class="ghost sm" onclick="$('photoFile').click()">${u.hasPhoto ? 'Change photo' : 'Add a photo'}</button>
+          ${u.hasPhoto ? '<button class="ghost sm" onclick="removePhoto()">Remove</button>' : ''}</div>
+          <p class="muted" style="margin:6px 0 0">A clear face photo helps others trust you.</p></div></div>
+        <label>Name</label><input id="pname" value="${esc(u.name)}">
+        ${driver ? `<label>Ride preferences</label><div class="prefs">${PREFS.map(([k, l]) => `<label class="check"><input type="checkbox" id="pf_${k}" ${u[k] ? 'checked' : ''}> ${l}</label>`).join('')}</div>` : ''}
+        <label>${driver ? 'Special instructions for riders' : 'About me'}</label>
+        <textarea id="pnote" maxlength="300" rows="3" placeholder="${driver ? 'e.g. Please be on time, I wait 5 minutes max' : 'e.g. Student, quiet traveller'}">${esc(u.note || '')}</textarea>
+        <div class="actions"><button onclick="saveProfile()">Save profile</button><button class="ghost" onclick="openProfile(${u.id})">Preview public profile</button></div>
+      </div>
+      <div>
+        <div class="card"><h2>Verification ${u.verified ? '<span class="chip green">✔ Verified</span>' : ''}</h2>
+          <p class="sub">Verify your email, phone and government ID to get the ✔ Verified badge.</p>
+          <div class="vrow"><div><b>Email</b><div class="muted">${esc(u.email)}</div></div>${status(u.emailVerified)}</div>
+          ${u.emailVerified ? '' : `<div class="vform"><div class="actions"><button class="sm" onclick="sendCode('email')">Send code to my email</button></div>
+            <div id="emailCodeBox" class="hidden"><div id="emailDemo"></div><div class="prow"><input id="emailCode" inputmode="numeric" maxlength="6" placeholder="6-digit code" onkeydown="if(event.key==='Enter')confirmCode('email')"><button class="ok sm" onclick="confirmCode('email')">Verify</button></div></div></div>`}
+          <div class="vrow"><div><b>Phone</b><div class="muted">${u.phone ? '+91 ' + esc(u.phone) : 'No number added'}</div></div>${status(u.phoneVerified)}</div>
+          ${u.phoneVerified ? '' : `<div class="vform"><div class="prow"><input id="phoneNo" inputmode="tel" maxlength="14" placeholder="10-digit mobile number" value="${esc(u.phone || '')}"><button class="sm" onclick="sendCode('phone')">Send code</button></div>
+            <div id="phoneCodeBox" class="hidden" style="margin-top:8px"><div id="phoneDemo"></div><div class="prow"><input id="phoneCode" inputmode="numeric" maxlength="6" placeholder="6-digit code" onkeydown="if(event.key==='Enter')confirmCode('phone')"><button class="ok sm" onclick="confirmCode('phone')">Verify</button></div></div></div>`}
+          <div class="vrow"><div><b>Government ID</b><div class="muted">${u.idType ? esc(idNames[u.idType] || u.idType) + ' ending ' + esc(u.idLast4) : 'Not submitted'}</div></div>
+            ${u.idStatus === 'REJECTED' ? '<span class="chip red">Rejected</span>' : status(u.idVerified, u.idStatus === 'PENDING')}</div>
+          ${u.idVerified || u.idStatus === 'PENDING' ? '' : `<div class="vform"><div class="grid2">
+              <div><label>ID type</label><select id="idType">${Object.entries(idNames).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></div>
+              <div><label>Last 4 characters</label><input id="idLast4" maxlength="4" placeholder="e.g. 4821" style="text-transform:uppercase"></div></div>
+            <button class="sm" onclick="submitIdCheck()">Submit for review</button>
+            <p class="muted" style="margin:8px 0 0">We only store the ID type and its last 4 characters. An admin reviews it.</p></div>`}
+        </div>
+        <div class="card"><h2>Blocked users</h2>${blocked.length ? blocked.map(b => `<div class="paxrow"><div class="who">${avatar(b)}<b>${esc(b.name)}</b></div><button class="ghost sm" onclick="unblockUser(${b.id})">Unblock</button></div>`).join('') : '<p class="muted">You haven\'t blocked anyone.</p>'}</div>
+      </div></div>`;
   },
 
   async search() {
     await loadMaps();
+    geoFrom = null; geoTo = null;
     $('view').innerHTML = `
     <div class="split">
       <div>
         <div class="card">
           <h2>Find a ride</h2>
-          <p class="sub">All four fields are needed. Matches rides that pass through your places, including stops.</p>
+          <p class="sub">From, To, Date and Seats are needed. Use 📍 or Find to search by distance, or just type a town name.</p>
           <div class="grid2">
-            <div><label>From</label><input id="fs" placeholder="Pickup area or city" oninput="this.classList.remove('err')" onkeydown="if(event.key==='Enter')searchRides()"></div>
-            <div><label>To</label><input id="fd" placeholder="Drop-off area or city" oninput="this.classList.remove('err')" onkeydown="if(event.key==='Enter')searchRides()"></div>
+            <div style="margin-bottom:12px"><label>From</label>
+              <div class="prow"><input id="fs" placeholder="Pickup area or city" oninput="this.classList.remove('err'); clearGeo('from')" onkeydown="if(event.key==='Enter')searchRides()">
+              <button class="ghost sm" type="button" onclick="findPlace('from')">Find</button><button class="ghost sm" type="button" title="Use my location" onclick="nearMe()">📍</button></div>
+              <div id="fsList" class="plist hidden"></div><div id="fsGeo" class="geo-note"></div></div>
+            <div style="margin-bottom:12px"><label>To</label>
+              <div class="prow"><input id="fd" placeholder="Drop-off area or city" oninput="this.classList.remove('err'); clearGeo('to')" onkeydown="if(event.key==='Enter')searchRides()">
+              <button class="ghost sm" type="button" onclick="findPlace('to')">Find</button></div>
+              <div id="fdList" class="plist hidden"></div><div id="fdGeo" class="geo-note"></div></div>
             <div><label>Date</label><input id="fdate" type="date" min="${today()}" oninput="this.classList.remove('err')"></div>
             <div><label>Seats</label><input id="fseats" type="number" min="1" value="1" oninput="this.classList.remove('err')"></div>
+            <div><label>Search radius</label><select id="frad"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="40">40 km</option></select></div>
           </div>
           <button onclick="searchRides()" style="width:100%">Search rides</button>
         </div>
         <div id="results"><div class="card muted">Enter From, To, date and seats, then search.</div></div>
+        <div id="alertsBox"></div>
       </div>
       <div class="mapbox" id="map"></div>
     </div>`;
     curMap = newMap('map');
+    loadAlerts();
+    if (pendingSearch) {
+      const ps = pendingSearch;
+      pendingSearch = null;
+      $('fs').value = ps.from || '';
+      $('fd').value = ps.to || '';
+      if (ps.date && ps.date >= today()) $('fdate').value = ps.date;
+      if (ps.from && ps.to && $('fdate').value) searchRides();
+    }
   },
 
   async bookings() {
@@ -910,9 +1114,11 @@ const views = {
     $('view').innerHTML = `<h2>My bookings</h2><p class="sub">Your requests, offers and trips. Only your own stretch of each ride is shown.</p>` + (list.length ? list.map(b => {
       const r = b.ride;
       const done = b.status === 'CONFIRMED' && r.status === 'COMPLETED';
+      const live = b.status === 'CONFIRMED' && r.status === 'OPEN';
+      const canChat = r.status !== 'CANCELLED' && ['PENDING', 'COUNTERED', 'CONFIRMED'].includes(b.status);
       const g = givenScore(r.id, r.driver.id);
-      return `<div class="item"><div class="head"><div><div class="route">${esc(b.pickupName)} → ${esc(b.dropName)}</div>
-        <div class="muted">${fmt(r.departTime)} · ${b.seats} seat(s) · driver ${nameLink(r.driver)} (${starLine(r.driver)})</div></div>
+      return `<div class="item"><div class="head"><div class="who">${avatar(r.driver)}<div><div class="route">${esc(b.pickupName)} → ${esc(b.dropName)}</div>
+        <div class="muted">${fmt(r.departTime)} · ${b.seats} seat(s) · driver ${nameLink(r.driver)} (${starLine(r.driver)})</div></div></div>
         <div>${statusChip(b.status)}${r.status === 'CANCELLED' && b.status === 'CANCELLED' ? '<span class="chip red">ride cancelled</span>' : ''}</div></div>
         ${fromTo(b.pickupName, b.dropName)}
         <div class="bargain">List price: <b>${inr(b.listPrice)}</b>/seat · Your offer: <b>${inr(b.offeredPrice)}</b>
@@ -920,6 +1126,8 @@ const views = {
           ${b.agreedPrice != null ? ` · <span class="chip green">Agreed ${inr(b.agreedPrice)}/seat = ${inr(b.agreedPrice * b.seats)}</span>` : ''}
           ${b.paid ? ` · <span class="chip green">Paid ${inr(b.amountPaid)}</span>` : ''}</div>
         <div class="actions"><button class="ghost sm" onclick="showRide(${r.id},${b.pickupIdx},${b.dropIdx},'seg')">View my route</button>
+          ${canChat ? `<button class="ghost sm" onclick="openChat(${r.id},${me.id})">💬 Message driver</button>` : ''}
+          ${live ? `<button class="ghost sm" onclick="tripTools(${r.id})">🛡️ Trip tools</button>${shares[r.id] ? '<span class="chip green">● Sharing live</span>' : ''}` : ''}
           ${b.status === 'COUNTERED' ? `<button class="ok sm" onclick="bookingAction(${b.id},'accept-counter')">Accept ${inr(b.counterPrice)}</button><button class="bad sm" onclick="cancelBooking(${b.id})">Decline</button>` : ''}
           ${(b.status === 'PENDING' || b.status === 'CONFIRMED') && r.status !== 'COMPLETED' ? `<button class="bad sm" onclick="cancelBooking(${b.id})">Cancel</button>` : ''}
           ${done && !b.paid ? `<button class="ok sm" onclick="payBooking(${b.id})">Pay ${inr(b.agreedPrice * b.seats)}</button>` : ''}
@@ -929,16 +1137,41 @@ const views = {
 
   async stats() {
     const s = await api('GET', '/api/admin/stats');
+    const labels = { users: 'Users', rides: 'Rides', bookings: 'Bookings', confirmedBookings: 'Confirmed bookings', pendingIdChecks: 'ID checks waiting', openReports: 'Open reports', openSos: 'Open SOS alerts' };
     $('view').innerHTML = `<h2>Overview</h2><p class="sub">Platform activity at a glance.</p><div class="grid2">
-      ${Object.entries(s).map(([k, v]) => `<div class="stat"><span>${esc(k)}</span><b>${v}</b></div>`).join('')}</div>`;
+      ${Object.entries(s).map(([k, v]) => `<div class="stat ${k === 'openSos' && v ? 'sos-stat' : ''}"><span>${esc(labels[k] || k)}</span><b>${v}</b></div>`).join('')}</div>`;
   },
 
   async users() {
     const list = await api('GET', '/api/admin/users');
-    $('view').innerHTML = `<h2>Users</h2><p class="sub">Block or unblock accounts.</p>` + list.map(u => `
-      <div class="item"><div class="head"><div><b>${esc(u.name)}</b><div class="muted">${esc(u.email)}</div></div>
-      <div class="actions"><span class="chip">${u.role}</span>${u.blocked ? '<span class="chip red">BLOCKED</span>' : ''}
-      ${u.role !== 'ADMIN' ? (u.blocked ? `<button class="ok sm" onclick="blockUser(${u.id},'unblock')">Unblock</button>` : `<button class="bad sm" onclick="blockUser(${u.id},'block')">Block</button>`) : ''}</div></div></div>`).join('');
+    $('view').innerHTML = `<h2>Users</h2><p class="sub">Suspend or restore accounts.</p>` + list.map(u => `
+      <div class="item"><div class="head"><div class="who">${avatar(u)}<div><b>${esc(u.name)}</b> ${u.verified ? '<span class="chip green">✔ Verified</span>' : ''}<div class="muted">${esc(u.email)}</div></div></div>
+      <div class="actions"><span class="chip">${u.role}</span>${u.blocked ? '<span class="chip red">SUSPENDED</span>' : ''}
+      ${u.role !== 'ADMIN' ? (u.blocked ? `<button class="ok sm" onclick="blockUser(${u.id},'unblock')">Restore</button>` : `<button class="bad sm" onclick="blockUser(${u.id},'block')">Suspend</button>`) : ''}</div></div></div>`).join('');
+  },
+
+  async idchecks() {
+    const list = await api('GET', '/api/admin/id-requests');
+    const idNames = { AADHAAR: 'Aadhaar', DRIVING_LICENCE: 'Driving licence', PAN: 'PAN card', PASSPORT: 'Passport', VOTER_ID: 'Voter ID' };
+    $('view').innerHTML = `<h2>ID checks</h2><p class="sub">Users waiting for government ID approval.</p>` + (list.length ? list.map(u => `
+      <div class="item"><div class="head"><div class="who">${avatar(u)}<div><b>${esc(u.name)}</b> <span class="chip">${u.role}</span><div class="muted">${esc(u.email)}${u.phone ? ' · +91 ' + esc(u.phone) : ''}</div></div></div>
+      <div class="actions"><span class="chip amber">${esc(idNames[u.idType] || u.idType)} ending ${esc(u.idLast4)}</span></div></div>
+      <div class="chips"><span class="chip ${u.emailVerified ? 'green' : 'gray'}">${u.emailVerified ? '✔' : '✗'} Email</span><span class="chip ${u.phoneVerified ? 'green' : 'gray'}">${u.phoneVerified ? '✔' : '✗'} Phone</span></div>
+      <div class="actions"><button class="ok sm" onclick="decideId(${u.id},'id-approve')">Approve</button><button class="bad sm" onclick="decideId(${u.id},'id-reject')">Reject</button></div></div>`).join('')
+      : '<div class="card muted">No ID checks waiting.</div>');
+  },
+
+  async reports() {
+    const list = await api('GET', '/api/admin/reports');
+    $('view').innerHTML = `<h2>Reports & SOS</h2><p class="sub">User reports and emergency alerts, newest first.</p>` + (list.length ? list.map(r => `
+      <div class="item ${r.sos && r.status === 'OPEN' ? 'sos-item' : ''}"><div class="head"><div>
+        <div class="route">${r.sos ? '🚨 SOS alert' : '⚑ ' + esc(r.reason)}</div>
+        <div class="muted">${fmt(r.createdAt)} · from <b>${esc(r.reporter.name)}</b>${r.reported ? ' about <b>' + esc(r.reported.name) + '</b>' : ''}${r.rideId ? ' · ride #' + r.rideId : ''}</div></div>
+        ${r.status === 'OPEN' ? '<span class="chip red">OPEN</span>' : '<span class="chip gray">RESOLVED</span>'}</div>
+        ${r.details ? `<div class="note">${esc(r.details)}</div>` : ''}
+        <div class="actions">${r.lat != null ? `<a class="btn ghost sm" target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat=${r.lat}&mlon=${r.lng}#map=16/${r.lat}/${r.lng}">📍 Open location</a>` : ''}
+        ${r.status === 'OPEN' ? `<button class="ok sm" onclick="resolveReport(${r.id})">Mark resolved</button>` : ''}</div></div>`).join('')
+      : '<div class="card muted">No reports.</div>');
   },
 
   async allrides() {
@@ -995,42 +1228,6 @@ function quickPrice(perKm) {
   updateLegs();
 }
 
-function updateLegs() {
-  const el = $('legs');
-  if (!el) return;
-  const pts = draftPoints();
-  const raw = +($('price') && $('price').value);
-  if (pts.length < 2 || !raw) { el.textContent = ''; return; }
-  const price = roundTen(raw);
-  const parts = [];
-  for (let i = 0; i < pts.length - 1; i++) {
-    const a = i === 0 ? 'A' : String(i), b = i === pts.length - 2 ? 'B' : String(i + 1);
-    parts.push(`${a} → ${b}: ${inr(segPrice(price, pts, i, i + 1))}`);
-  }
-  el.textContent = 'Fare by stretch (per seat, rounded to ₹10): ' + parts.join(' · ') + '. Total ' + inr(price) + '. Riders pay only for the part they travel.';
-}
-
-function postRide() {
-  run(async () => {
-    if (!draft.from) throw new Error('Search for the starting point and pick it from the list');
-    if (!draft.to) throw new Error('Search for the destination and pick it from the list');
-    if (!$('ddate').value) throw new Error('Choose a departure date');
-    if (!$('dtime').value) throw new Error('Choose a departure time');
-    const price = +$('price').value;
-    if (!price) throw new Error('Enter a price per seat');
-    if (price % 10 !== 0) throw new Error('Price per seat must be a multiple of ₹10');
-    await api('POST', '/api/rides', {
-      source: draft.from.name, srcLat: draft.from.lat, srcLng: draft.from.lng,
-      destination: draft.to.name, dstLat: draft.to.lat, dstLng: draft.to.lng,
-      stops: draft.stops.map(s => ({ name: s.name, lat: s.lat, lng: s.lng })),
-      departTime: $('ddate').value + 'T' + $('dtime').value, seats: +$('seats').value, pricePerSeat: price,
-      negotiable: $('neg').checked, vehicleId: $('veh').value ? +$('veh').value : null
-    });
-    toast('Ride posted');
-    go('myrides');
-  });
-}
-
 function addVehicle() {
   run(async () => {
     await api('POST', '/api/vehicles', { model: $('vm').value, plate: $('vp').value, seats: +$('vs').value });
@@ -1051,64 +1248,6 @@ function saveProfile() {
     renderBar();
     toast('Profile saved');
   });
-}
-
-function searchRides() {
-  const ids = ['fs', 'fd', 'fdate', 'fseats'];
-  const missing = ids.filter(k => !$(k).value.trim() || (k === 'fseats' && +$(k).value < 1));
-  ids.forEach(k => $(k).classList.toggle('err', missing.includes(k)));
-  if (missing.length) {
-    $('results').innerHTML = '<div class="card banner" style="margin:0 0 16px">Please fill in From, To, Date and Seats (highlighted in red).</div>';
-    if (curMap) { clearMap(curMap); curMap._seq++; setInfo('map', null); }
-    return;
-  }
-  run(async () => {
-    const q = new URLSearchParams({ source: $('fs').value.trim(), destination: $('fd').value.trim(), date: $('fdate').value, seats: $('fseats').value });
-    lastResults = await api('GET', '/api/rides/search?' + q);
-    cache(lastResults.map(v => v.ride));
-    $('results').innerHTML = lastResults.length ? lastResults.map(cardFor).join('')
-      : '<div class="card empty"><b>No rides for this route</b><p class="muted">Try another date, or a nearby town on the same route.</p></div>';
-    if (lastResults.length) focusRide(lastResults[0].ride.id);
-    else if (curMap) { clearMap(curMap); curMap._seq++; setInfo('map', null); }
-  });
-}
-
-function extras(v) {
-  const dr = v.driverReviews || [], cp = v.coPassengers || [];
-  return `<div class="extras" onclick="event.stopPropagation()">
-    <details><summary>Driver reviews (${dr.length})</summary>${dr.length ? dr.map(reviewRow).join('') : '<p class="muted">No reviews yet.</p>'}</details>
-    <details><summary>Co-passengers on this trip (${cp.length})</summary>${cp.length ? cp.map(c => `<div class="rev">
-      <div>${nameLink(c)} <span class="muted">· ${starLine(c)} · ${c.seats} seat(s)</span></div>
-      <div class="muted"><b>From:</b> ${esc(c.pickup)} &nbsp; <b>To:</b> ${esc(c.drop)}</div>
-      ${c.lastReview ? `<div class="muted">Latest review: ${starIcons(c.lastReview.score)} ${c.lastReview.comment ? '“' + esc(c.lastReview.comment) + '”' : ''} — ${esc(c.lastReview.from)}</div>` : '<div class="muted">No reviews yet.</div>'}
-    </div>`).join('') : '<p class="muted">No one has booked yet.</p>'}</details></div>`;
-}
-
-function cardFor(v) {
-  const r = v.ride, pts = ridePoints(r), last = pts.length - 1;
-  const pOpts = pts.slice(0, last).map((p, i) => `<option value="${i}" ${i === v.pickupIdx ? 'selected' : ''}>${esc(p.name)}</option>`).join('');
-  const dOpts = pts.map((p, i) => i > v.pickupIdx ? `<option value="${i}" ${i === v.dropIdx ? 'selected' : ''}>${esc(p.name)}</option>` : '').join('');
-  return `<div class="item" id="card${r.id}" onclick="focusRide(${r.id})">
-    <div class="head"><div><div class="route">${esc(r.source)} → ${esc(r.destination)}</div>
-      <div class="muted">${fmt(r.departTime)} · ${r.seatsLeft} seat(s) left</div>
-      <div class="muted" onclick="event.stopPropagation()">Driver: ${nameLink(r.driver)} · ${starLine(r.driver)}</div></div>
-      <div style="text-align:right"><div class="price" id="lp${r.id}">${inr(v.listPrice)} <small>/ seat</small></div>
-      ${r.negotiable ? '<span class="chip teal">bargain allowed</span>' : '<span class="chip gray">fixed price</span>'}
-      <span class="chip">match ${v.score}</span></div></div>
-    ${prefChips(r.driver)}
-    <div id="tl${r.id}">${timeline(pts, { hi: { from: v.pickupIdx, to: v.dropIdx } })}</div>
-    <div class="grid2" onclick="event.stopPropagation()">
-      <div><label>Pickup</label><select id="pk${r.id}" onchange="changeSeg(${r.id},'p')">${pOpts}</select></div>
-      <div><label>Drop-off</label><select id="dp${r.id}" onchange="changeSeg(${r.id},'d')">${dOpts}</select></div>
-      <div><label>Seats</label><input id="bs${r.id}" type="number" min="1" max="${r.seatsLeft}" value="${Math.min(r.seatsLeft, +$('fseats').value || 1)}"></div>
-      <div><label>${r.negotiable ? 'Your offer per seat (₹, multiple of 10)' : 'Price per seat (₹)'}</label>
-        <input id="of${r.id}" type="number" min="10" step="10" value="${v.listPrice}" ${r.negotiable ? '' : 'disabled'} onchange="this.value = roundTen(this.value)"></div>
-    </div>
-    ${extras(v)}
-    <div class="actions" onclick="event.stopPropagation()" style="margin-top:10px">
-      <button onclick="bookRide(${r.id})">${r.negotiable ? 'Send offer' : 'Request seats'}</button>
-      <button class="ghost sm" onclick="showRide(${r.id},+$('pk${r.id}').value,+$('dp${r.id}').value)">Full map</button>
-    </div></div>`;
 }
 
 function segOf(id) {
@@ -1203,6 +1342,623 @@ function ratePassenger(rideId, riderId) {
     toast('Passenger rated');
     render();
   });
+}
+
+function routeKm() {
+  if (roadKm != null) return roadKm;
+  const pts = draftPoints();
+  if (pts.length < 2 || !pts.every(p => p.lat != null)) return null;
+  let d = 0;
+  for (let i = 0; i < pts.length - 1; i++) d += haversine(pts[i], pts[i + 1]);
+  return d * 1.25;
+}
+
+function updatePriceHint(price) {
+  const el = $('priceHint');
+  if (!el) return;
+  const km = routeKm();
+  if (!price || km == null) { el.classList.add('hidden'); return; }
+  const low = roundTen(km * 2), high = Math.max(low, roundTen(km * 3.5));
+  const range = `${inr(low)}–${inr(high)} for about ${Math.round(km)} km`;
+  let cls, text;
+  if (price < low) { cls = 'amber'; text = `Below the recommended range (${range}). Riders will love it, but check it covers your fuel and tolls.`; }
+  else if (price > high) { cls = 'red'; text = `Above the recommended range (${range}). Riders often skip pricier rides.`; }
+  else { cls = 'green'; text = `Within the recommended range (${range}).`; }
+  el.className = 'price-hint ' + cls;
+  el.textContent = text;
+}
+
+function updateLegs() {
+  const el = $('legs');
+  if (!el) return;
+  const pts = draftPoints();
+  const raw = +($('price') && $('price').value);
+  updatePriceHint(raw ? roundTen(raw) : 0);
+  if (pts.length < 2 || !raw) { el.textContent = ''; return; }
+  const price = roundTen(raw);
+  const parts = [];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = i === 0 ? 'A' : String(i), b = i === pts.length - 2 ? 'B' : String(i + 1);
+    parts.push(`${a} → ${b}: ${inr(segPrice(price, pts, i, i + 1))}`);
+  }
+  el.textContent = 'Fare by stretch (per seat, rounded to ₹10): ' + parts.join(' · ') + '. Total ' + inr(price) + '. Riders pay only for the part they travel.';
+}
+
+function addDate() {
+  const v = $('xdate').value;
+  if (!v) return toast('Pick a date first', true);
+  if (v < today()) return toast('That date is in the past', true);
+  if (v === $('ddate').value || extraDates.includes(v)) return toast('That date is already added', true);
+  if (extraDates.length >= 13) return toast('You can post for at most 14 dates at once', true);
+  extraDates.push(v);
+  extraDates.sort();
+  $('xdate').value = '';
+  renderDates();
+}
+
+function removeDate(v) {
+  extraDates = extraDates.filter(d => d !== v);
+  renderDates();
+}
+
+function renderDates() {
+  $('extraDates').innerHTML = extraDates.map(d => `<span class="chip teal">${new Date(d + 'T00:00').toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })}
+    <a href="#" onclick="removeDate('${d}');return false" aria-label="Remove date" style="margin-left:4px">✕</a></span>`).join('');
+}
+
+function postRide() {
+  run(async () => {
+    if (!draft.from) throw new Error('Search for the starting point and pick it from the list');
+    if (!draft.to) throw new Error('Search for the destination and pick it from the list');
+    if (!$('ddate').value) throw new Error('Choose a departure date');
+    if (!$('dtime').value) throw new Error('Choose a departure time');
+    const price = +$('price').value;
+    if (!price) throw new Error('Enter a price per seat');
+    if (price % 10 !== 0) throw new Error('Price per seat must be a multiple of ₹10');
+    const time = $('dtime').value;
+    const posted = await api('POST', '/api/rides', {
+      source: draft.from.name, srcLat: draft.from.lat, srcLng: draft.from.lng,
+      destination: draft.to.name, dstLat: draft.to.lat, dstLng: draft.to.lng,
+      stops: draft.stops.map(s => ({ name: s.name, lat: s.lat, lng: s.lng })),
+      departTime: $('ddate').value + 'T' + time,
+      extraTimes: extraDates.filter(d => d !== $('ddate').value).map(d => d + 'T' + time),
+      seats: +$('seats').value, pricePerSeat: price,
+      negotiable: $('neg').checked, vehicleId: $('veh').value ? +$('veh').value : null
+    });
+    toast(Array.isArray(posted) && posted.length > 1 ? `Posted ${posted.length} rides` : 'Ride posted');
+    go('myrides');
+  });
+}
+
+const meetCache = {};
+let meetSeq = 0;
+
+async function nearbySpots(p) {
+  const key = p.lat.toFixed(4) + ',' + p.lng.toFixed(4);
+  if (meetCache[key]) return meetCache[key];
+  const q = `[out:json][timeout:15];(
+    node["amenity"="fuel"](around:2500,${p.lat},${p.lng});
+    node["highway"="motorway_junction"](around:4000,${p.lat},${p.lng});
+    node["amenity"="bus_station"](around:2500,${p.lat},${p.lng});
+    node["highway"="bus_stop"]["name"](around:1200,${p.lat},${p.lng});
+  );out body 60;`;
+  const res = await fetch('https://overpass-api.de/api/interpreter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'data=' + encodeURIComponent(q)
+  });
+  const data = await res.json();
+  const seen = new Set();
+  const out = (data.elements || []).map(e => {
+    const t = e.tags || {};
+    const kind = t.amenity === 'fuel' ? 'fuel' : t.highway === 'motorway_junction' ? 'exit' : 'bus';
+    const label = t.name || t.brand || (kind === 'fuel' ? 'Fuel station' : kind === 'exit' ? 'Highway exit' + (t.ref ? ' ' + t.ref : '') : 'Bus stop');
+    return { kind, label, lat: e.lat, lng: e.lon, km: haversine(p, { lat: e.lat, lng: e.lon }) };
+  }).filter(s => {
+    const k = s.label.toLowerCase();
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  }).sort((a, b) => (a.label === 'Fuel station' || a.label === 'Bus stop') - (b.label === 'Fuel station' || b.label === 'Bus stop') || a.km - b.km).slice(0, 3);
+  meetCache[key] = out;
+  return out;
+}
+
+async function suggestMeetingPoints() {
+  const box = $('meetBox');
+  if (!box) return;
+  const seq = ++meetSeq;
+  const pts = [];
+  if (draft.from) pts.push({ p: draft.from, slot: 'from', label: 'A' });
+  draft.stops.forEach((s, i) => pts.push({ p: s, slot: 'stop' + i, label: String(i + 1) }));
+  if (draft.to) pts.push({ p: draft.to, slot: 'to', label: 'B' });
+  const withCoords = pts.filter(x => x.p.lat != null);
+  if (!withCoords.length) { box.innerHTML = ''; return; }
+  box.innerHTML = '<div class="meet"><b>Suggested meeting points</b><p class="muted">Looking for fuel stations, bus stands and highway exits nearby…</p></div>';
+  const rows = [];
+  for (const x of withCoords) {
+    try {
+      const spots = await nearbySpots(x.p);
+      if (seq !== meetSeq) return;
+      if (spots.length) rows.push({ x, spots });
+    } catch (e) {
+      if (seq !== meetSeq) return;
+    }
+  }
+  window.meetRows = rows;
+  box.innerHTML = `<div class="meet"><b>Suggested meeting points</b>
+    <p class="muted">Easy pickup spots near your route. Tap Use to swap a point for one of these.</p>
+    ${rows.length ? rows.map((r, ri) => `<div class="meet-row"><span class="mnum sm-pin">${r.x.label}</span><div style="flex:1;min-width:0">
+      <div class="muted">${esc(r.x.p.name)}</div>${r.spots.map((s, si) => `<div class="spot"><span>${s.kind === 'fuel' ? '⛽' : s.kind === 'exit' ? '🛣️' : '🚌'} ${esc(s.label)} <span class="muted">· ${s.km.toFixed(1)} km</span></span>
+      <button class="ghost sm" onclick="useSpot(${ri},${si})">Use</button></div>`).join('')}</div></div>`).join('')
+      : '<p class="muted">No suggestions found near these points.</p>'}</div>`;
+}
+
+function useSpot(ri, si) {
+  const r = window.meetRows && window.meetRows[ri];
+  if (!r) return;
+  const s = r.spots[si];
+  const town = (r.x.p.name || '').split(', ').slice(-2).join(', ');
+  const point = { name: s.label + (town ? ', ' + town : ''), lat: s.lat, lng: s.lng };
+  if (r.x.slot === 'from') { draft.from = point; const i = $('fromBox').querySelector('input'); if (i) i.value = point.name; }
+  else if (r.x.slot === 'to') { draft.to = point; const i = $('toBox').querySelector('input'); if (i) i.value = point.name; }
+  else draft.stops[+r.x.slot.slice(4)] = point;
+  toast('Meeting point updated');
+  window.redrawPost();
+}
+
+function clearGeo(which) {
+  if (which === 'from') { geoFrom = null; $('fsGeo').textContent = ''; }
+  else { geoTo = null; $('fdGeo').textContent = ''; }
+}
+
+function setGeo(which, g) {
+  if (which === 'from') { geoFrom = g; $('fs').value = g.name; $('fs').classList.remove('err'); }
+  else { geoTo = g; $('fd').value = g.name; $('fd').classList.remove('err'); }
+  $(which === 'from' ? 'fsGeo' : 'fdGeo').textContent = '📍 Searching by distance from this exact spot';
+}
+
+function findPlace(which) {
+  const input = $(which === 'from' ? 'fs' : 'fd');
+  const list = $(which === 'from' ? 'fsList' : 'fdList');
+  const q = input.value.trim();
+  if (!q) return toast('Type a place first', true);
+  run(async () => {
+    const res = await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=6&q=' + encodeURIComponent(q));
+    const data = await res.json();
+    list.innerHTML = data.length ? data.map((d, i) => `<div class="popt" data-i="${i}">${esc(d.display_name)}</div>`).join('')
+      : '<div class="popt none">No places found. Try adding the city name.</div>';
+    list.classList.remove('hidden');
+    list.querySelectorAll('.popt[data-i]').forEach(el => el.addEventListener('click', () => {
+      const d = data[+el.dataset.i];
+      list.classList.add('hidden');
+      setGeo(which, { name: shortName(d), lat: +d.lat, lng: +d.lon });
+    }));
+  });
+}
+
+function nearMe() {
+  if (!navigator.geolocation) return toast('Your browser cannot share location', true);
+  $('fsGeo').textContent = 'Getting your location…';
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const g = { name: 'My location', lat: pos.coords.latitude, lng: pos.coords.longitude };
+    try {
+      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&lat=${g.lat}&lon=${g.lng}`);
+      const d = await r.json();
+      if (d && d.address) g.name = shortName(d);
+    } catch (e) { }
+    setGeo('from', g);
+  }, () => {
+    $('fsGeo').textContent = '';
+    toast('Location permission is needed for rides near you', true);
+  }, { enableHighAccuracy: true, timeout: 15000 });
+}
+
+function searchParams() {
+  const q = { source: $('fs').value.trim(), destination: $('fd').value.trim(), date: $('fdate').value, seats: $('fseats').value };
+  if (geoFrom) { q.fromLat = geoFrom.lat; q.fromLng = geoFrom.lng; }
+  if (geoTo) { q.toLat = geoTo.lat; q.toLng = geoTo.lng; }
+  if (geoFrom || geoTo) q.radiusKm = $('frad').value;
+  return q;
+}
+
+function searchRides() {
+  const ids = ['fs', 'fd', 'fdate', 'fseats'];
+  const missing = ids.filter(k => !$(k).value.trim() || (k === 'fseats' && +$(k).value < 1));
+  ids.forEach(k => $(k).classList.toggle('err', missing.includes(k)));
+  if (missing.length) {
+    $('results').innerHTML = '<div class="card banner" style="margin:0 0 16px">Please fill in From, To, Date and Seats (highlighted in red).</div>';
+    if (curMap) { clearMap(curMap); curMap._seq++; setInfo('map', null); }
+    return;
+  }
+  run(async () => {
+    lastResults = await api('GET', '/api/rides/search?' + new URLSearchParams(searchParams()));
+    cache(lastResults.map(v => v.ride));
+    $('results').innerHTML = lastResults.length ? lastResults.map(cardFor).join('')
+      : `<div class="card empty"><b>No rides for this route</b><p class="muted">Try another date, a bigger radius, or a nearby town on the same route.</p>
+        <button onclick="createAlert()">🔔 Alert me when a ride is posted</button></div>`;
+    if (lastResults.length) focusRide(lastResults[0].ride.id);
+    else if (curMap) { clearMap(curMap); curMap._seq++; setInfo('map', null); }
+  });
+}
+
+function createAlert() {
+  run(async () => {
+    const q = searchParams();
+    await api('POST', '/api/alerts', {
+      source: q.source, destination: q.destination, date: q.date || null, seats: +q.seats || 1,
+      fromLat: q.fromLat ?? null, fromLng: q.fromLng ?? null, toLat: q.toLat ?? null, toLng: q.toLng ?? null,
+      radiusKm: q.radiusKm ? +q.radiusKm : null
+    });
+    toast("Alert saved. We'll notify you when a matching ride is posted");
+    loadAlerts();
+  });
+}
+
+async function loadAlerts() {
+  const box = $('alertsBox');
+  if (!box || !me || me.role !== 'RIDER') return;
+  try {
+    const list = await api('GET', '/api/alerts');
+    box.innerHTML = list.length ? `<div class="card"><h3>🔔 My ride alerts</h3>${list.map(a => `<div class="paxrow">
+      <div><b>${esc(a.source)} → ${esc(a.destination)}</b><div class="muted">${a.date ? new Date(a.date + 'T00:00').toLocaleDateString([], { dateStyle: 'medium' }) : 'Any date'} · ${a.seats} seat(s)${a.fromLat != null || a.toLat != null ? ' · within ' + a.radiusKm + ' km' : ''}</div></div>
+      <button class="ghost sm" onclick="deleteAlert(${a.id})">Delete</button></div>`).join('')}</div>` : '';
+  } catch (e) { }
+}
+
+function deleteAlert(id) {
+  run(async () => { await api('DELETE', `/api/alerts/${id}`); toast('Alert deleted'); loadAlerts(); });
+}
+
+function extras(v) {
+  const dr = v.driverReviews || [], cp = v.coPassengers || [];
+  return `<div class="extras" onclick="event.stopPropagation()">
+    <details><summary>Driver reviews (${dr.length})</summary>${v.driverSummary ? `<div class="summary">${esc(v.driverSummary)}</div>` : ''}${dr.length ? dr.map(reviewRow).join('') : '<p class="muted">No reviews yet.</p>'}</details>
+    <details><summary>Co-passengers on this trip (${cp.length})</summary>${cp.length ? cp.map(c => `<div class="rev">
+      <div>${nameLink(c)} <span class="muted">· ${starLine(c)} · ${c.seats} seat(s)</span></div>
+      <div class="muted"><b>From:</b> ${esc(c.pickup)} &nbsp; <b>To:</b> ${esc(c.drop)}</div>
+      ${c.lastReview ? `<div class="muted">Latest review: ${starIcons(c.lastReview.score)} ${c.lastReview.comment ? '“' + esc(c.lastReview.comment) + '”' : ''} — ${esc(c.lastReview.from)}</div>` : '<div class="muted">No reviews yet.</div>'}
+    </div>`).join('') : '<p class="muted">No one has booked yet.</p>'}</details></div>`;
+}
+
+function cardFor(v) {
+  const r = v.ride, pts = ridePoints(r), last = pts.length - 1;
+  const pOpts = pts.slice(0, last).map((p, i) => `<option value="${i}" ${i === v.pickupIdx ? 'selected' : ''}>${esc(p.name)}</option>`).join('');
+  const dOpts = pts.map((p, i) => i > v.pickupIdx ? `<option value="${i}" ${i === v.dropIdx ? 'selected' : ''}>${esc(p.name)}</option>` : '').join('');
+  const dist = (v.pickupKm != null ? `<span class="chip teal">📍 Pickup ${v.pickupKm} km from you</span>` : '')
+    + (v.dropKm != null ? `<span class="chip teal">🏁 Drop-off ${v.dropKm} km from your destination</span>` : '');
+  return `<div class="item" id="card${r.id}" onclick="focusRide(${r.id})">
+    <div class="head"><div class="who">${avatar(r.driver)}<div><div class="route">${esc(r.source)} → ${esc(r.destination)}</div>
+      <div class="muted">${fmt(r.departTime)} · ${r.seatsLeft} seat(s) left</div>
+      <div class="muted" onclick="event.stopPropagation()">Driver: ${nameLink(r.driver)} · ${starLine(r.driver)}</div></div></div>
+      <div style="text-align:right"><div class="price" id="lp${r.id}">${inr(v.listPrice)} <small>/ seat</small></div>
+      ${r.negotiable ? '<span class="chip teal">bargain allowed</span>' : '<span class="chip gray">fixed price</span>'}
+      <span class="chip">match ${v.score}</span></div></div>
+    ${dist ? `<div class="chips">${dist}</div>` : ''}
+    ${prefChips(r.driver)}
+    <div id="tl${r.id}">${timeline(pts, { hi: { from: v.pickupIdx, to: v.dropIdx } })}</div>
+    <div class="grid2" onclick="event.stopPropagation()">
+      <div><label>Pickup</label><select id="pk${r.id}" onchange="changeSeg(${r.id},'p')">${pOpts}</select></div>
+      <div><label>Drop-off</label><select id="dp${r.id}" onchange="changeSeg(${r.id},'d')">${dOpts}</select></div>
+      <div><label>Seats</label><input id="bs${r.id}" type="number" min="1" max="${r.seatsLeft}" value="${Math.min(r.seatsLeft, +$('fseats').value || 1)}"></div>
+      <div><label>${r.negotiable ? 'Your offer per seat (₹, multiple of 10)' : 'Price per seat (₹)'}</label>
+        <input id="of${r.id}" type="number" min="10" step="10" value="${v.listPrice}" ${r.negotiable ? '' : 'disabled'} onchange="this.value = roundTen(this.value)"></div>
+    </div>
+    ${extras(v)}
+    <div class="actions" onclick="event.stopPropagation()" style="margin-top:10px">
+      <button onclick="bookRide(${r.id})">${r.negotiable ? 'Send offer' : 'Request seats'}</button>
+      <button class="ghost sm" onclick="openChat(${r.id},${me.id})">💬 Message driver</button>
+      <button class="ghost sm" onclick="showRide(${r.id},+$('pk${r.id}').value,+$('dp${r.id}').value)">Full map</button>
+    </div></div>`;
+}
+
+function timeAgo(d) {
+  if (!d) return '';
+  const s = Math.round((Date.now() - new Date(d)) / 1000);
+  if (s < 45) return 'just now';
+  if (s < 3600) return Math.floor(s / 60) + ' min ago';
+  if (s < 86400) return Math.floor(s / 3600) + ' h ago';
+  return new Date(d).toLocaleDateString([], { day: 'numeric', month: 'short' });
+}
+
+function convRow(c) {
+  const sel = chatOpen && chatOpen.rideId === c.rideId && chatOpen.riderId === c.riderId;
+  return `<div class="conv ${sel ? 'sel' : ''}" id="conv-${c.rideId}-${c.riderId}" onclick="loadThread(${c.rideId},${c.riderId})">
+    ${avatar(c.other)}<div class="conv-main"><div class="conv-top"><b>${esc(c.other.name)}</b><span class="muted">${timeAgo(c.lastAt)}</span></div>
+    <div class="muted conv-route">${esc(c.route)} · ${new Date(c.departTime).toLocaleDateString([], { day: 'numeric', month: 'short' })}</div>
+    <div class="conv-last">${c.lastMine ? 'You: ' : ''}${esc(c.lastText)}</div></div>
+    ${c.unread ? `<span class="badge static">${c.unread}</span>` : ''}</div>`;
+}
+
+function openChat(rideId, riderId) {
+  chatOpen = { rideId, riderId };
+  closeModal();
+  go('messages');
+}
+
+function bubbles(t) {
+  if (!t.messages.length) return `<div class="mapnote"><div>No messages yet.<br>Say hello and ask about pickup, luggage or timing.</div></div>`;
+  return t.messages.map(m => `<div class="bubble ${m.senderId === me.id ? 'mine' : 'theirs'}"><div>${esc(m.text)}</div><span>${new Date(m.at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</span></div>`).join('');
+}
+
+async function loadThread(rideId, riderId) {
+  chatOpen = { rideId, riderId };
+  document.querySelectorAll('.conv').forEach(el => el.classList.toggle('sel', el.id === `conv-${rideId}-${riderId}`));
+  const pane = $('chatPane');
+  if (!pane) return;
+  try {
+    const t = await api('GET', `/api/chats/${rideId}/${riderId}`);
+    nameCache[t.other.id] = t.other.name;
+    pane.innerHTML = `<div class="chat-head">${avatar(t.other)}<div><b>${nameLink(t.other)}</b>
+        <div class="muted">${esc(t.route)} · ${fmt(t.departTime)} ${t.rideStatus !== 'OPEN' ? '· ' + t.rideStatus.toLowerCase() : ''}</div></div></div>
+      <div class="msgs" id="msgs">${bubbles(t)}</div>
+      ${t.blocked ? '<div class="banner" style="margin:10px 0 0">You can\'t message this person because one of you has blocked the other.</div>'
+        : `<div class="composer"><textarea id="chatText" rows="1" maxlength="1000" placeholder="Write a message…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
+        <button onclick="sendChat()">Send</button></div>`}`;
+    pane.dataset.count = t.messages.length;
+    const box = $('msgs');
+    box.scrollTop = box.scrollHeight;
+    const conv = $(`conv-${rideId}-${riderId}`);
+    if (conv) { const b = conv.querySelector('.badge'); if (b) b.remove(); }
+    refreshBadge();
+    clearInterval(chatTimer);
+    chatTimer = setInterval(() => pollThread(rideId, riderId), 5000);
+  } catch (e) {
+    pane.innerHTML = `<div class="mapnote">${esc(e.message)}</div>`;
+  }
+}
+
+async function pollThread(rideId, riderId) {
+  const pane = $('chatPane');
+  if (!pane || !chatOpen || chatOpen.rideId !== rideId || chatOpen.riderId !== riderId) { clearInterval(chatTimer); return; }
+  try {
+    const t = await api('GET', `/api/chats/${rideId}/${riderId}`);
+    if (String(t.messages.length) !== pane.dataset.count) {
+      pane.dataset.count = t.messages.length;
+      const box = $('msgs');
+      box.innerHTML = bubbles(t);
+      box.scrollTop = box.scrollHeight;
+    }
+  } catch (e) { }
+}
+
+function sendChat() {
+  const input = $('chatText');
+  const text = input.value.trim();
+  if (!text || !chatOpen) return;
+  const { rideId, riderId } = chatOpen;
+  input.disabled = true;
+  run(async () => {
+    try {
+      await api('POST', `/api/chats/${rideId}/${riderId}`, { text });
+      input.value = '';
+      await pollThread(rideId, riderId);
+      const list = await api('GET', '/api/chats');
+      const convs = $('convs');
+      if (convs) convs.innerHTML = list.map(convRow).join('');
+    } finally {
+      input.disabled = false;
+      input.focus();
+    }
+  });
+}
+
+function openNotifications() {
+  run(async () => {
+    const list = await api('GET', '/api/notifications');
+    window.notifList = list;
+    openModal(`<h2>Notifications</h2>${list.length ? list.map((n, i) => `<div class="notif ${n.seen ? '' : 'unread'}" onclick="openNotif(${i})">
+        <div>${esc(n.text)}</div><span class="muted">${timeAgo(n.createdAt)}</span></div>`).join('') : '<p class="muted">Nothing new yet.</p>'}`, true);
+    if (list.some(n => !n.seen)) {
+      await api('POST', '/api/notifications/read');
+      notifCount = 0;
+      refreshBadge();
+    }
+  });
+}
+
+function openNotif(i) {
+  const n = window.notifList && window.notifList[i];
+  if (!n) return;
+  closeModal();
+  if (!n.tab || !tabsFor(me.role).some(t => t[0] === n.tab)) return;
+  if (n.tab === 'search') pendingSearch = { from: n.searchFrom, to: n.searchTo, date: n.searchDate };
+  go(n.tab);
+}
+
+function shareLink(t) {
+  return location.origin + '/track.html#' + t;
+}
+
+function shareHtml(rideId) {
+  const s = shares[rideId];
+  const link = shareLink(s.token);
+  return `<div class="note">● Sharing is on. ${s.last ? 'Location last sent ' + timeAgo(s.last) + '.' : 'Waiting for your location…'} Keep this page open while you travel.</div>
+    <input readonly value="${esc(link)}" onclick="this.select()">
+    <div class="actions"><button class="ghost sm" onclick="copyLink(${rideId})">Copy link</button>
+    <a class="btn ghost sm" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent('Track my HopIn ride live: ' + link)}">Share on WhatsApp</a>
+    <button class="bad sm" onclick="stopShare(${rideId})">Stop sharing</button></div>
+    ${location.hostname === 'localhost' || location.hostname === '127.0.0.1' ? '<p class="muted">This link only works on this computer while HopIn runs on localhost. Once HopIn is online, anyone with the link can open it.</p>' : ''}`;
+}
+
+function tripTools(rideId) {
+  const r = rideCache[rideId];
+  if (!r) return;
+  openModal(`<h2>🛡️ Trip tools</h2><p class="sub">${esc(r.source)} → ${esc(r.destination)} · ${fmt(r.departTime)}</p>
+    <div class="sos-box"><b>In an emergency</b><p class="muted" style="margin:4px 0 10px">Call the national emergency number, and alert the HopIn team with your location.</p>
+      <div class="actions"><a class="btn bad" href="tel:112">📞 Call 112</a><button class="bad" id="sosBtn" onclick="sendSos(${rideId})">🚨 Send SOS to HopIn</button></div>
+      <div id="sosMsg"></div></div>
+    <h3 style="margin-top:18px">Share live location</h3>
+    <p class="muted">Send family or friends a link that shows where you are on a map, until you stop sharing.</p>
+    <div id="shareBox">${shares[rideId] ? shareHtml(rideId) : `<button onclick="startShare(${rideId})">📍 Start sharing live location</button>`}</div>`, true);
+}
+
+function refreshShareBox(rideId) {
+  const box = $('shareBox');
+  if (box) box.innerHTML = shares[rideId] ? shareHtml(rideId) : `<button onclick="startShare(${rideId})">📍 Start sharing live location</button>`;
+  updateLiveChip();
+}
+
+function startShare(rideId) {
+  if (!navigator.geolocation) return toast('Your browser cannot share location', true);
+  run(async () => {
+    const s = await api('POST', '/api/live/start', { rideId });
+    shares[rideId] = { token: s.token };
+    beginWatch(rideId);
+    refreshShareBox(rideId);
+    toast('Live sharing started');
+  });
+}
+
+function beginWatch(rideId) {
+  const s = shares[rideId];
+  if (!s || !navigator.geolocation || s.watchId != null) return;
+  s.watchId = navigator.geolocation.watchPosition(pos => pushLocation(rideId, pos), () => {
+    toast('Allow location access so your trip can be shared', true);
+  }, { enableHighAccuracy: true, maximumAge: 10000, timeout: 30000 });
+  updateLiveChip();
+}
+
+function pushLocation(rideId, pos) {
+  const s = shares[rideId];
+  if (!s || (s.sentAt && Date.now() - s.sentAt < 10000)) return;
+  s.sentAt = Date.now();
+  api('POST', `/api/live/${s.token}/location`, { lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy })
+    .then(() => { s.last = new Date(); if ($('shareBox')) refreshShareBox(rideId); })
+    .catch(e => { if (/ended|not found/i.test(e.message)) { stopWatch(rideId); delete shares[rideId]; updateLiveChip(); } });
+}
+
+function stopWatch(rideId) {
+  const s = shares[rideId];
+  if (s && s.watchId != null && navigator.geolocation) navigator.geolocation.clearWatch(s.watchId);
+  if (s) s.watchId = null;
+}
+
+function stopShare(rideId) {
+  const s = shares[rideId];
+  if (!s) return;
+  run(async () => {
+    await api('POST', `/api/live/${s.token}/stop`);
+    stopWatch(rideId);
+    delete shares[rideId];
+    refreshShareBox(rideId);
+    toast('Live sharing stopped');
+  });
+}
+
+function copyLink(rideId) {
+  const link = shareLink(shares[rideId].token);
+  if (navigator.clipboard) navigator.clipboard.writeText(link).then(() => toast('Link copied')).catch(() => toast('Select the link and copy it', true));
+  else toast('Select the link and copy it', true);
+}
+
+async function resumeShares() {
+  try {
+    const list = await api('GET', '/api/live/active');
+    list.forEach(s => { shares[s.rideId] = { token: s.token }; beginWatch(s.rideId); });
+    updateLiveChip();
+  } catch (e) { }
+}
+
+function updateLiveChip() {
+  const ids = Object.keys(shares);
+  const chip = $('liveChip');
+  if (!chip) return;
+  chip.classList.toggle('hidden', !ids.length || !me);
+  chip.innerHTML = `<span class="dotlive"></span> Sharing live location${ids.length > 1 ? ' (' + ids.length + ' trips)' : ''}`;
+  chip.onclick = () => { if (ids.length) { if (!rideCache[ids[0]]) return go(me.role === 'DRIVER' ? 'myrides' : 'bookings'); tripTools(+ids[0]); } };
+}
+
+function sendSos(rideId) {
+  const btn = $('sosBtn');
+  if (btn) btn.disabled = true;
+  const send = (lat, lng) => run(async () => {
+    try {
+      await api('POST', '/api/sos', { rideId, lat, lng });
+      const m = $('sosMsg');
+      if (m) m.innerHTML = '<div class="banner" style="margin:10px 0 0">SOS sent. The HopIn team has your location. If you are in danger, call 112 now. Sharing your live location with family also helps.</div>';
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  });
+  if (!navigator.geolocation) return send(null, null);
+  navigator.geolocation.getCurrentPosition(p => send(p.coords.latitude, p.coords.longitude), () => send(null, null), { enableHighAccuracy: true, timeout: 8000 });
+}
+
+function sendCode(kind) {
+  run(async () => {
+    const r = kind === 'email' ? await api('POST', '/api/verify/email/send')
+      : await api('POST', '/api/verify/phone/send', { phone: $('phoneNo').value });
+    $(kind + 'CodeBox').classList.remove('hidden');
+    $(kind + 'Demo').innerHTML = r.simulated
+      ? `<div class="banner" style="margin:0 0 8px">${esc(r.message)} Code: <b style="font-size:16px;letter-spacing:2px">${esc(r.demoCode)}</b></div>`
+      : `<p class="muted" style="margin:0 0 8px">${esc(r.message)}</p>`;
+    $(kind + 'Code').focus();
+  });
+}
+
+function confirmCode(kind) {
+  run(async () => {
+    me = await api('POST', `/api/verify/${kind}/confirm`, { code: $(kind + 'Code').value });
+    localStorage.setItem('me', JSON.stringify(me));
+    toast(kind === 'email' ? 'Email verified' : 'Phone verified');
+    render();
+  });
+}
+
+function submitIdCheck() {
+  run(async () => {
+    me = await api('POST', '/api/verify/id', { idType: $('idType').value, last4: $('idLast4').value });
+    localStorage.setItem('me', JSON.stringify(me));
+    toast('Submitted. An admin will review it soon');
+    render();
+  });
+}
+
+function resizeImage(file, size) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const side = Math.min(img.width, img.height);
+      const c = document.createElement('canvas');
+      c.width = size; c.height = size;
+      c.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, size, size);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('That file is not an image we can read')); };
+    img.src = url;
+  });
+}
+
+function uploadPhoto(input) {
+  const f = input.files && input.files[0];
+  if (!f) return;
+  run(async () => {
+    const dataUrl = await resizeImage(f, 320);
+    me = await api('PUT', '/api/users/me/photo', { dataUrl });
+    localStorage.setItem('me', JSON.stringify(me));
+    toast('Photo updated');
+    render();
+  });
+}
+
+function removePhoto() {
+  run(async () => {
+    me = await api('DELETE', '/api/users/me/photo');
+    localStorage.setItem('me', JSON.stringify(me));
+    toast('Photo removed');
+    render();
+  });
+}
+
+function decideId(id, action) {
+  run(async () => { await api('POST', `/api/admin/users/${id}/${action}`); toast(action === 'id-approve' ? 'ID approved' : 'ID rejected'); render(); });
+}
+
+function resolveReport(id) {
+  run(async () => { await api('POST', `/api/admin/reports/${id}/resolve`); toast('Marked resolved'); render(); });
 }
 
 render();

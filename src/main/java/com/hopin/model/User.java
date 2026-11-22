@@ -1,6 +1,7 @@
 package com.hopin.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +13,7 @@ public class User {
 
     public String name;
 
+    @JsonIgnore
     @Column(unique = true)
     public String email;
 
@@ -33,4 +35,32 @@ public class User {
 
     @Column(length = 300)
     public String note;
+
+    @JsonIgnore
+    public String phone;
+
+    public Boolean emailVerified = false;
+    public Boolean phoneVerified = false;
+
+    @JsonIgnore
+    public String idType;
+
+    @JsonIgnore
+    public String idLast4;
+
+    @JsonIgnore
+    public String idStatus = "NONE";
+
+    public Boolean hasPhoto = false;
+    public Integer photoVersion = 0;
+
+    @JsonProperty("idVerified")
+    public boolean idVerified() {
+        return "APPROVED".equals(idStatus);
+    }
+
+    @JsonProperty("verified")
+    public boolean verified() {
+        return Boolean.TRUE.equals(emailVerified) && Boolean.TRUE.equals(phoneVerified) && idVerified();
+    }
 }

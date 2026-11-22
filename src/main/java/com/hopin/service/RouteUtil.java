@@ -21,6 +21,56 @@ public class RouteUtil {
         return list;
     }
 
+    public record End(String name, Double lat, Double lng, double radiusKm) {
+        public boolean geo() {
+            return lat != null && lng != null;
+        }
+    }
+
+    public record Match(int from, int to, Double fromKm, Double toKm) {
+    }
+
+    public static Match match(List<Point> pts, End a, End b) {
+        int last = pts.size() - 1;
+        Match best = null;
+        double bestScore = Double.MAX_VALUE;
+        for (int i = 0; i < last; i++) {
+            Double da = endDistance(pts.get(i), a);
+            if (da == null) {
+                continue;
+            }
+            for (int j = i + 1; j <= last; j++) {
+                Double db = endDistance(pts.get(j), b);
+                if (db == null) {
+                    continue;
+                }
+                if (da + db < bestScore) {
+                    bestScore = da + db;
+                    best = new Match(i, j, a.geo() ? round1(da) : null, b.geo() ? round1(db) : null);
+                }
+            }
+        }
+        return best;
+    }
+
+    private static Double endDistance(Point p, End e) {
+        if (e.geo()) {
+            if (p.lat() == null || p.lng() == null) {
+                return null;
+            }
+            double d = km(p, new Point(null, e.lat(), e.lng()));
+            return d <= e.radiusKm() ? d : null;
+        }
+        if (e.name() == null || e.name().isBlank()) {
+            return 0.0;
+        }
+        return p.name().toLowerCase().contains(e.name().trim().toLowerCase()) ? 0.0 : null;
+    }
+
+    private static double round1(double v) {
+        return Math.round(v * 10.0) / 10.0;
+    }
+
     public static boolean multipleOf10(Double v) {
         return v != null && v > 0 && v == Math.floor(v) && ((long) v.doubleValue()) % 10 == 0;
     }

@@ -5,7 +5,7 @@ Spring Boot 3 + MySQL + JWT, with a single-page HTML/JS frontend and OpenStreetM
 ## Run it
 
 1. JDK 17+ and Maven installed.
-2. From the folder that contains `pom.xml`, run it with the built-in H2 database (no MySQL needed, data resets on restart):
+2. Quick start with the built-in H2 database (no MySQL needed, data resets on restart):
 
 ```
 mvn spring-boot:run -Dspring-boot.run.profiles=h2
@@ -13,9 +13,10 @@ mvn spring-boot:run -Dspring-boot.run.profiles=h2
 
 3. Open http://localhost:8080. Admin login (seeded on first run): `admin@hopin.com` / `admin123`
 
-### Using MySQL
+### Using MySQL (data is kept)
 
-Start MySQL, then set your credentials as environment variables (Windows Command Prompt shown) and run without the h2 profile:
+1. Install **MySQL Community Server** (MySQL Installer from dev.mysql.com, choose "Server only") and set a root password during setup.
+2. In Command Prompt, from the project folder:
 
 ```
 set DB_USER=root
@@ -24,7 +25,22 @@ set JWT_SECRET=any-long-random-string-at-least-32-characters
 mvn spring-boot:run
 ```
 
-The `hopin` database is created automatically. Passwords are read from environment variables so they never end up on GitHub.
+The `hopin` database and all tables are created automatically on first run. Passwords come from environment variables, so they never end up on GitHub. To keep them across windows, use `setx DB_PASSWORD your_mysql_password` once and open a new window.
+
+### Real verification emails (Gmail)
+
+Without this, email codes are shown on screen as demo codes. To really send them:
+
+1. Turn on **2-Step Verification** on the Gmail account (Google Account → Security).
+2. Create an **App password** (Google Account → Security → App passwords) named `HopIn`. You get a 16-character password.
+3. Before `mvn spring-boot:run`:
+
+```
+set MAIL_USER=yourname@gmail.com
+set MAIL_PASSWORD=the16characterapppassword
+```
+
+Phone codes are always simulated (shown on screen and in the server console), because real SMS needs a paid provider.
 
 ## Maps (free, no API key)
 
@@ -35,20 +51,30 @@ The map uses OpenStreetMap: Leaflet for the map, Nominatim for place search and 
 
 ## Features
 
-- **Map:** free OpenStreetMap with a Streets / Satellite / Classic switcher (top-right of the map), road-style routes and pickup and drop-off pins.
-- **Stops:** the driver searches From, To and up to 5 stops and picks them from the results.
-- **Pickups and drop-offs anywhere on the route:** riders choose where to get in and out. After booking, a rider only sees their own stretch (From → To), not the driver's full route.
-- **Fares in tens:** price per seat must be a multiple of ₹10. Each stretch is rounded to ₹10 and all stretches still add up exactly to the full price. Offers and counters are also in tens.
-- **Bargaining:** on negotiable rides the rider offers a price, and the driver accepts, counters or rejects.
-- **Search rules:** From, To, Date and Seats are required, and missing fields are highlighted. Nothing is listed until you search, and "No rides for this route" shows when nothing matches.
-- **Reviews before booking:** each search result shows reviews of the driver and the other passengers already on that trip.
-- **Profiles:** click any name to see rating, experience, rides published, completed and cancelled, a cancellation badge (Never, Rarely or Frequently cancels rides), preferences (No smoking, No pets, AC, Music, Luggage) and special instructions. Everyone edits their own profile in the Profile tab.
-- **Star ratings:** 1–5 stars with an optional comment, once per person per trip. Riders rate the driver, and drivers rate each passenger after completing a ride.
-- **Badge:** a red count on Requests (driver: pending requests) or My bookings (rider: counter-offers waiting). It refreshes every 25 seconds.
-- **My rides:** split into Active and Completed & cancelled. Requests for completed rides disappear from the Requests tab.
-- **Landing page:** teal background, with the logo and name sliding down and "Welcome" fading in. Login and Register also work with Enter.
-- **Dark mode:** follows your system setting by default; the ☀️/🌙 button in the header (or top-right on the login page) switches it and remembers your choice. The map switches to dark streets too.
-- **No overbooking:** the ride row is locked (`PESSIMISTIC_WRITE`) when seats are confirmed or released.
+**Rides and booking**
+- **Map:** free OpenStreetMap with a Streets / Satellite / Classic switcher, road-style routes and pickup/drop-off pins.
+- **Stops, pickups and drop-offs:** up to 5 stops; riders get in and out anywhere on the route and, after booking, only see their own stretch.
+- **Post for multiple dates:** add extra dates with the same time and post them all at once (up to 14).
+- **Recommended price range:** shows whether your price is below, within or above ₹2–₹3.5 per km for the route, plus a reminder that the price is final.
+- **Fares in tens and bargaining:** prices, offers and counters are multiples of ₹10; stretches always add up to the full price.
+- **Meeting-point suggestions:** fuel stations, bus stands and highway exits near each point (from OpenStreetMap), with a one-tap "Use".
+- **Rides near me:** 📍 uses your location, or Find picks an exact place; rides within 5/10/20/40 km are matched and the distance is shown. Typing a town name still works.
+- **Ride alerts:** when a search is empty, save an alert; you get a notification (and an email, if Gmail is set up and your email is verified) when a matching ride is posted.
+
+**Trust and safety**
+- **Verified badge (✔):** email code, phone code and government ID (type + last 4 characters, approved by an admin). All three give the badge.
+- **Profile photos** (cropped and resized in the browser), **rating summary** on profiles, reviews of drivers and co-passengers before booking.
+- **Report and block:** report a user to the admin team; blocking hides each other's rides and stops bookings and messages.
+- **Live trip sharing:** start sharing from Trip tools; family get a link (`/track.html#…`, no login) showing your live position on the map. Keep the page open while travelling.
+- **SOS:** one tap to call 112, and an SOS alert with your location goes to the admins.
+
+**Everything else**
+- **In-app chat** between rider and driver, before and after booking, with unread badges.
+- **Notifications bell** for requests, accepts, counters, cancellations, ride alerts and ID decisions.
+- **Admin:** overview stats, users (suspend/restore), ID checks (approve/reject), reports and SOS alerts (with location), all rides.
+- **Star ratings, cancellation badge, experience level, preferences, dark mode, landing animation, no overbooking** (row locks with `PESSIMISTIC_WRITE`).
+
+Live sharing and "near me" need location permission, which browsers only allow on `localhost` or HTTPS. A tracking link made on localhost only opens on the same computer; once HopIn is hosted online, anyone with the link can open it.
 
 ## Booking flow
 
@@ -68,35 +94,32 @@ ApplicationException
  ├─ RideException:    RideNotFoundException, NoSeatsAvailableException
  ├─ BookingException: BookingNotFoundException, DuplicateBookingException,
  │                    BookingCancelledException, InvalidPriceException
- └─ UserException:    InvalidLoginException, UnauthorizedActionException, UserAlreadyExistsException
+ ├─ UserException:    InvalidLoginException, UnauthorizedActionException, UserAlreadyExistsException,
+ │                    VerificationException, BlockedException
+ ├─ ChatException
+ └─ SafetyException
 ```
 
 `GlobalExceptionHandler` turns each into JSON: `{"error": "<ClassName>", "message": "..."}`.
 
 ## REST API
 
-| Method | Path | Who |
-|---|---|---|
-| POST | /api/auth/register, /api/auth/login | all |
-| POST/GET | /api/vehicles | driver |
-| POST | /api/rides (with stops, pricePerSeat, negotiable) | driver |
-| GET | /api/rides/search?source=&destination=&date=&seats= | all |
-| GET | /api/rides/mine, /api/rides/{id} | driver / all |
-| POST | /api/rides/{id}/complete, /api/rides/{id}/cancel | driver |
-| POST | /api/rides/{id}/book (seats, pickupIdx, dropIdx, offeredPrice) | rider |
-| GET | /api/bookings/mine | rider |
-| GET | /api/bookings/requests | driver |
-| POST | /api/bookings/{id}/accept, /reject, /counter | driver |
-| POST | /api/bookings/{id}/accept-counter, /cancel, /pay | rider |
-| POST | /api/ratings | participants |
-| GET | /api/ratings/given | ratings you have given |
-| GET | /api/bookings/badge | badge count |
-| GET/PUT | /api/users/me | own profile |
-| GET | /api/users/{id}/profile | public profile with stats and reviews |
-| GET | /api/admin/users, /rides, /stats | admin |
-| POST | /api/admin/users/{id}/block, /unblock | admin |
+Send `Authorization: Bearer <token>` on everything except `/api/auth/**` and `/api/public/**`.
 
-Send `Authorization: Bearer <token>` on everything except `/api/auth/**`.
+| Area | Endpoints |
+|---|---|
+| Auth | `POST /api/auth/register`, `POST /api/auth/login` |
+| Profile | `GET/PUT /api/users/me`, `PUT/DELETE /api/users/me/photo`, `GET /api/users/{id}/profile` |
+| Verification | `POST /api/verify/email/send`, `/email/confirm`, `/phone/send`, `/phone/confirm`, `/id` |
+| Vehicles | `GET/POST /api/vehicles` |
+| Rides | `POST /api/rides` (with `extraTimes`), `GET /api/rides/search?source&destination&date&seats[&fromLat&fromLng&toLat&toLng&radiusKm]`, `GET /api/rides/mine`, `POST /api/rides/{id}/complete`, `/cancel` |
+| Bookings | `POST /api/rides/{id}/book`, `GET /api/bookings/mine`, `/requests`, `/badge`, `POST /api/bookings/{id}/accept`, `/reject`, `/counter`, `/accept-counter`, `/cancel`, `/pay` |
+| Ratings | `POST /api/ratings`, `GET /api/ratings/given`, `GET /api/ratings/user/{id}` |
+| Chat | `GET /api/chats`, `GET/POST /api/chats/{rideId}/{riderId}` |
+| Alerts | `GET/POST /api/alerts`, `DELETE /api/alerts/{id}`, `GET /api/notifications`, `POST /api/notifications/read` |
+| Safety | `POST /api/users/{id}/report`, `POST/DELETE /api/users/{id}/block`, `GET /api/users/blocked`, `POST /api/sos`, `POST /api/live/start`, `POST /api/live/{token}/location`, `/stop`, `GET /api/live/active` |
+| Public | `GET /api/public/photos/{id}`, `GET /api/public/live/{token}` |
+| Admin | `GET /api/admin/stats`, `/users`, `/id-requests`, `/reports`, `/rides`, `POST /api/admin/users/{id}/block`, `/unblock`, `/id-approve`, `/id-reject`, `POST /api/admin/reports/{id}/resolve` |
 
 ## Project layout
 
@@ -104,14 +127,16 @@ Send `Authorization: Bearer <token>` on everything except `/api/auth/**`.
 src/main/java/com/hopin
  ├─ config/       DataSeeder (admin + password encoder)
  ├─ security/     JwtUtil, AuthInterceptor, WebConfig
- ├─ model/        User, Vehicle, Ride, RideStop, Booking, Rating + enums
+ ├─ model/        User, Vehicle, Ride, RideStop, Booking, Rating, UserPhoto, VerificationCode,
+ │                ChatMessage, RideAlert, Notification, Report, UserBlock, TripShare + enums
  ├─ repository/   Spring Data JPA repositories
- ├─ service/      AuthService, RideService, BookingService, RatingService, ProfileService, RouteUtil
- ├─ controller/   Auth, Ride, Booking (+ratings), Profile, Admin
+ ├─ service/      Auth, Ride, Booking, Rating, Profile, Verification, Mail, Chat, Alert,
+ │                Notification, Safety services, RouteUtil (matching + fares), Views
+ ├─ controller/   Auth, Ride, Booking, Profile, Verification, Chat, Alert, Safety, Public, Admin
  └─ exception/    custom exception hierarchy + global handler
 src/main/resources
- ├─ application.properties, application-h2.properties
- └─ static/       index.html (frontend), logo.svg
+ ├─ application.properties (MySQL, Gmail via env vars), application-h2.properties
+ └─ static/       index.html (app), track.html (public live tracking), logo.svg
 ```
 
 ## Debugging for your assignment
