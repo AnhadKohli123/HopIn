@@ -32,5 +32,12 @@ public class Booking {
 
     public boolean paid = false;
     public double amountPaid = 0;
+    public String paymentMethod = "CASH";
+    public String paidVia;
+    public String paymentRef;
+    public LocalDateTime paidAt;
+
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    public String paymentOrderId;
     public LocalDateTime createdAt = LocalDateTime.now();
 }

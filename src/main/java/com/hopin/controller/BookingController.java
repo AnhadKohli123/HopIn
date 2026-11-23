@@ -32,7 +32,7 @@ public class BookingController {
         this.notifications = notifications;
     }
 
-    public record BookReq(@Min(1) int seats, Integer pickupIdx, Integer dropIdx, Double offeredPrice) {
+    public record BookReq(@Min(1) int seats, Integer pickupIdx, Integer dropIdx, Double offeredPrice, String paymentMethod) {
     }
 
     public record CounterReq(@NotNull @Positive Double price) {
@@ -44,7 +44,7 @@ public class BookingController {
     @PostMapping("/rides/{id}/book")
     public Booking book(@RequestAttribute("user") User user, @PathVariable Long id,
                         @Valid @RequestBody BookReq r) {
-        return bookings.request(user, id, r.seats(), r.pickupIdx(), r.dropIdx(), r.offeredPrice());
+        return bookings.request(user, id, r.seats(), r.pickupIdx(), r.dropIdx(), r.offeredPrice(), r.paymentMethod());
     }
 
     @GetMapping("/bookings/mine")
@@ -87,11 +87,6 @@ public class BookingController {
     @PostMapping("/bookings/{id}/cancel")
     public Booking cancel(@RequestAttribute("user") User user, @PathVariable Long id) {
         return bookings.cancel(user, id);
-    }
-
-    @PostMapping("/bookings/{id}/pay")
-    public Booking pay(@RequestAttribute("user") User user, @PathVariable Long id) {
-        return bookings.pay(user, id);
     }
 
     @PostMapping("/ratings")

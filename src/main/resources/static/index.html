@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HopIn · Share the ride, split the fare</title>
 <link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <script>
   (function () {
     var t = null;
@@ -252,6 +255,120 @@
   .mode:has(input:checked) { border-color:var(--brand); background:var(--hover); }
   .mode input { width:auto; margin:3px 0 0; }
   .mode b { font-size:14px; }
+  body { font-family:'Inter', system-ui, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing:antialiased; }
+  .card { border-radius:18px; box-shadow:0 1px 2px rgba(15,23,42,.04), 0 8px 24px rgba(15,23,42,.06); }
+  [data-theme="dark"] .card { box-shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); }
+  .item { border-radius:16px; transition:box-shadow .15s, border-color .15s; }
+  .item:hover { box-shadow:0 6px 20px rgba(15,23,42,.08); }
+  button { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:38px; }
+  button.sm { min-height:32px; }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline:2px solid var(--brand); outline-offset:2px; }
+  .ic { width:18px; height:18px; flex:none; display:block; }
+  .pill { display:inline-flex; align-items:center; gap:7px; }
+  .pill .lbl-short { display:none; }
+  .bell { display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; padding:0; }
+  .theme-btn, .icon-btn { display:inline-flex; align-items:center; gap:6px; }
+  #view { animation:viewIn .25s ease both; }
+  @keyframes viewIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+  .page-head { display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+  .page-head h2 { font-size:24px; letter-spacing:-.4px; }
+  .page-head .sub { margin:2px 0 0; }
+
+  .sk { border-radius:10px; background:linear-gradient(90deg, var(--soft) 25%, var(--hover) 37%, var(--soft) 63%); background-size:400% 100%; animation:shimmer 1.3s ease infinite; }
+  @keyframes shimmer { 0% { background-position:100% 50%; } 100% { background-position:0 50%; } }
+  .sk-title { height:26px; width:220px; margin-bottom:10px; }
+  .sk-sub { height:14px; width:320px; max-width:80%; margin-bottom:22px; }
+  .sk-line { height:14px; margin:10px 0; }
+  .sk-card { padding:20px; }
+  .w40 { width:40%; } .w60 { width:60%; } .w80 { width:80%; }
+
+  .empty-state { text-align:center; padding:38px 20px; }
+  .empty-ill { width:76px; height:76px; border-radius:50%; background:var(--teal-bg); color:var(--teal-fg); display:grid; place-items:center; margin:0 auto 14px; }
+  .empty-ill .ic { width:34px; height:34px; }
+  .empty-state b { font-size:17px; display:block; margin-bottom:4px; }
+  .empty-state p { margin:0 auto 14px; max-width:380px; }
+
+  .rc { display:grid; grid-template-columns:max-content minmax(0,1fr) auto; gap:16px; align-items:start; }
+  .rc-when { white-space:nowrap; min-width:64px; }
+  .rc-time { font-weight:800; font-size:19px; letter-spacing:-.3px; line-height:1.1; }
+  .rc-date { font-size:12px; color:var(--muted); font-weight:600; margin-top:2px; }
+  .rc-mid .timeline { margin:0; }
+  .rc-price { text-align:right; }
+  .rc-price .price { line-height:1.1; }
+  .rc-driver { display:flex; gap:10px; align-items:center; padding:12px 0 2px; margin-top:10px; border-top:1px solid var(--line); flex-wrap:wrap; }
+  .rc-driver .rc-tags { margin-left:auto; display:flex; flex-wrap:wrap; justify-content:flex-end; gap:0; }
+  .rc-driver .rc-tags .chips { margin:0; display:inline; }
+  .book-panel { background:var(--soft2); border:1px solid var(--line); border-radius:14px; padding:12px 12px 2px; margin-top:12px; }
+  .pay-row { display:flex; align-items:center; gap:10px; margin:0 0 10px; flex-wrap:wrap; font-size:13px; }
+  @media (max-width:560px) { .rc { grid-template-columns:max-content minmax(0,1fr); gap:12px; } .rc-time { font-size:16px; } .rc-price { grid-column:1 / -1; text-align:left; display:flex; gap:8px; align-items:baseline; } }
+
+  .seg { display:inline-flex; background:var(--soft); border-radius:10px; padding:3px; gap:3px; }
+  .seg button { background:transparent; color:var(--muted); min-height:30px; padding:5px 12px; font-size:13px; border-radius:8px; }
+  .seg button:hover { background:var(--hover); color:var(--ink); }
+  .seg button.on { background:var(--card); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.14); }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin-bottom:18px; }
+  .tile { display:flex; gap:12px; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px; box-shadow:var(--shadow); }
+  .tile .ti { width:44px; height:44px; border-radius:12px; display:grid; place-items:center; background:var(--chip-bg); color:var(--chip-fg); flex:none; }
+  .tile .ti.green { background:var(--green-bg); color:var(--green-fg); }
+  .tile .ti.teal { background:var(--teal-bg); color:var(--teal-fg); }
+  .tile .ti.amber { background:var(--amber-bg); color:var(--amber-fg); }
+  .tile b { display:block; font-size:22px; letter-spacing:-.3px; }
+  .tile span { color:var(--muted); font-size:12px; font-weight:700; }
+
+  .paybox .pay-head { display:flex; gap:10px; align-items:center; margin:0 70px 14px 0; }
+  .paybox .pay-head img { width:36px; height:36px; border-radius:10px; }
+  .pay-amount { font-size:34px; font-weight:800; letter-spacing:-.6px; }
+  .pay-form { margin:14px 0 4px; }
+  .pay-apps { display:flex; gap:6px; flex-wrap:wrap; margin:-4px 0 12px; }
+  .spinner { width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,255,255,.4); border-top-color:#fff; animation:spin .8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .pay-done { text-align:center; padding:10px 0 4px; }
+  .check-circle { width:72px; height:72px; border-radius:50%; background:var(--ok); color:#fff; display:grid; place-items:center; margin:6px auto 12px; animation:pop .35s ease; }
+  .check-circle .ic { width:38px; height:38px; }
+
+  .receipt { border:1px dashed var(--line); border-radius:16px; padding:18px; background:var(--card); }
+  .rc-top { display:flex; gap:10px; align-items:center; }
+  .rc-top img { width:40px; height:40px; border-radius:10px; }
+  .rc-top .rno { margin-left:auto; font-family:ui-monospace, monospace; font-size:12px; color:var(--muted); }
+  .rc-amt { font-size:32px; font-weight:800; margin:14px 0 2px; }
+  .receipt table { width:100%; border-collapse:collapse; margin-top:14px; font-size:14px; }
+  .receipt td { padding:7px 0; border-top:1px solid var(--line); vertical-align:top; }
+  .receipt td:first-child { color:var(--muted); width:42%; }
+  @media print {
+    body { background:#fff !important; }
+    body * { visibility:hidden; }
+    #receipt, #receipt * { visibility:visible; }
+    #receipt { position:absolute; left:0; top:0; width:100%; border:0; color:#000; }
+  }
+
+  @media (min-width:721px) and (max-width:1400px) { .me .me-name { display:none; } }
+  @media (min-width:721px) { .bar.many nav { gap:2px; } .bar.many .pill { padding:8px 10px; } .bar.many .theme-btn .lbl { display:none; } .bar.many { gap:12px; } }
+  @media (min-width:721px) and (max-width:1200px) { .pill .lbl-full { display:none; } .pill .lbl-short { display:inline; } .pill { padding:8px 11px; } .theme-btn .lbl { display:none; } }
+  @media (max-width:720px) {
+    header { backdrop-filter:none; -webkit-backdrop-filter:none; background:var(--card); }
+    .bar { flex-wrap:nowrap; gap:8px; padding:8px 12px; }
+    .brand { font-size:19px; }
+    .brand img { width:34px; height:34px; }
+    nav { position:fixed; left:0; right:0; bottom:0; z-index:1200; background:var(--card); border-top:1px solid var(--line); display:flex; flex-wrap:nowrap; justify-content:space-around; padding:6px 4px calc(6px + env(safe-area-inset-bottom)); gap:0; box-shadow:0 -4px 16px rgba(0,0,0,.06); flex:none; }
+    .pill { flex-direction:column; gap:2px; padding:5px 2px; font-size:10.5px; border-radius:10px; flex:1; min-width:0; min-height:0; }
+    .pill.on { background:transparent; color:var(--brand); }
+    .pill .lbl-full { display:none; }
+    .pill .lbl-short { display:inline; white-space:nowrap; }
+    .pill .badge { top:0; right:calc(50% - 22px); }
+    .me { margin-left:auto; gap:6px; }
+    .me .me-name, .theme-btn .lbl { display:none; }
+    .theme-btn { padding:7px 9px; }
+    main { padding:16px 12px 100px; }
+    .live-chip { bottom:80px; }
+    #toast { bottom:88px; }
+  }
+  @media (max-width:480px) {
+    .grid2 { grid-template-columns:1fr; }
+    .tiles { grid-template-columns:1fr 1fr; }
+    .tile { padding:12px; }
+    .tile b { font-size:19px; }
+  }
   .hidden { display:none !important; }
 </style>
 </head>
@@ -299,6 +416,189 @@ const starLine = (u) => u.ratingCount ? `<span class="stars">★</span> ${u.rati
 const today = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
 const roundTen = (v) => Math.max(10, Math.round((+v || 0) / 10) * 10);
 
+const ICONS = {
+  search: '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+  plus: '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+  car: '<path d="M3 13l2-6h14l2 6v5h-2.5M3 13v5h2.5M3 13h18"/><circle cx="7.5" cy="17.5" r="2"/><circle cx="16.5" cy="17.5" r="2"/>',
+  inbox: '<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1z"/>',
+  chat: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  receipt: '<path d="M5 2v20l2.5-1.5L10 22l2-1.5 2 1.5 2.5-1.5L19 22V2l-2.5 1.5L14 2l-2 1.5L10 2 7.5 3.5z"/><path d="M9 8h6M9 12h6M9 16h4"/>',
+  bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
+  list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  ticket: '<path d="M3 7a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-3a2 2 0 0 0 0-4z"/><path d="M13 5v2M13 11v2M13 17v2"/>',
+  chart: '<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/>',
+  users: '<circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><path d="M16 4a4 4 0 0 1 0 8M22 21c0-3-2-5-5-5.7"/>',
+  flag: '<path d="M4 22V4a1 1 0 0 1 1-1h12l-2 4 2 4H5"/>',
+  map: '<path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3z"/><path d="M9 3v15M15 6v15"/>',
+  wallet: '<path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0 0 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5"/><path d="M16 14h.01"/>',
+  leaf: '<path d="M11 20A7 7 0 0 1 4 13c0-6 6-10 16-10 0 10-4 17-9 17z"/><path d="M4 21c4-4 6-7 9-10"/>',
+  route: '<circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/>',
+  piggy: '<path d="M19 9c1 0 2 1 2 2v2c0 1-1 2-2 2h-1l-1 3h-3l-.5-1.5h-3L10 18H7l-1-3a6 6 0 0 1 4-10h4a6 6 0 0 1 4 4z"/><path d="M15 10h.01"/>',
+  check: '<path d="m5 12 5 5L20 7"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+  logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/>',
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'
+};
+
+function icon(name, cls = '') {
+  return `<svg class="ic ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
+}
+
+function skeleton() {
+  return `<div class="sk sk-title"></div><div class="sk sk-sub"></div>${[0, 1, 2].map(() => `<div class="card sk-card"><div class="sk sk-line w60"></div><div class="sk sk-line w40"></div><div class="sk sk-line w80"></div></div>`).join('')}`;
+}
+
+function emptyState(ic, title, text, action = '') {
+  return `<div class="card empty-state"><div class="empty-ill">${icon(ic)}</div><b>${esc(title)}</b><p class="muted">${esc(text)}</p>${action}</div>`;
+}
+
+function pageHead(title, sub, right = '') {
+  return `<div class="page-head"><div><h2>${esc(title)}</h2>${sub ? `<p class="sub">${esc(sub)}</p>` : ''}</div>${right}</div>`;
+}
+
+const hhmm = (d) => new Date(d).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+const dshort = (d) => new Date(d).toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' });
+const VIA = { CASH: 'Cash', UPI: 'UPI', CARD: 'Card', NETBANKING: 'Net banking', RAZORPAY: 'Razorpay' };
+
+function selSeg(btn) {
+  btn.parentElement.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
+  if (btn.parentElement.classList.contains('pay-seg')) { try { localStorage.setItem('hopinPay', btn.dataset.v); } catch (e) { } }
+}
+
+function paySeg(id) {
+  let pref = 'CASH';
+  try { pref = localStorage.getItem('hopinPay') || 'CASH'; } catch (e) { }
+  return `<div class="seg pay-seg" id="pm${id}"><button type="button" data-v="CASH" class="${pref === 'CASH' ? 'on' : ''}" onclick="selSeg(this)">💵 Cash to driver</button><button type="button" data-v="ONLINE" class="${pref === 'ONLINE' ? 'on' : ''}" onclick="selSeg(this)">💳 Pay online</button></div>`;
+}
+
+function payChip(b) {
+  if (b.paid) return `<span class="chip green">✔ Paid ${inr(b.amountPaid)} · ${esc(VIA[b.paidVia] || b.paidVia || '')}</span>`;
+  return b.paymentMethod === 'ONLINE' ? '<span class="chip">💳 Online payment</span>' : '<span class="chip amber">💵 Cash payment</span>';
+}
+
+function switchPay(id, method) {
+  run(async () => {
+    await api('POST', `/api/bookings/${id}/payment-method`, { method });
+    toast(method === 'ONLINE' ? 'Switched to online payment' : 'Switched to cash payment');
+    render();
+  });
+}
+
+function cashReceived(id) {
+  run(async () => {
+    const b = await api('POST', `/api/bookings/${id}/cash-received`);
+    toast('Cash payment of ' + inr(b.amountPaid) + ' recorded');
+    render();
+  });
+}
+
+let rzpLoading = null;
+
+function loadRazorpay() {
+  if (window.Razorpay) return Promise.resolve();
+  if (!rzpLoading) {
+    rzpLoading = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      s.onload = resolve;
+      s.onerror = () => { rzpLoading = null; reject(new Error('Could not load Razorpay. Check your internet connection')); };
+      document.head.appendChild(s);
+    });
+  }
+  return rzpLoading;
+}
+
+function startPay(id) {
+  run(async () => {
+    const o = await api('POST', `/api/bookings/${id}/pay/order`);
+    if (o.provider === 'RAZORPAY') {
+      await loadRazorpay();
+      const rzp = new Razorpay({
+        key: o.keyId, amount: o.amountPaise, currency: o.currency, order_id: o.orderId,
+        name: 'HopIn', description: o.description, image: location.origin + '/logo.svg',
+        prefill: { name: me.name, email: me.email || '', contact: me.phone ? '+91' + me.phone : '' },
+        theme: { color: '#14b8a6' },
+        handler: (resp) => run(async () => {
+          await api('POST', `/api/bookings/${id}/pay/verify`, { paymentId: resp.razorpay_payment_id, orderId: resp.razorpay_order_id, signature: resp.razorpay_signature });
+          paySuccess(id, o.amountPaise / 100);
+        })
+      });
+      rzp.on('payment.failed', (r) => toast((r.error && r.error.description) || 'Payment failed', true));
+      rzp.open();
+    } else {
+      simCheckout(id, o);
+    }
+  });
+}
+
+const BANKS = ['State Bank of India', 'HDFC Bank', 'ICICI Bank', 'Axis Bank', 'Punjab National Bank', 'Kotak Mahindra Bank'];
+
+function simCheckout(id, o) {
+  const amt = inr(o.amountPaise / 100);
+  openModal(`<div class="paybox"><div class="pay-head"><img src="/logo.svg" alt=""><div><b>HopIn Pay</b><div class="muted">Test mode · no real money moves</div></div></div>
+    <div class="pay-amount">${amt}</div><div class="muted">${esc(o.description || '')}</div>
+    <div class="seg" style="margin-top:14px"><button type="button" class="on" data-v="UPI" onclick="selSeg(this);payForm('UPI')">UPI</button><button type="button" data-v="CARD" onclick="selSeg(this);payForm('CARD')">Card</button><button type="button" data-v="NETBANKING" onclick="selSeg(this);payForm('NETBANKING')">Net banking</button></div>
+    <div class="pay-form" id="payForm"></div>
+    <button class="ok" id="payGo" style="width:100%" onclick="simPay(${id})">Pay ${amt}</button></div>`, true);
+  window.payVia = 'UPI';
+  payForm('UPI');
+}
+
+function payForm(via) {
+  window.payVia = via;
+  const f = $('payForm');
+  if (via === 'UPI') f.innerHTML = `<label>UPI ID</label><input id="upiId" placeholder="yourname@okhdfcbank" autocomplete="off">
+    <div class="pay-apps"><span class="chip gray">GPay</span><span class="chip gray">PhonePe</span><span class="chip gray">Paytm</span><span class="chip gray">BHIM</span></div>`;
+  else if (via === 'CARD') f.innerHTML = `<label>Card number</label><input id="cardNo" inputmode="numeric" maxlength="19" placeholder="4111 1111 1111 1111" autocomplete="off">
+    <div class="grid2"><div><label>Expiry</label><input id="cardExp" maxlength="5" placeholder="MM/YY"></div><div><label>CVV</label><input id="cardCvv" type="password" maxlength="4" placeholder="•••"></div></div>`;
+  else f.innerHTML = `<label>Bank</label><select id="bank">${BANKS.map(b => `<option>${b}</option>`).join('')}</select>`;
+}
+
+function simPay(id) {
+  const via = window.payVia;
+  if (via === 'UPI' && !/^[\w.\-]{2,}@[a-zA-Z]{2,}$/.test(($('upiId').value || '').trim())) return toast('Enter a UPI ID like name@bank', true);
+  if (via === 'CARD') {
+    if ($('cardNo').value.replace(/\D/g, '').length < 12) return toast('Enter a card number', true);
+    if (!/^\d{2}\/\d{2}$/.test($('cardExp').value.trim())) return toast('Enter expiry as MM/YY', true);
+    if ($('cardCvv').value.length < 3) return toast('Enter the CVV', true);
+  }
+  const btn = $('payGo');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Processing…';
+  setTimeout(() => run(async () => {
+    try {
+      const b = await api('POST', `/api/bookings/${id}/pay/simulate`, { via });
+      paySuccess(id, b.amountPaid);
+    } finally {
+      if ($('payGo')) { $('payGo').disabled = false; $('payGo').textContent = 'Try again'; }
+    }
+  }), 1200);
+}
+
+function paySuccess(id, amount) {
+  if (views[tab]) Promise.resolve(views[tab]()).catch(() => { });
+  openModal(`<div class="pay-done"><div class="check-circle">${icon('check')}</div><h2>Payment successful</h2>
+    <p class="muted">${inr(amount)} paid. Thanks for riding with HopIn.</p>
+    <div class="actions" style="justify-content:center"><button onclick="openReceipt(${id})">View receipt</button><button class="ghost" onclick="closeModal()">Done</button></div></div>`, true);
+}
+
+function openReceipt(id) {
+  run(async () => {
+    const r = await api('GET', `/api/bookings/${id}/receipt`);
+    const rows = [['Trip', `${r.from} → ${r.to}`], ['Date', fmt(r.departTime)], ['Rider', r.riderName], ['Driver', r.driverName],
+      ['Vehicle', r.vehicle || '—'], ['Seats', r.seats], ['Price per seat', inr(r.pricePerSeat)],
+      ['Distance (approx.)', r.km ? r.km + ' km' : '—'], ['CO₂ saved (approx.)', r.co2SavedKg ? r.co2SavedKg + ' kg' : '—'],
+      ['Paid via', VIA[r.paidVia] || r.paidVia], ['Payment reference', r.paymentRef]];
+    openModal(`<div id="receipt" class="receipt"><div class="rc-top"><img src="/logo.svg" alt=""><div><b>HopIn</b><div class="muted">Trip receipt</div></div><div class="rno">${esc(r.receiptNo)}</div></div>
+      <div class="rc-amt">${inr(r.amount)}</div><div class="muted">Paid on ${fmt(r.paidAt)}</div>
+      <table>${rows.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}</table>
+      <p class="muted" style="margin:12px 0 0;font-size:12px">Generated by HopIn. Distance and CO₂ figures are estimates.</p></div>
+      <div class="actions" style="margin-top:12px"><button onclick="window.print()">${icon('receipt')} Print / Save as PDF</button></div>`, true);
+  });
+}
+
 function nameLink(u) {
   nameCache[u.id] = u.name;
   return `<a href="#" onclick="openProfile(${u.id});return false">${esc(u.name)}</a>${u.verified ? ' <span class="vt" title="Verified email, phone and ID">✔</span>' : ''}`;
@@ -315,7 +615,7 @@ function badgeSpan(id, n) {
 
 function toast(msg, err) {
   const t = $('toast');
-  t.textContent = msg;
+  t.innerHTML = (err ? '⚠️ ' : '✓ ') + esc(msg);
   t.className = err ? 'err' : '';
   t.style.display = 'block';
   clearTimeout(toast.t);
@@ -369,7 +669,8 @@ function applyTheme(t) {
     if (!m.getContainer().isConnected) { liveMaps.splice(i, 1); continue; }
     m._streets.setUrl(streetsUrl());
   }
-  document.querySelectorAll('.theme-btn, .theme-fab').forEach(b => { b.textContent = themeLabel(); });
+  document.querySelectorAll('.theme-btn').forEach(b => { b.innerHTML = themeInner(); });
+  document.querySelectorAll('.theme-fab').forEach(b => { b.textContent = themeLabel(); });
 }
 
 function toggleTheme() {
@@ -623,8 +924,12 @@ function render() {
   if (!render.resumed && me.role !== 'ADMIN') { render.resumed = true; resumeShares(); }
   renderBar();
   closeModal();
-  $('app').innerHTML = '<div id="view"></div>';
-  Promise.resolve(views[tab]()).catch(e => toast(e.message, true));
+  $('app').innerHTML = `<div id="view">${skeleton()}</div>`;
+  window.scrollTo(0, 0);
+  Promise.resolve(views[tab]()).catch(e => {
+    toast(e.message, true);
+    if ($('view') && $('view').querySelector('.sk')) $('view').innerHTML = emptyState('flag', 'Something went wrong', e.message, `<button onclick="render()">Try again</button>`);
+  });
   refreshBadge();
 }
 
@@ -633,24 +938,29 @@ function badgeTab() {
 }
 
 function tabsFor(role) {
-  if (role === 'DRIVER') return [['post', 'Post a ride'], ['myrides', 'My rides'], ['requests', 'Requests'], ['messages', 'Messages'], ['vehicles', 'Vehicles'], ['profile', 'Profile']];
-  if (role === 'RIDER') return [['search', 'Find a ride'], ['bookings', 'My bookings'], ['messages', 'Messages'], ['profile', 'Profile']];
-  return [['stats', 'Overview'], ['users', 'Users'], ['reports', 'Reports'], ['allrides', 'Rides']];
+  if (role === 'DRIVER') return [['post', 'Post a ride', 'Post', 'plus'], ['myrides', 'My rides', 'Rides', 'list'], ['requests', 'Requests', 'Requests', 'inbox'], ['messages', 'Messages', 'Chat', 'chat'], ['trips', 'Trips', 'Trips', 'receipt'], ['vehicles', 'Vehicles', 'Car', 'car'], ['profile', 'Profile', 'Me', 'user']];
+  if (role === 'RIDER') return [['search', 'Find a ride', 'Find', 'search'], ['bookings', 'My bookings', 'Bookings', 'ticket'], ['messages', 'Messages', 'Chat', 'chat'], ['trips', 'Trips', 'Trips', 'receipt'], ['profile', 'Profile', 'Me', 'user']];
+  return [['stats', 'Overview', 'Overview', 'chart'], ['users', 'Users', 'Users', 'users'], ['reports', 'Reports', 'Reports', 'flag'], ['allrides', 'Rides', 'Rides', 'map']];
+}
+
+function themeInner() {
+  return isDark() ? `${icon('sun')}<span class="lbl">Light</span>` : `${icon('moon')}<span class="lbl">Dark</span>`;
 }
 
 function renderBar() {
   const tabs = me ? tabsFor(me.role) : [];
   const bt = badgeTab();
   const badgeFor = (k) => k === bt ? badgeSpan('badge', badgeCount) : k === 'messages' ? badgeSpan('mbadge', msgCount) : '';
+  $('bar').classList.toggle('many', tabs.length > 5);
   $('bar').innerHTML = `
     <div class="brand"><img src="/logo.svg" alt="HopIn logo"><span>Hop<b>In</b></span></div>
-    <nav>${tabs.map(t => `<button class="pill ${tab === t[0] ? 'on' : ''}" onclick="go('${t[0]}')">${t[1]}${badgeFor(t[0])}</button>`).join('')}</nav>
+    <nav>${tabs.map(t => `<button class="pill ${tab === t[0] ? 'on' : ''}" onclick="go('${t[0]}')" aria-label="${t[1]}">${icon(t[3])}<span class="lbl-full">${t[1]}</span><span class="lbl-short">${t[2]}</span>${badgeFor(t[0])}</button>`).join('')}</nav>
     ${me ? `<div class="me">
-      <button class="bell" onclick="openNotifications()" aria-label="Notifications" title="Notifications">🔔${badgeSpan('nbadge', notifCount)}</button>
+      <button class="bell" onclick="openNotifications()" aria-label="Notifications" title="Notifications">${icon('bell')}${badgeSpan('nbadge', notifCount)}</button>
       ${avatar(me)}
-      <div><b>${esc(me.name)}</b>${me.verified ? ' <span class="vt" title="Verified">✔</span>' : ''}<div class="muted">${me.role}${me.role !== 'ADMIN' ? ' · ' + starLine(me) : ''}</div></div>
-      <button class="theme-btn" onclick="toggleTheme()" aria-label="Switch colour theme">${themeLabel()}</button>
-      <button class="ghost sm" onclick="logout()">Logout</button></div>` : ''}`;
+      <div class="me-name"><b>${esc(me.name)}</b>${me.verified ? ' <span class="vt" title="Verified">✔</span>' : ''}<div class="muted">${me.role}${me.role !== 'ADMIN' ? ' · ' + starLine(me) : ''}</div></div>
+      <button class="theme-btn" onclick="toggleTheme()" aria-label="Switch colour theme">${themeInner()}</button>
+      <button class="ghost sm icon-btn" onclick="logout()" aria-label="Log out" title="Log out">${icon('logout')}</button></div>` : ''}`;
 }
 
 async function refreshBadge() {
@@ -880,23 +1190,27 @@ function rideCard(r, reqs) {
   if (r.status === 'COMPLETED') {
     paxHtml = `<div class="pax"><b>Passengers</b>${pax.length ? pax.map(b => {
       const g = givenScore(r.id, b.rider.id);
-      return `<div class="paxrow"><div>${nameLink(b.rider)} <span class="muted">· ${b.seats} seat(s) · ${b.paid ? 'paid ' + inr(b.amountPaid) : 'not paid yet'}</span></div>
-        ${g ? `<span>${starIcons(g)} <span class="muted">rated</span></span>` : `<button class="sm" onclick="ratePassenger(${r.id},${b.rider.id})">Rate passenger</button>`}</div>`;
+      const due = inr((b.agreedPrice || 0) * b.seats);
+      const payBit = b.paid ? `${payChip(b)}<button class="ghost sm" onclick="openReceipt(${b.id})">${icon('receipt')} Receipt</button>`
+        : b.paymentMethod === 'ONLINE' ? `<span class="chip">⏳ Waiting for online payment ${due}</span><button class="ghost sm" onclick="cashReceived(${b.id})">Got cash instead</button>`
+        : `<button class="ok sm" onclick="cashReceived(${b.id})">💵 Cash received ${due}</button>`;
+      return `<div class="paxrow"><div>${nameLink(b.rider)} <span class="muted">· ${b.seats} seat(s)</span></div>
+        <div class="actions">${payBit}${g ? `<span>${starIcons(g)}</span>` : `<button class="sm" onclick="ratePassenger(${r.id},${b.rider.id})">Rate</button>`}</div></div>`;
     }).join('') : '<p class="muted" style="margin:6px 0 0">No passengers on this ride.</p>'}</div>`;
   } else if (r.status === 'OPEN' && pax.length) {
     paxHtml = `<div class="pax"><b>Confirmed passengers</b>${pax.map(b => `<div class="paxrow"><div>${nameLink(b.rider)}
-        <span class="muted">· ${b.seats} seat(s) · ${esc(b.pickupName)} → ${esc(b.dropName)}</span></div>
-        <button class="ghost sm" onclick="openChat(${r.id},${b.rider.id})">💬 Message</button></div>`).join('')}</div>`;
+        <span class="muted">· ${b.seats} seat(s) · ${esc(b.pickupName)} → ${esc(b.dropName)}</span> ${payChip(b)}</div>
+        <button class="ghost sm" onclick="openChat(${r.id},${b.rider.id})">${icon('chat')} Message</button></div>`).join('')}</div>`;
   }
-  return `<div class="item"><div class="head"><div><div class="route">${esc(r.source)} → ${esc(r.destination)}</div>
-      <div class="muted">${fmt(r.departTime)} · ${r.seatsLeft}/${r.seatsTotal} seats left</div></div>
-      <div style="text-align:right"><div class="price">${inr(r.pricePerSeat)} <small>/ seat, full route</small></div>
-      ${statusChip(r.status)}${r.negotiable ? '<span class="chip teal">negotiable</span>' : '<span class="chip gray">fixed price</span>'}${r.instantBook ? '<span class="chip amber">⚡ instant booking</span>' : ''}</div></div>
-    ${timeline(pts)}${paxHtml}
-    <div class="actions"><button class="ghost sm" onclick="showRide(${r.id})">View on map</button>
+  return `<div class="item"><div class="rc">
+      <div class="rc-when"><div class="rc-time">${hhmm(r.departTime)}</div><div class="rc-date">${dshort(r.departTime)}</div></div>
+      <div class="rc-mid">${timeline(pts)}</div>
+      <div class="rc-price"><div class="price">${inr(r.pricePerSeat)}</div><div class="muted">${r.seatsLeft}/${r.seatsTotal} seats left</div></div></div>
+    <div class="chips">${statusChip(r.status)}${r.negotiable ? '<span class="chip teal">negotiable</span>' : '<span class="chip gray">fixed price</span>'}${r.instantBook ? '<span class="chip amber">⚡ instant booking</span>' : ''}${shares[r.id] ? '<span class="chip green">● Sharing live</span>' : ''}</div>
+    ${paxHtml}
+    <div class="actions"><button class="ghost sm" onclick="showRide(${r.id})">${icon('map')} Map</button>
       ${r.status === 'OPEN' ? `${pending ? `<button class="warn sm" onclick="go('requests')">${pending} request(s) waiting</button>` : ''}
-        <button class="ghost sm" onclick="tripTools(${r.id})">🛡️ Trip tools</button>
-        ${shares[r.id] ? '<span class="chip green">● Sharing live</span>' : ''}
+        <button class="ghost sm" onclick="tripTools(${r.id})">${icon('shield')} Trip tools</button>
         <button class="ok sm" onclick="rideAction(${r.id},'complete')">Mark completed</button>
         <button class="bad sm" onclick="rideAction(${r.id},'cancel')">Cancel ride</button>` : ''}</div></div>`;
 }
@@ -980,31 +1294,31 @@ const views = {
     cache(list);
     const active = list.filter(r => r.status === 'OPEN');
     const past = list.filter(r => r.status !== 'OPEN');
-    const section = (title, arr, empty) => `<h3 class="sec">${title} <span class="muted">(${arr.length})</span></h3>`
-      + (arr.length ? arr.map(r => rideCard(r, reqs)).join('') : `<div class="card muted">${empty}</div>`);
-    $('view').innerHTML = `<h2>My rides</h2><p class="sub">Your active rides, and rides that are completed or cancelled.</p>`
-      + section('Active', active, 'No active rides. Post one from the "Post a ride" tab.')
-      + section('Completed & cancelled', past, 'Nothing here yet.');
+    const section = (title, arr, empty) => `<h3 class="sec">${title} <span class="muted">(${arr.length})</span></h3>` + (arr.length ? arr.map(r => rideCard(r, reqs)).join('') : empty);
+    $('view').innerHTML = pageHead('My rides', 'Your active rides, and rides that are completed or cancelled.', `<button onclick="go('post')">${icon('plus')} Post a ride</button>`)
+      + section('Active', active, emptyState('car', 'No active rides', 'Post a ride and riders going your way can book a seat.', `<button onclick="go('post')">Post a ride</button>`))
+      + section('Completed & cancelled', past, `<div class="card muted">Nothing here yet.</div>`);
   },
 
   async requests() {
     const all = await api('GET', '/api/bookings/requests');
     const list = all.filter(b => b.ride.status === 'OPEN');
     cache(list.map(b => b.ride));
-    $('view').innerHTML = `<h2>Booking requests</h2><p class="sub">Requests for your open rides. Accept an offer, counter with your own price, or reject.</p>` + (list.length ? list.map(b => {
+    $('view').innerHTML = pageHead('Booking requests', 'Accept an offer, counter with your own price, or reject.') + (list.length ? list.map(b => {
       const r = b.ride;
       return `<div class="item"><div class="head"><div class="who">${avatar(b.rider)}<div><div class="route">${nameLink(b.rider)} <span class="muted">· ${starLine(b.rider)}</span></div>
-        <div class="muted">${b.seats} seat(s) · ride ${esc(r.source)} → ${esc(r.destination)} · ${fmt(r.departTime)}</div></div></div>${statusChip(b.status)}</div>
+        <div class="muted">${b.seats} seat(s) · ${dshort(r.departTime)}, ${hhmm(r.departTime)}</div></div></div><div>${statusChip(b.status)}</div></div>
         ${fromTo(b.pickupName, b.dropName)}
         <div class="bargain">List price for this stretch: <b>${inr(b.listPrice)}</b>/seat · Rider offers: <b>${inr(b.offeredPrice)}</b>/seat
           ${b.counterPrice != null ? ` · Your counter: <b>${inr(b.counterPrice)}</b>` : ''}
           ${b.agreedPrice != null ? ` · <span class="chip green">Agreed ${inr(b.agreedPrice)}/seat</span>` : ''}</div>
-        <div class="actions"><button class="ghost sm" onclick="showRide(${r.id},${b.pickupIdx},${b.dropIdx})">View on map</button>
-        <button class="ghost sm" onclick="openChat(${r.id},${b.rider.id})">💬 Message</button>
+        <div class="chips">${payChip(b)}</div>
+        <div class="actions"><button class="ghost sm" onclick="showRide(${r.id},${b.pickupIdx},${b.dropIdx})">${icon('map')} Map</button>
+        <button class="ghost sm" onclick="openChat(${r.id},${b.rider.id})">${icon('chat')} Message</button>
         ${b.status === 'PENDING' ? `<button class="ok sm" onclick="bookingAction(${b.id},'accept')">Accept ${inr(b.offeredPrice)}</button>
           ${r.negotiable ? `<button class="warn sm" onclick="counterOffer(${b.id},${b.listPrice})">Counter offer</button>` : ''}
           <button class="bad sm" onclick="bookingAction(${b.id},'reject')">Reject</button>` : ''}</div></div>`;
-    }).join('') : '<div class="card muted">No requests for your open rides.</div>');
+    }).join('') : emptyState('inbox', 'No requests right now', 'When riders ask to join your open rides, their requests and offers show up here.'));
   },
 
   async messages() {
@@ -1012,10 +1326,30 @@ const views = {
     list.forEach(c => { nameCache[c.other.id] = c.other.name; });
     $('view').innerHTML = `<div class="chat-wrap">
       <div class="card chat-list"><h2>Messages</h2><p class="sub">Chats with ${me.role === 'DRIVER' ? 'riders about your rides' : 'drivers before and after booking'}.</p>
-        <div id="convs">${list.length ? list.map(convRow).join('') : '<p class="muted">No conversations yet. ' + (me.role === 'DRIVER' ? 'Message a rider from Requests or My rides.' : 'Message a driver from a search result or your bookings.') + '</p>'}</div></div>
+        <div id="convs">${list.length ? list.map(convRow).join('') : `<div class="empty-state" style="padding:20px 6px"><div class="empty-ill">${icon('chat')}</div><b>No conversations yet</b><p class="muted">${me.role === 'DRIVER' ? 'Message a rider from Requests or My rides.' : 'Message a driver from a search result or your bookings.'}</p></div>`}</div></div>
       <div class="card chat-pane" id="chatPane"><div class="mapnote">Select a conversation</div></div></div>`;
     if (chatOpen) loadThread(chatOpen.rideId, chatOpen.riderId);
     else if (list.length && window.innerWidth > 900) loadThread(list[0].rideId, list[0].riderId);
+  },
+
+  async trips() {
+    const h = await api('GET', '/api/history');
+    const driver = h.role === 'DRIVER';
+    const pax = h.trips.reduce((s, t) => s + (t.passengers || 0), 0);
+    const tiles = driver
+      ? [['route', '', 'Rides completed', h.tripCount], ['users', 'teal', 'Passengers carried', pax], ['map', '', 'Km shared', h.km], ['wallet', 'amber', 'Earned', inr(h.money)], ['leaf', 'green', 'CO₂ saved', h.co2Kg + ' kg']]
+      : [['route', '', 'Trips taken', h.tripCount], ['map', '', 'Km travelled', h.km], ['wallet', 'amber', 'Spent', inr(h.money)], ['piggy', 'teal', 'Saved vs driving alone', inr(h.moneySaved)], ['leaf', 'green', 'CO₂ saved', h.co2Kg + ' kg']];
+    $('view').innerHTML = pageHead(driver ? 'Your trips' : 'Your trips', driver ? 'Completed rides, earnings and the CO₂ your passengers saved.' : 'Completed trips, what you spent and what you saved.')
+      + `<div class="tiles">${tiles.map(([ic, c, label, val]) => `<div class="tile"><div class="ti ${c}">${icon(ic)}</div><div><b>${val}</b><span>${label}</span></div></div>`).join('')}</div>`
+      + (h.trips.length ? h.trips.map(t => `<div class="item"><div class="rc">
+          <div class="rc-when"><div class="rc-time">${hhmm(t.date)}</div><div class="rc-date">${dshort(t.date)}</div></div>
+          <div class="rc-mid"><div class="route">${esc(t.from)} → ${esc(t.to)}</div>
+            <div class="muted">${t.km ? t.km + ' km · ' : ''}${driver ? t.passengers + ' passenger seat(s)' : t.seats + ' seat(s) · driver ' + esc(t.otherName)} · ${t.co2Kg} kg CO₂ saved</div></div>
+          <div class="rc-price"><div class="price">${inr(t.amount)}</div><div>${t.paid ? '<span class="chip green">Paid</span>' : t.paidBookingIds && t.paidBookingIds.length ? '<span class="chip amber">Partly paid</span>' : '<span class="chip amber">Payment due</span>'}</div></div></div>
+          <div class="actions" style="margin-top:8px">${driver ? t.paidBookingIds.map((id, i) => `<button class="ghost sm" onclick="openReceipt(${id})">${icon('receipt')} Receipt ${t.paidBookingIds.length > 1 ? i + 1 : ''}</button>`).join('')
+            : t.paid ? `<button class="ghost sm" onclick="openReceipt(${t.bookingId})">${icon('receipt')} Receipt</button>` : `<button class="sm" onclick="go('bookings')">Go to payment</button>`}</div></div>`).join('')
+        : emptyState('receipt', 'No completed trips yet', driver ? 'Once you complete a ride, your earnings and impact show up here.' : 'Once you finish a trip, your spending, savings and receipts show up here.', driver ? `<button onclick="go('post')">Post a ride</button>` : `<button onclick="go('search')">Find a ride</button>`))
+      + `<p class="muted" style="font-size:12px;margin-top:6px">Estimates: CO₂ uses ${Math.round(h.co2PerKm * 1000)} g per km for each seat shared${driver ? '' : '; savings compare with driving alone at ' + inr(h.soloCostPerKm) + ' per km'}. Distances are approximate road distances.</p>`;
   },
 
   async vehicles() {
@@ -1095,7 +1429,7 @@ const views = {
           </div>
           <button onclick="searchRides()" style="width:100%">Search rides</button>
         </div>
-        <div id="results"><div class="card muted">Enter From, To, date and seats, then search.</div></div>
+        <div id="results">${emptyState('search', 'Where are you going?', 'Enter From, To, date and seats, then search. Use 📍 to find rides near you.')}</div>
         <div id="alertsBox"></div>
       </div>
       <div class="mapbox" id="map"></div>
@@ -1116,28 +1450,37 @@ const views = {
     const [list, given] = await Promise.all([api('GET', '/api/bookings/mine'), api('GET', '/api/ratings/given')]);
     myGiven = given;
     cache(list.map(b => b.ride));
-    $('view').innerHTML = `<h2>My bookings</h2><p class="sub">Your requests, offers and trips. Only your own stretch of each ride is shown.</p>` + (list.length ? list.map(b => {
+    $('view').innerHTML = pageHead('My bookings', 'Your requests, offers and trips. Only your own stretch of each ride is shown.', `<button class="ghost" onclick="go('search')">${icon('search')} Find a ride</button>`) + (list.length ? list.map(b => {
       const r = b.ride;
       const done = b.status === 'CONFIRMED' && r.status === 'COMPLETED';
       const live = b.status === 'CONFIRMED' && r.status === 'OPEN';
-      const canChat = r.status !== 'CANCELLED' && ['PENDING', 'COUNTERED', 'CONFIRMED'].includes(b.status);
+      const active = ['PENDING', 'COUNTERED', 'CONFIRMED'].includes(b.status) && r.status !== 'CANCELLED';
+      const canChat = active;
       const g = givenScore(r.id, r.driver.id);
-      return `<div class="item"><div class="head"><div class="who">${avatar(r.driver)}<div><div class="route">${esc(b.pickupName)} → ${esc(b.dropName)}</div>
-        <div class="muted">${fmt(r.departTime)} · ${b.seats} seat(s) · driver ${nameLink(r.driver)} (${starLine(r.driver)})</div></div></div>
-        <div>${statusChip(b.status)}${r.status === 'CANCELLED' && b.status === 'CANCELLED' ? '<span class="chip red">ride cancelled</span>' : ''}</div></div>
-        ${fromTo(b.pickupName, b.dropName)}
+      const due = (b.agreedPrice != null ? b.agreedPrice : b.offeredPrice) * b.seats;
+      let payHtml = '';
+      if (b.paid) payHtml = `${payChip(b)}<button class="ghost sm" onclick="openReceipt(${b.id})">${icon('receipt')} Receipt</button>`;
+      else if (done && b.paymentMethod === 'ONLINE') payHtml = `<button class="ok" onclick="startPay(${b.id})">${icon('wallet')} Pay ${inr(due)}</button><button class="ghost sm" onclick="switchPay(${b.id},'CASH')">Pay cash instead</button>`;
+      else if (done) payHtml = `<span class="chip amber">💵 Hand ${inr(due)} in cash to ${esc(r.driver.name)}</span><button class="ghost sm" onclick="switchPay(${b.id},'ONLINE')">Pay online instead</button>`;
+      else if (active) payHtml = `${payChip(b)}<button class="ghost sm" onclick="switchPay(${b.id},'${b.paymentMethod === 'ONLINE' ? 'CASH' : 'ONLINE'}')">Change to ${b.paymentMethod === 'ONLINE' ? 'cash' : 'online'}</button>`;
+      return `<div class="item"><div class="rc">
+          <div class="rc-when"><div class="rc-time">${hhmm(r.departTime)}</div><div class="rc-date">${dshort(r.departTime)}</div></div>
+          <div class="rc-mid"><div class="route">${esc(b.pickupName)} → ${esc(b.dropName)}</div>
+            <div class="muted">${b.seats} seat(s)</div></div>
+          <div class="rc-price"><div class="price">${inr(due)}</div><div>${statusChip(b.status)}</div></div></div>
+        <div class="rc-driver">${avatar(r.driver)}<div><b>${nameLink(r.driver)}</b><div class="muted">${starLine(r.driver)}</div></div>
+          ${r.status === 'CANCELLED' && b.status === 'CANCELLED' ? '<div class="rc-tags"><span class="chip red">ride cancelled</span></div>' : ''}</div>
         <div class="bargain">List price: <b>${inr(b.listPrice)}</b>/seat · Your offer: <b>${inr(b.offeredPrice)}</b>
           ${b.counterPrice != null ? ` · Driver counter: <b>${inr(b.counterPrice)}</b>` : ''}
-          ${b.agreedPrice != null ? ` · <span class="chip green">Agreed ${inr(b.agreedPrice)}/seat = ${inr(b.agreedPrice * b.seats)}</span>` : ''}
-          ${b.paid ? ` · <span class="chip green">Paid ${inr(b.amountPaid)}</span>` : ''}</div>
-        <div class="actions"><button class="ghost sm" onclick="showRide(${r.id},${b.pickupIdx},${b.dropIdx},'seg')">View my route</button>
-          ${canChat ? `<button class="ghost sm" onclick="openChat(${r.id},${me.id})">💬 Message driver</button>` : ''}
-          ${live ? `<button class="ghost sm" onclick="tripTools(${r.id})">🛡️ Trip tools</button>${shares[r.id] ? '<span class="chip green">● Sharing live</span>' : ''}` : ''}
+          ${b.agreedPrice != null ? ` · <span class="chip green">Agreed ${inr(b.agreedPrice)}/seat</span>` : ''}</div>
+        ${payHtml ? `<div class="actions" style="margin-bottom:8px">${payHtml}</div>` : ''}
+        <div class="actions"><button class="ghost sm" onclick="showRide(${r.id},${b.pickupIdx},${b.dropIdx},'seg')">${icon('map')} My route</button>
+          ${canChat ? `<button class="ghost sm" onclick="openChat(${r.id},${me.id})">${icon('chat')} Message driver</button>` : ''}
+          ${live ? `<button class="ghost sm" onclick="tripTools(${r.id})">${icon('shield')} Trip tools</button>${shares[r.id] ? '<span class="chip green">● Sharing live</span>' : ''}` : ''}
           ${b.status === 'COUNTERED' ? `<button class="ok sm" onclick="bookingAction(${b.id},'accept-counter')">Accept ${inr(b.counterPrice)}</button><button class="bad sm" onclick="cancelBooking(${b.id})">Decline</button>` : ''}
           ${(b.status === 'PENDING' || b.status === 'CONFIRMED') && r.status !== 'COMPLETED' ? `<button class="bad sm" onclick="cancelBooking(${b.id})">Cancel</button>` : ''}
-          ${done && !b.paid ? `<button class="ok sm" onclick="payBooking(${b.id})">Pay ${inr(b.agreedPrice * b.seats)}</button>` : ''}
           ${done ? (g ? `<span>${starIcons(g)} <span class="muted">you rated the driver</span></span>` : `<button class="sm" onclick="rateDriver(${r.id},${r.driver.id})">Rate driver</button>`) : ''}</div></div>`;
-    }).join('') : '<div class="card muted">No bookings yet. Find a ride to get started.</div>');
+    }).join('') : emptyState('ticket', 'No bookings yet', 'Find a ride going your way and book a seat in a few taps.', `<button onclick="go('search')">Find a ride</button>`));
   },
 
   async stats() {
@@ -1286,7 +1629,8 @@ function bookRide(id, mode) {
       offeredPrice = +$('of' + id).value;
       if (!offeredPrice || offeredPrice % 10 !== 0) throw new Error('Your offer must be a multiple of ₹10');
     }
-    const b = await api('POST', `/api/rides/${id}/book`, { seats: +$('bs' + id).value, pickupIdx: p, dropIdx: d, offeredPrice });
+    const pm = document.querySelector('#pm' + id + ' button.on');
+    const b = await api('POST', `/api/rides/${id}/book`, { seats: +$('bs' + id).value, pickupIdx: p, dropIdx: d, offeredPrice, paymentMethod: pm ? pm.dataset.v : 'CASH' });
     toast(b.status === 'CONFIRMED' ? 'Booked! Your seat is confirmed' : mode === 'offer' ? 'Offer sent to the driver' : 'Request sent to the driver');
     go('bookings');
   });
@@ -1312,10 +1656,6 @@ function counterOffer(id, list) {
 
 function cancelBooking(id) {
   run(async () => { await api('POST', `/api/bookings/${id}/cancel`); toast('Booking cancelled'); render(); });
-}
-
-function payBooking(id) {
-  run(async () => { const b = await api('POST', `/api/bookings/${id}/pay`); toast('Paid ' + inr(b.amountPaid)); render(); });
 }
 
 function blockUser(id, action) {
@@ -1579,8 +1919,7 @@ function searchRides() {
     lastResults = await api('GET', '/api/rides/search?' + new URLSearchParams(searchParams()));
     cache(lastResults.map(v => v.ride));
     $('results').innerHTML = lastResults.length ? lastResults.map(cardFor).join('')
-      : `<div class="card empty"><b>No rides for this route</b><p class="muted">Try another date, a bigger radius, or a nearby town on the same route.</p>
-        <button onclick="createAlert()">🔔 Alert me when a ride is posted</button></div>`;
+      : emptyState('route', 'No rides for this route', 'Try another date, a bigger radius, or a nearby town on the same route.', `<button onclick="createAlert()">${icon('bell')} Alert me when a ride is posted</button>`);
     if (lastResults.length) focusRide(lastResults[0].ride.id);
     else if (curMap) { clearMap(curMap); curMap._seq++; setInfo('map', null); }
   });
@@ -1632,29 +1971,30 @@ function cardFor(v) {
   const dist = (v.pickupKm != null ? `<span class="chip teal">📍 Pickup ${v.pickupKm} km from you</span>` : '')
     + (v.dropKm != null ? `<span class="chip teal">🏁 Drop-off ${v.dropKm} km from your destination</span>` : '');
   return `<div class="item" id="card${r.id}" onclick="focusRide(${r.id})">
-    <div class="head"><div class="who">${avatar(r.driver)}<div><div class="route">${esc(r.source)} → ${esc(r.destination)}</div>
-      <div class="muted">${fmt(r.departTime)} · ${r.seatsLeft} seat(s) left</div>
-      <div class="muted" onclick="event.stopPropagation()">Driver: ${nameLink(r.driver)} · ${starLine(r.driver)}</div></div></div>
-      <div style="text-align:right"><div class="price" id="lp${r.id}">${inr(v.listPrice)} <small>/ seat</small></div>
-      ${r.negotiable ? '<span class="chip teal">bargain allowed</span>' : '<span class="chip gray">fixed price</span>'}
-      ${r.instantBook ? '<span class="chip amber">⚡ Instant booking</span>' : '<span class="chip gray">Driver approves</span>'}
-      <span class="chip">match ${v.score}</span></div></div>
+    <div class="rc">
+      <div class="rc-when"><div class="rc-time">${hhmm(r.departTime)}</div><div class="rc-date">${dshort(r.departTime)}</div></div>
+      <div class="rc-mid" id="tl${r.id}">${timeline(pts, { hi: { from: v.pickupIdx, to: v.dropIdx } })}</div>
+      <div class="rc-price"><div class="price" id="lp${r.id}">${inr(v.listPrice)}</div><div class="muted">per seat · ${r.seatsLeft} left</div></div>
+    </div>
     ${dist ? `<div class="chips">${dist}</div>` : ''}
-    ${prefChips(r.driver)}
-    <div id="tl${r.id}">${timeline(pts, { hi: { from: v.pickupIdx, to: v.dropIdx } })}</div>
-    <div class="grid2" onclick="event.stopPropagation()">
-      <div><label>Pickup</label><select id="pk${r.id}" onchange="changeSeg(${r.id},'p')">${pOpts}</select></div>
-      <div><label>Drop-off</label><select id="dp${r.id}" onchange="changeSeg(${r.id},'d')">${dOpts}</select></div>
-      <div><label>Seats</label><input id="bs${r.id}" type="number" min="1" max="${r.seatsLeft}" value="${Math.min(r.seatsLeft, +$('fseats').value || 1)}"></div>
-      ${r.negotiable ? `<div><label>Or offer your own price (₹/seat)</label>
-        <input id="of${r.id}" type="number" min="10" step="10" value="${v.listPrice}" onchange="this.value = roundTen(this.value)"></div>` : ''}
+    <div class="rc-driver" onclick="event.stopPropagation()">${avatar(r.driver)}<div><b>${nameLink(r.driver)}</b><div class="muted">${starLine(r.driver)}</div></div>
+      <div class="rc-tags">${r.instantBook ? '<span class="chip amber">⚡ Instant booking</span>' : '<span class="chip gray">Driver approves</span>'}${r.negotiable ? '<span class="chip teal">Bargain allowed</span>' : ''}${prefChips(r.driver)}</div></div>
+    <div class="book-panel" onclick="event.stopPropagation()">
+      <div class="grid2">
+        <div><label>Pickup</label><select id="pk${r.id}" onchange="changeSeg(${r.id},'p')">${pOpts}</select></div>
+        <div><label>Drop-off</label><select id="dp${r.id}" onchange="changeSeg(${r.id},'d')">${dOpts}</select></div>
+        <div><label>Seats</label><input id="bs${r.id}" type="number" min="1" max="${r.seatsLeft}" value="${Math.min(r.seatsLeft, +$('fseats').value || 1)}"></div>
+        ${r.negotiable ? `<div><label>Or offer your own price (₹/seat)</label>
+          <input id="of${r.id}" type="number" min="10" step="10" value="${v.listPrice}" onchange="this.value = roundTen(this.value)"></div>` : ''}
+      </div>
+      <div class="pay-row"><span class="muted">Pay by</span>${paySeg(r.id)}</div>
     </div>
     ${extras(v)}
     <div class="actions" onclick="event.stopPropagation()" style="margin-top:10px">
       <button class="ok" onclick="bookRide(${r.id},'list')">${r.instantBook ? '⚡ Book now' : 'Request to book'} · <span id="bkp${r.id}">${inr(v.listPrice)}</span></button>
       ${r.negotiable ? `<button onclick="bookRide(${r.id},'offer')">Send offer</button>` : ''}
-      <button class="ghost sm" onclick="openChat(${r.id},${me.id})">💬 Message driver</button>
-      <button class="ghost sm" onclick="showRide(${r.id},+$('pk${r.id}').value,+$('dp${r.id}').value)">Full map</button>
+      <button class="ghost sm" onclick="openChat(${r.id},${me.id})">${icon('chat')} Message</button>
+      <button class="ghost sm" onclick="showRide(${r.id},+$('pk${r.id}').value,+$('dp${r.id}').value)">${icon('map')} Full map</button>
     </div></div>`;
 }
 

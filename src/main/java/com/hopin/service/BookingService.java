@@ -30,7 +30,7 @@ public class BookingService {
 
     @Transactional
     public Booking request(User rider, Long rideId, int seats, Integer pickupIdx, Integer dropIdx,
-                           Double offeredPrice) {
+                           Double offeredPrice, String paymentMethod) {
         if (rider.role != Role.RIDER) {
             throw new UnauthorizedActionException("Only riders can book seats");
         }
@@ -72,6 +72,7 @@ public class BookingService {
         b.dropName = pts.get(d).name();
         b.listPrice = list;
         b.offeredPrice = offer;
+        b.paymentMethod = "ONLINE".equalsIgnoreCase(paymentMethod) ? "ONLINE" : "CASH";
         if (Boolean.TRUE.equals(ride.instantBook) && offer >= list) {
             ride.seatsLeft -= seats;
             b.agreedPrice = offer;
@@ -179,26 +180,6 @@ public class BookingService {
             notifications.notify(ride.driver, user.name + " cancelled their seat(s) for " + stretch(b), "myrides");
         }
         b.status = BookingStatus.CANCELLED;
-        return b;
-    }
-
-    @Transactional
-    public Booking pay(User rider, Long bookingId) {
-        Booking b = bookings.findById(bookingId).orElseThrow(() -> new BookingNotFoundException(bookingId));
-        if (!b.rider.id.equals(rider.id)) {
-            throw new UnauthorizedActionException("This is not your booking");
-        }
-        if (b.status != BookingStatus.CONFIRMED) {
-            throw new BookingCancelledException();
-        }
-        if (b.ride.status != RideStatus.COMPLETED) {
-            throw new BookingException("You can pay once the driver completes the ride", 409);
-        }
-        if (b.paid) {
-            throw new BookingException("Already paid", 409);
-        }
-        b.amountPaid = Math.round(b.agreedPrice * b.seats * 100.0) / 100.0;
-        b.paid = true;
         return b;
     }
 

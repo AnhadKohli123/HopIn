@@ -135,6 +135,19 @@ public class RouteUtil {
         return Math.max(10, sum * 10);
     }
 
+    public static double roadKm(List<Point> pts, int from, int to) {
+        double d = 0;
+        for (int i = from; i < to; i++) {
+            Point a = pts.get(i);
+            Point b = pts.get(i + 1);
+            if (a.lat() == null || a.lng() == null || b.lat() == null || b.lng() == null) {
+                return 0;
+            }
+            d += km(a, b);
+        }
+        return round1(d * 1.25);
+    }
+
     public static double km(Point a, Point b) {
         double r = 6371.0;
         double dLat = Math.toRadians(b.lat() - a.lat());
