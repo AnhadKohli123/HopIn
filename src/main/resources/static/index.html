@@ -537,7 +537,7 @@ const BANKS = ['State Bank of India', 'HDFC Bank', 'ICICI Bank', 'Axis Bank', 'P
 
 function simCheckout(id, o) {
   const amt = inr(o.amountPaise / 100);
-  openModal(`<div class="paybox"><div class="pay-head"><img src="/logo.svg" alt=""><div><b>HopIn Pay</b><div class="muted">Test mode · no real money moves</div></div></div>
+  openModal(`<div class="paybox"><div class="pay-head"><img src="/logo.svg" alt=""><div><b>HopIn Pay</b></div></div>
     <div class="pay-amount">${amt}</div><div class="muted">${esc(o.description || '')}</div>
     <div class="seg" style="margin-top:14px"><button type="button" class="on" data-v="UPI" onclick="selSeg(this);payForm('UPI')">UPI</button><button type="button" data-v="CARD" onclick="selSeg(this);payForm('CARD')">Card</button><button type="button" data-v="NETBANKING" onclick="selSeg(this);payForm('NETBANKING')">Net banking</button></div>
     <div class="pay-form" id="payForm"></div>
